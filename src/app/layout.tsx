@@ -13,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UNBLCK | Founder Hub in Santiago",
+  title: "UNBLCK | Accelerator in Santiago",
   description:
-    "A private club for founders in Santiago. Working space, mentorship, and a complete program to get your blockchain startup funded and growing.",
+    "An accelerator for AI and blockchain founders in Santiago. We turn builders into unicorn riders.",
   openGraph: {
-    title: "UNBLCK | Founder Hub in Santiago",
+    title: "UNBLCK | Accelerator in Santiago",
     description:
-      "Working space, mentorship, and funding for founders building on blockchain in Chile.",
+      "An accelerator for AI and blockchain founders. Workspace, mentorship, and funding to go from builder to unicorn rider.",
     type: "website",
   },
 };

@@ -4,7 +4,7 @@ import { UnblckApplicationForm } from "@/components/UnblckApplicationForm";
 export const metadata: Metadata = {
   title: "Apply | UNBLCK",
   description:
-    "Apply to join UNBLCK — Santiago's private founder hub for blockchain and AI builders.",
+    "Apply to join UNBLCK — Santiago's accelerator for AI and blockchain founders.",
 };
 
 export default function ApplyPage() {
