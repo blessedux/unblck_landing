@@ -71,7 +71,7 @@ export function InstaAwards() {
         </div>
 
         <div className="mt-24 border-t border-border pt-16">
-          <div className="border border-border bg-white/[0.02] p-8">
+          <div className="border border-border bg-white/[0.02] p-8 rounded-2xl">
             <div className="flex items-start justify-between gap-4 mb-6">
               <div>
                 <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
@@ -95,9 +95,9 @@ export function InstaAwards() {
             </div>
 
             <ul className="mb-8 flex flex-wrap gap-2 text-sm text-muted">
-              <li className="border border-border px-3 py-1.5">No equity taken</li>
-              <li className="border border-border px-3 py-1.5">Demo day pipeline</li>
-              <li className="border border-border px-3 py-1.5">
+              <li className="border border-border px-3 py-1.5 rounded-full">No equity taken</li>
+              <li className="border border-border px-3 py-1.5 rounded-full">Demo day pipeline</li>
+              <li className="border border-border px-3 py-1.5 rounded-full">
                 StellarBarrio exclusive
               </li>
             </ul>
@@ -123,7 +123,7 @@ export function InstaAwards() {
 
             <Link
               href="/insta-awards/apply"
-              className="group inline-flex items-center gap-2 bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:gap-3 hover:bg-accent-soft"
+              className="group inline-flex items-center gap-2 bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:gap-3 hover:bg-accent-soft rounded-full"
             >
               Apply to fund
               <svg

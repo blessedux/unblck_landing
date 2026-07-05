@@ -52,7 +52,7 @@ export function WhatWeDo() {
         <div className="mt-8 flex justify-end">
           <Link
             href="/apply"
-            className="inline-block bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:bg-accent-soft"
+            className="inline-block bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:bg-accent-soft rounded-full"
           >
             Request access to Tellus Hub
           </Link>
