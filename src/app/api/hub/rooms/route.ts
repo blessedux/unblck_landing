@@ -21,10 +21,12 @@ export async function GET() {
       .single();
 
     if (profileError || !profile) {
-      return NextResponse.json(
-        { error: "Member profile not found" },
-        { status: 404 }
-      );
+      // No profile yet, return empty rooms for now
+      return NextResponse.json({
+        rooms: [],
+        member_tier: "Builder",
+        error: "Please complete your application to access room booking"
+      });
     }
 
     const memberTier = profile.stellar_funded ? "Founder" : "Builder";
