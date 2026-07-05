@@ -148,7 +148,15 @@ export default async function MemberPage() {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="border border-gray-800 p-6">
+          <Link href="/member/hub" className="border border-gray-800 p-6 hover:bg-white/5 transition-colors rounded-2xl">
+            <h2 className="text-xl font-semibold mb-2">Tellus Hub App</h2>
+            <p className="text-gray-400 text-sm mb-4">
+              Book rooms, view events, explore Santiago
+            </p>
+            <span className="text-sm text-white">Open app →</span>
+          </Link>
+
+          <div className="border border-gray-800 p-6 rounded-2xl">
             <h2 className="text-xl font-semibold mb-2">Content Library</h2>
             <p className="text-gray-400 text-sm mb-4">
               Access resources, guides, and materials
@@ -156,7 +164,7 @@ export default async function MemberPage() {
             <span className="text-xs text-gray-500">Coming soon</span>
           </div>
 
-          <div className="border border-gray-800 p-6">
+          <div className="border border-gray-800 p-6 rounded-2xl">
             <h2 className="text-xl font-semibold mb-2">Schedule Meetings</h2>
             <p className="text-gray-400 text-sm mb-4">
               Book time with founders and investors
@@ -164,7 +172,7 @@ export default async function MemberPage() {
             <span className="text-xs text-gray-500">Coming soon</span>
           </div>
 
-          <div className="border border-gray-800 p-6">
+          <div className="border border-gray-800 p-6 rounded-2xl">
             <h2 className="text-xl font-semibold mb-2">Community</h2>
             <p className="text-gray-400 text-sm mb-4">
               Connect with other builders
@@ -177,7 +185,7 @@ export default async function MemberPage() {
             </Link>
           </div>
 
-          <div className="border border-gray-800 p-6">
+          <div className="border border-gray-800 p-6 rounded-2xl">
             <h2 className="text-xl font-semibold mb-2">Insta Awards</h2>
             <p className="text-gray-400 text-sm mb-4">
               Apply for non-dilutive funding
