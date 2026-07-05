@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Events - Tellus Hub",
@@ -7,13 +8,17 @@ export const metadata: Metadata = {
 
 export default function EventsPage() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <h1 className="text-3xl font-bold text-black mb-6">Events</h1>
-      <p className="text-black/60 mb-8">
-        Join us for StellarBarrio meetups, workshops, and community events.
-      </p>
+    <div className="container mx-auto max-w-6xl px-4 pb-8 pt-16 md:pt-20">
+      <div className="mb-3 flex justify-end">
+        <Image
+          src="/Stellar_barrio.jpeg"
+          alt="Stellar Barrio"
+          width={160}
+          height={48}
+          className="h-10 w-auto rounded-xl border border-black/20 object-contain sm:h-12"
+        />
+      </div>
 
-      {/* Luma Calendar Embed */}
       <div className="rounded-2xl border border-black/10 bg-white/50 overflow-hidden">
         <div className="aspect-[16/10] md:aspect-[16/9] relative">
           <iframe

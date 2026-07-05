@@ -2,14 +2,50 @@
  * Booking credits engine for UNBLCK Hub
  *
  * Rules:
- * - Ambassadors: 3 credits/week (Mon-Sun reset)
+ * - Ambassadors: 3 credits/week (Sun-Sat reset — schedule your week each Sunday)
  * - Stellar-funded: Unlimited access
  * - Must book 24h in advance (no same-day)
  * - No double-booking
  * - Only open days can be booked
  */
 
+import {
+  getWeekStart,
+  getWeekEnd,
+  startOfLocalDay,
+} from "@/lib/dates";
+
 export type MemberTier = "ambassador" | "stellar_funded";
+
+/** Mon–Fri when admin has not configured a week in hub_schedule */
+export const DEFAULT_OPEN_DAYS: number[] = [1, 2, 3, 4, 5];
+
+/** Members (builders and founders) may only request hub access on weekdays */
+export const MEMBER_BOOKABLE_WEEKDAYS: number[] = [1, 2, 3, 4, 5];
+
+export function resolveOpenDays(scheduleOpenDays: unknown): number[] {
+  if (!Array.isArray(scheduleOpenDays) || scheduleOpenDays.length === 0) {
+    return DEFAULT_OPEN_DAYS;
+  }
+
+  const days = scheduleOpenDays
+    .map((d) => Number(d))
+    .filter((n) => Number.isInteger(n) && n >= 0 && n <= 6);
+
+  return days.length > 0 ? days : DEFAULT_OPEN_DAYS;
+}
+
+/** Weekdays that are both Mon–Fri and open per the admin schedule */
+export function getMemberOpenDays(scheduleOpenDays: unknown): number[] {
+  const open = resolveOpenDays(scheduleOpenDays);
+  return open.filter((d) => MEMBER_BOOKABLE_WEEKDAYS.includes(d));
+}
+
+export function isMemberBookableDay(date: Date, openDays: number[]): boolean {
+  const weekday = date.getDay();
+  if (!MEMBER_BOOKABLE_WEEKDAYS.includes(weekday)) return false;
+  return openDays.includes(weekday);
+}
 
 export interface BookingContext {
   tier: MemberTier;
@@ -25,21 +61,6 @@ export interface BookingResult {
   creditsRemaining: number;
 }
 
-/**
- * Get Monday of the week for a given date
- */
-function getWeekStart(date: Date): Date {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  const day = d.getDay();
-  const diff = day === 0 ? -6 : 1 - day; // Sunday=0, Monday=1
-  d.setDate(d.getDate() + diff);
-  return d;
-}
-
-/**
- * Check if two dates are on the same day
- */
 function isSameDay(date1: Date, date2: Date): boolean {
   return (
     date1.getFullYear() === date2.getFullYear() &&
@@ -49,15 +70,15 @@ function isSameDay(date1: Date, date2: Date): boolean {
 }
 
 /**
- * Get bookings in the same week as the target date
+ * Get bookings in the same Sun–Sat week as the anchor date
  */
-function getWeekBookings(targetDate: Date, allBookings: Date[]): Date[] {
-  const weekStart = getWeekStart(targetDate);
-  const weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekEnd.getDate() + 7);
+function getWeekBookings(anchorDate: Date, allBookings: Date[]): Date[] {
+  const weekStart = getWeekStart(anchorDate);
+  const weekEnd = getWeekEnd(anchorDate);
 
   return allBookings.filter((booking) => {
-    return booking >= weekStart && booking < weekEnd;
+    const b = startOfLocalDay(booking);
+    return b >= weekStart && b <= weekEnd;
   });
 }
 
@@ -91,8 +112,17 @@ export function canBook(ctx: BookingContext): BookingResult {
     };
   }
 
-  // Rule: Check if day is open
+  // Rule: Members may only book Mon–Fri
   const targetWeekday = target.getDay();
+  if (!MEMBER_BOOKABLE_WEEKDAYS.includes(targetWeekday)) {
+    return {
+      allowed: false,
+      reason: "Hub access is available Monday through Friday only.",
+      creditsRemaining: tier === "stellar_funded" ? Infinity : 3,
+    };
+  }
+
+  // Rule: Check if day is open per admin schedule
   if (!openDays.includes(targetWeekday)) {
     return {
       allowed: false,
@@ -129,7 +159,7 @@ export function canBook(ctx: BookingContext): BookingResult {
   if (creditsUsed >= 3) {
     return {
       allowed: false,
-      reason: "You have used all 3 credits for this week (Mon-Sun).",
+      reason: "You have used all 3 credits for this week (Sun–Sat).",
       creditsRemaining: 0,
     };
   }

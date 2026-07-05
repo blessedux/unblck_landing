@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createSupabaseAdmin } from "@/lib/supabase/admin";
+import { formatLocalDate } from "@/lib/dates";
+import { timeToMinutes } from "@/lib/room-slots";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,10 +17,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { room_id, booking_date, start_time, duration_minutes } = body;
+    const { room_id, start_time, duration_minutes } = body;
+    const booking_date = formatLocalDate(new Date());
 
-    // Validate input
-    if (!room_id || !booking_date || !start_time || !duration_minutes) {
+    if (!room_id || !start_time || !duration_minutes) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -31,7 +34,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get member profile
     const { data: profile, error: profileError } = await supabase
       .from("member_profiles")
       .select("stellar_funded")
@@ -46,20 +48,45 @@ export async function POST(request: NextRequest) {
     }
 
     const isFounder = profile.stellar_funded;
-    const today = new Date().toISOString().split("T")[0];
+    const today = booking_date;
 
-    // Builders can only book for today
-    if (!isFounder && booking_date !== today) {
-      return NextResponse.json(
-        { error: "Builders can only book rooms for today" },
-        { status: 403 }
-      );
+    if (!isFounder) {
+      const { data: hotDesk } = await supabase
+        .from("bookings")
+        .select("id")
+        .eq("member_id", user.id)
+        .eq("booking_date", today)
+        .maybeSingle();
+
+      if (!hotDesk) {
+        return NextResponse.json(
+          {
+            error:
+              "You need a hot desk booking for today before reserving a room.",
+          },
+          { status: 403 }
+        );
+      }
+
+      const { data: existingRoomBookings } = await supabase
+        .from("room_bookings")
+        .select("id")
+        .eq("member_id", user.id)
+        .eq("booking_date", today);
+
+      if (existingRoomBookings && existingRoomBookings.length > 0) {
+        return NextResponse.json(
+          { error: "Builders can only book one room per day" },
+          { status: 403 }
+        );
+      }
     }
 
-    // Check if room exists and is enabled
-    const { data: room, error: roomError } = await supabase
+    const adminSupabase = createSupabaseAdmin();
+
+    const { data: room, error: roomError } = await adminSupabase
       .from("hub_rooms")
-      .select("booking_enabled")
+      .select("booking_enabled, type, name")
       .eq("id", room_id)
       .single();
 
@@ -70,45 +97,51 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check for existing booking today (Builders: once per day)
-    if (!isFounder) {
-      const { data: existingBookings, error: checkError } = await supabase
-        .from("room_bookings")
-        .select("id")
-        .eq("member_id", user.id)
-        .eq("booking_date", today);
+    const { data: existingSlots } = await adminSupabase
+      .from("room_bookings")
+      .select("start_time, duration_minutes")
+      .eq("room_id", room_id)
+      .eq("booking_date", today);
 
-      if (checkError) {
-        return NextResponse.json(
-          { error: "Failed to check existing bookings" },
-          { status: 500 }
-        );
-      }
+    const startMin = timeToMinutes(start_time);
+    const endMin = startMin + duration_minutes;
 
-      if (existingBookings && existingBookings.length > 0) {
+    if (endMin > 18 * 60 + 30) {
+      return NextResponse.json(
+        { error: "Time slot is outside hub hours" },
+        { status: 400 }
+      );
+    }
+
+    for (const slot of existingSlots || []) {
+      const slotStart = timeToMinutes(slot.start_time.slice(0, 5));
+      const slotEnd = slotStart + slot.duration_minutes;
+      if (startMin < slotEnd && endMin > slotStart) {
         return NextResponse.json(
-          { error: "Builders can only book one room per day" },
-          { status: 403 }
+          { error: "This time slot is already booked" },
+          { status: 409 }
         );
       }
     }
 
-    // Create booking
-    const { data: newBooking, error: insertError } = await supabase
+    const isEventSpace = room.type === "event_space";
+    const status = isEventSpace ? "pending_admin" : "confirmed";
+
+    const { data: newBooking, error: insertError } = await adminSupabase
       .from("room_bookings")
       .insert({
         member_id: user.id,
         room_id,
-        booking_date,
-        start_time,
+        booking_date: today,
+        start_time: start_time,
         duration_minutes,
+        status,
       })
       .select()
       .single();
 
     if (insertError) {
       if (insertError.code === "23505") {
-        // Unique constraint violation
         return NextResponse.json(
           { error: "Time slot already booked" },
           { status: 409 }
@@ -120,7 +153,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ booking: newBooking }, { status: 201 });
+    return NextResponse.json(
+      {
+        booking: newBooking,
+        status,
+        message: isEventSpace
+          ? "Request submitted. Event Space bookings require admin confirmation and may incur an additional charge."
+          : "Room booked successfully.",
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error creating room booking:", error);
     return NextResponse.json(

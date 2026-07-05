@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+import { formatLocalDate } from "@/lib/dates";
+
 export async function GET() {
   try {
     const supabase = await createClient();
@@ -18,7 +20,7 @@ export async function GET() {
       .from("room_bookings")
       .select("*")
       .eq("member_id", user.id)
-      .gte("booking_date", new Date().toISOString().split("T")[0])
+      .gte("booking_date", formatLocalDate(new Date()))
       .order("booking_date")
       .order("start_time");
 

@@ -3,7 +3,29 @@
 import React from "react";
 import Link from "next/link";
 
-export function HubMenuLinks() {
+type HubMenuLinksProps = {
+  variant?: "center" | "sidebar";
+};
+
+export function HubMenuLinks({ variant = "center" }: HubMenuLinksProps) {
+  if (variant === "sidebar") {
+    return (
+      <section className="flex flex-col justify-center h-full min-h-[70vh] px-8 lg:px-14 xl:px-20">
+        <div className="flex flex-col items-start gap-6 lg:gap-10">
+          <FlipLink href="/member/hub/rooms" size="sidebar">
+            Rooms
+          </FlipLink>
+          <FlipLink href="/member/hub/events" size="sidebar">
+            Events
+          </FlipLink>
+          <FlipLink href="/member/hub/tour" size="sidebar">
+            Tour
+          </FlipLink>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="flex flex-col items-center justify-center gap-2 w-full h-screen">
       <div className="flex flex-col items-center gap-8 w-1/2">
@@ -15,9 +37,19 @@ export function HubMenuLinks() {
   );
 }
 
-const FlipLink = ({ children, href }: { children: string; href: string }) => {
+const FlipLink = ({
+  children,
+  href,
+  size = "center",
+}: {
+  children: string;
+  href: string;
+  size?: "center" | "sidebar";
+}) => {
   const linkClassName =
-    "group text-black relative block overflow-hidden whitespace-nowrap text-4xl font-black uppercase sm:text-7xl md:text-8xl lg:text-9xl";
+    size === "sidebar"
+      ? "group text-black relative block overflow-hidden whitespace-nowrap text-5xl font-black uppercase lg:text-6xl xl:text-7xl"
+      : "group text-black relative block overflow-hidden whitespace-nowrap text-4xl font-black uppercase sm:text-7xl md:text-8xl lg:text-9xl";
   const linkStyle = { lineHeight: 0.75 };
 
   const linkContent = (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatLocalDate } from "@/lib/dates";
 
 type BookingData = {
   bookings: string[];
@@ -32,7 +33,7 @@ export function CoffeeBadge() {
     return null;
   }
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = formatLocalDate(new Date());
   const hasBookingToday = data.bookings.includes(today);
   const isStellarFunded = data.tier === "stellar_funded";
   const eligible = hasBookingToday || isStellarFunded;
@@ -44,13 +45,13 @@ export function CoffeeBadge() {
   const sozuUrl = process.env.NEXT_PUBLIC_SOZU_WALLET_URL || "https://sozuwallet.app";
 
   return (
-    <div className="border border-green-500 bg-green-500/10 p-6">
+    <div className="rounded-2xl border border-green-700/30 bg-green-700/10 p-5">
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="text-xl font-semibold text-green-500">
+          <h3 className="text-lg font-semibold text-green-800">
             ☕ Coffee Available Today
           </h3>
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-black/60">
             You have hub access today. Redeem your coffee token at the hub.
           </p>
         </div>
@@ -59,7 +60,7 @@ export function CoffeeBadge() {
         href={sozuUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-4 inline-block bg-green-500 text-black px-6 py-2 font-medium hover:bg-green-400 transition"
+        className="mt-4 inline-block rounded-full bg-green-800 text-white px-5 py-2 text-sm font-medium hover:bg-green-900 transition"
       >
         Open Sozu Wallet →
       </a>

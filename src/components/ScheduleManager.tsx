@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { formatLocalDate } from "@/lib/dates";
 
 type ScheduleConfig = {
   week_start: string;
@@ -19,12 +20,10 @@ const WEEKDAYS = [
   { name: "Saturday", value: 6 },
 ];
 
-function getMonday(date: Date): string {
+function getSunday(date: Date): string {
   const d = new Date(date);
-  const day = d.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  d.setDate(d.getDate() + diff);
-  return d.toISOString().split("T")[0];
+  d.setDate(d.getDate() - d.getDay());
+  return formatLocalDate(d);
 }
 
 export function ScheduleManager({
@@ -44,7 +43,7 @@ export function ScheduleManager({
   const currentWeekStart = (() => {
     const today = new Date();
     today.setDate(today.getDate() + weekOffset * 7);
-    return getMonday(today);
+    return getSunday(today);
   })();
 
   const toggleDay = (day: number) => {

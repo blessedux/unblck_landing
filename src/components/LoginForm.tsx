@@ -5,6 +5,8 @@ import { useState, type FormEvent } from "react";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -16,18 +18,31 @@ export function LoginForm() {
 
     try {
       const supabase = createClient();
-      const { error: signInError } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/member`,
-        },
-      });
+      
+      if (showPassword && password) {
+        // Login with password (for test users)
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
-      if (signInError) {
-        throw signInError;
+        if (signInError) throw signInError;
+        
+        // Success - redirect will be handled by middleware or the user can just refresh
+        window.location.href = "/member";
+        return;
+      } else {
+        // Login with magic link
+        const { error: signInError } = await supabase.auth.signInWithOtp({
+          email,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=/member`,
+          },
+        });
+
+        if (signInError) throw signInError;
+        setSent(true);
       }
-
-      setSent(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -64,13 +79,38 @@ export function LoginForm() {
           type="email"
           name="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            // Auto-show password field for test users
+            if (e.target.value.endsWith("@test.unblck.dev")) {
+              setShowPassword(true);
+            }
+          }}
           required
           disabled={loading}
           className="w-full px-4 py-3 bg-white/5 border border-gray-800 text-white placeholder-gray-500 focus:border-white focus:outline-none disabled:opacity-50"
           placeholder="you@company.com"
         />
       </div>
+
+      {showPassword && (
+        <div className="animate-fade-in">
+          <label htmlFor="password" className="block text-sm font-medium mb-2">
+            Password (Test Users)
+          </label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required={showPassword}
+            disabled={loading}
+            className="w-full px-4 py-3 bg-white/5 border border-gray-800 text-white placeholder-gray-500 focus:border-white focus:outline-none disabled:opacity-50"
+            placeholder="••••••••"
+          />
+        </div>
+      )}
 
       {error && <p className="text-sm text-red-500">{error}</p>}
 
@@ -79,8 +119,18 @@ export function LoginForm() {
         disabled={loading}
         className="w-full bg-white text-black py-3 px-4 font-medium hover:bg-gray-200 transition disabled:opacity-50"
       >
-        {loading ? "Sending..." : "Send magic link"}
+        {loading ? "Processing..." : showPassword ? "Login with password" : "Send magic link"}
       </button>
+
+      {!showPassword && (
+        <button
+          type="button"
+          onClick={() => setShowPassword(true)}
+          className="w-full text-xs text-gray-500 hover:text-gray-300 transition text-center"
+        >
+          Login with password instead
+        </button>
+      )}
     </form>
   );
 }

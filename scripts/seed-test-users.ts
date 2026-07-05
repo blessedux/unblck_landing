@@ -2,16 +2,26 @@
  * Seed script for test users
  * Creates admin, founder, and builder test accounts
  * 
- * Run with: npx tsx scripts/seed-test-users.ts
+ * Run with: npm run seed:test-users
  */
 
+import { config } from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
+
+// Load environment variables from .env.local
+config({ path: '.env.local' });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 if (!supabaseUrl || !supabaseServiceRoleKey) {
-  console.error('Missing Supabase environment variables');
+  console.error('❌ Missing Supabase environment variables');
+  console.error('Please ensure these are set in your .env.local:');
+  console.error('  - NEXT_PUBLIC_SUPABASE_URL');
+  console.error('  - SUPABASE_SERVICE_ROLE_KEY');
+  console.error('\nCurrent values:');
+  console.error('  NEXT_PUBLIC_SUPABASE_URL:', supabaseUrl || '(not set)');
+  console.error('  SUPABASE_SERVICE_ROLE_KEY:', supabaseServiceRoleKey ? '(set)' : '(not set)');
   process.exit(1);
 }
 
@@ -61,6 +71,10 @@ async function seedTestUsers() {
     });
 
     if (authError) {
+      if (authError.message.includes('already been registered')) {
+        console.log(`  ⚠️  User already exists, skipping...`);
+        continue;
+      }
       console.error(`  ❌ Auth error: ${authError.message}`);
       continue;
     }
@@ -84,14 +98,13 @@ async function seedTestUsers() {
         location: 'Santiago, Chile',
         stage: 'prototype',
         motivation: 'Testing purposes',
-        passport_username: `test_${testUser.role}`,
-        terms_accepted: 'true',
+        passport_address: `test_${testUser.role}`, // Database column is passport_address
         application_type: 'hub_access',
         status: 'approved',
         auth_user_id: authData.user.id,
         passport_verified: true,
         stellar_funded: testUser.stellar_funded,
-        terms_version: '1.0',
+        terms_version: '2026-07-01',
         terms_accepted_at: new Date().toISOString(),
       })
       .select()

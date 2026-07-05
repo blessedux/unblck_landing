@@ -2,16 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { getMemberProfile } from "@/lib/auth/member";
-import { canBook } from "@/lib/booking-credits";
-
-function getWeekStart(date: Date): Date {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  const day = d.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  d.setDate(d.getDate() + diff);
-  return d;
-}
+import { canBook, getMemberOpenDays } from "@/lib/booking-credits";
+import { formatLocalDate, parseLocalDate, isCurrentWeek, getWeekStart } from "@/lib/dates";
 
 export async function POST(request: Request) {
   try {
@@ -36,7 +28,7 @@ export async function POST(request: Request) {
 
     const body = (await request.json()) as { booking_date: string };
 
-    const targetDate = new Date(body.booking_date);
+    const targetDate = parseLocalDate(body.booking_date);
     const weekStart = getWeekStart(targetDate);
 
     // Get schedule for this week
@@ -44,10 +36,10 @@ export async function POST(request: Request) {
     const { data: schedule } = await adminSupabase
       .from("hub_schedule")
       .select("open_days")
-      .eq("week_start", weekStart.toISOString().split("T")[0])
+      .eq("week_start", formatLocalDate(weekStart))
       .single();
 
-    const openDays = schedule?.open_days || [];
+    const openDays = getMemberOpenDays(schedule?.open_days);
 
     // Get existing bookings
     const { data: bookings } = await adminSupabase
@@ -56,10 +48,18 @@ export async function POST(request: Request) {
       .eq("member_id", user.id);
 
     const existingBookings =
-      bookings?.map((b) => new Date(b.booking_date)) || [];
+      bookings?.map((b) => parseLocalDate(b.booking_date)) || [];
 
     // Check if booking is allowed
     const tier = profile.stellar_funded ? "stellar_funded" : "ambassador";
+
+    if (tier === "ambassador" && !isCurrentWeek(targetDate, new Date())) {
+      return NextResponse.json(
+        { error: "Builders can only book days in the current week." },
+        { status: 403 }
+      );
+    }
+
     const result = canBook({
       tier,
       targetDate,
@@ -73,11 +73,15 @@ export async function POST(request: Request) {
     }
 
     // Create booking
-    const { error } = await adminSupabase.from("bookings").insert({
-      member_id: user.id,
-      booking_date: targetDate.toISOString().split("T")[0],
-      week_start: weekStart.toISOString().split("T")[0],
-    });
+    const { error, data: inserted } = await adminSupabase
+      .from("bookings")
+      .insert({
+        member_id: user.id,
+        booking_date: formatLocalDate(targetDate),
+        week_start: formatLocalDate(weekStart),
+      })
+      .select("id")
+      .single();
 
     if (error) {
       console.error("Booking insert error:", error);
@@ -87,7 +91,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, booking_id: inserted?.id });
   } catch (error) {
     console.error("Bookings POST error:", error);
     return NextResponse.json(
