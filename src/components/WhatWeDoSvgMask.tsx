@@ -2,30 +2,7 @@
 
 import { useLayoutEffect, useRef, type RefObject } from "react";
 
-const PANEL_RADIUS = 32;
 const BOTTOM_BLEED = 6;
-
-function roundedTopPath(
-  left: number,
-  top: number,
-  width: number,
-  height: number,
-  radius: number
-) {
-  const right = left + width;
-  const bottom = top + height;
-  const r = Math.min(radius, width / 2, height);
-
-  return [
-    `M ${left} ${bottom}`,
-    `L ${left} ${top + r}`,
-    `Q ${left} ${top} ${left + r} ${top}`,
-    `H ${right - r}`,
-    `Q ${right} ${top} ${right} ${top + r}`,
-    `V ${bottom}`,
-    "Z",
-  ].join(" ");
-}
 
 function appendMaskHoleRect(
   group: SVGGElement,
@@ -43,51 +20,32 @@ function appendMaskHoleRect(
 }
 
 interface WhatWeDoSvgMaskProps {
-  sectionRef: RefObject<HTMLElement | null>;
+  blackBgRef: RefObject<HTMLDivElement | null>;
   ctaRef: RefObject<HTMLElement | null>;
 }
 
 export function WhatWeDoSvgMask({
-  sectionRef,
+  blackBgRef,
   ctaRef,
 }: WhatWeDoSvgMaskProps) {
-  const svgRef = useRef<SVGSVGElement>(null);
-  const panelRef = useRef<SVGPathElement>(null);
-  const bottomSealRef = useRef<SVGRectElement>(null);
   const maskHoleGroupRef = useRef<SVGGElement>(null);
 
   useLayoutEffect(() => {
-    const svg = svgRef.current;
-    const panel = panelRef.current;
-    const bottomSeal = bottomSealRef.current;
+    const blackBg = blackBgRef.current;
     const maskHoleGroup = maskHoleGroupRef.current;
-    const section = sectionRef.current;
 
-    if (!svg || !panel || !bottomSeal || !maskHoleGroup || !section) {
+    if (!blackBg || !maskHoleGroup) {
       return;
     }
+
+    const maskId = "what-we-do-cta-mask";
+    const maskUrl = `url(#${maskId})`;
+    blackBg.style.mask = maskUrl;
+    blackBg.style.webkitMask = maskUrl;
 
     let frame = 0;
 
     const render = () => {
-      const rect = section.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const visible = rect.bottom > 0 && rect.top < viewportHeight;
-
-      svg.style.display = visible ? "block" : "none";
-      if (!visible || rect.height <= 0) return;
-
-      const panelHeight = rect.height + BOTTOM_BLEED;
-      panel.setAttribute(
-        "d",
-        roundedTopPath(rect.left, rect.top, rect.width, panelHeight, PANEL_RADIUS)
-      );
-
-      bottomSeal.setAttribute("x", String(rect.left));
-      bottomSeal.setAttribute("y", String(rect.top + rect.height - 1));
-      bottomSeal.setAttribute("width", String(rect.width));
-      bottomSeal.setAttribute("height", String(BOTTOM_BLEED + 2));
-
       maskHoleGroup.replaceChildren();
 
       const cta = ctaRef.current;
@@ -110,10 +68,6 @@ export function WhatWeDoSvgMask({
     window.addEventListener("resize", scheduleRender);
 
     const observers: ResizeObserver[] = [];
-    const sectionObserver = new ResizeObserver(scheduleRender);
-    sectionObserver.observe(section);
-    observers.push(sectionObserver);
-
     const cta = ctaRef.current;
     if (cta) {
       const ctaObserver = new ResizeObserver(scheduleRender);
@@ -126,17 +80,15 @@ export function WhatWeDoSvgMask({
       window.removeEventListener("scroll", scheduleRender);
       window.removeEventListener("resize", scheduleRender);
       observers.forEach((observer) => observer.disconnect());
+      blackBg.style.mask = "";
+      blackBg.style.webkitMask = "";
     };
-  }, [sectionRef, ctaRef]);
+  }, [blackBgRef, ctaRef]);
 
   const maskId = "what-we-do-cta-mask";
 
   return (
-    <svg
-      ref={svgRef}
-      aria-hidden
-      className="pointer-events-none fixed inset-0 z-[19] h-full w-full"
-    >
+    <svg aria-hidden className="pointer-events-none absolute h-0 w-0 overflow-hidden">
       <defs>
         <mask
           id={maskId}
@@ -146,13 +98,10 @@ export function WhatWeDoSvgMask({
           width="100%"
           height="100%"
         >
-          <rect x={0} y={0} width="100%" height="100%" fill="white" />
+          <rect x={0} y={0} width="100vw" height="100vh" fill="white" />
           <g ref={maskHoleGroupRef} />
         </mask>
       </defs>
-
-      <path ref={panelRef} fill="#000000" mask={`url(#${maskId})`} />
-      <rect ref={bottomSealRef} fill="#000000" />
     </svg>
   );
 }

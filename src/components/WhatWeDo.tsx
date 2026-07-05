@@ -28,16 +28,21 @@ const offerings = [
 ];
 
 export function WhatWeDo() {
-  const sectionRef = useRef<HTMLElement>(null);
+  const blackBgRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLAnchorElement>(null);
 
   return (
     <section
-      ref={sectionRef}
       id="what-we-do"
       className="relative z-20 min-h-screen overflow-hidden rounded-t-[2rem] px-6 py-24 md:rounded-t-[2.5rem]"
     >
-      <WhatWeDoSvgMask sectionRef={sectionRef} ctaRef={ctaRef} />
+      <div
+        ref={blackBgRef}
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -bottom-1.5 z-[18] rounded-t-[2rem] bg-black md:rounded-t-[2.5rem]"
+      />
+
+      <WhatWeDoSvgMask blackBgRef={blackBgRef} ctaRef={ctaRef} />
 
       <div className="relative z-[25] mx-auto max-w-3xl">
         <div id="our-story">
