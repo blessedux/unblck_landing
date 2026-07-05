@@ -17,6 +17,18 @@ export function AdminDashboard() {
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
           <div className="flex gap-4">
             <Link
+              href="/admin/rooms"
+              className="text-sm text-gray-400 hover:text-white transition"
+            >
+              Hub Rooms
+            </Link>
+            <Link
+              href="/admin/tour"
+              className="text-sm text-gray-400 hover:text-white transition"
+            >
+              Tour Locations
+            </Link>
+            <Link
               href="/admin/schedule"
               className="text-sm text-gray-400 hover:text-white transition"
             >
