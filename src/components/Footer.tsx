@@ -3,7 +3,7 @@ import { CursorDrivenParticleTypography } from "@/components/ui/cursor-driven-pa
 const socialLinks = [
   {
     label: "X (Twitter)",
-    href: "https://x.com/unblck",
+    href: "https://x.com/unblck_stgo",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4" aria-hidden>
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -21,7 +21,7 @@ const socialLinks = [
   },
   {
     label: "Instagram",
-    href: "https://instagram.com/unblck",
+    href: "https://instagram.com/unblck_stgo",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4" aria-hidden>
         <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
