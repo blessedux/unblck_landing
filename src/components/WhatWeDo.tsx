@@ -49,12 +49,12 @@ export function WhatWeDo() {
           ))}
         </div>
 
-        <div className="mt-8 flex items-center justify-between">
+        <div className="mt-8 flex items-center justify-end gap-4">
           <Link
             href="/login"
-            className="text-sm text-muted hover:text-foreground transition"
+            className="text-sm text-white hover:text-white/80 transition"
           >
-            Already a member? Login
+            Login
           </Link>
           <Link
             href="/apply"
