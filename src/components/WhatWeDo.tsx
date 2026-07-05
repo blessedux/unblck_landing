@@ -49,7 +49,13 @@ export function WhatWeDo() {
           ))}
         </div>
 
-        <div className="mt-8 flex justify-end">
+        <div className="mt-8 flex items-center justify-between">
+          <Link
+            href="/login"
+            className="text-sm text-muted hover:text-foreground transition"
+          >
+            Already a member? Login
+          </Link>
           <Link
             href="/apply"
             className="inline-block bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:bg-accent-soft rounded-full"
