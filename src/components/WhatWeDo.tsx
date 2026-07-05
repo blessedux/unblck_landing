@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
-import { WhatWeDoSvgMask } from "@/components/WhatWeDoSvgMask";
 
 const offerings = [
   {
@@ -28,24 +26,13 @@ const offerings = [
 ];
 
 export function WhatWeDo() {
-  const blackBgRef = useRef<HTMLDivElement>(null);
-  const ctaRef = useRef<HTMLAnchorElement>(null);
-
   return (
     <section
       id="what-we-do"
-      className="relative z-20 min-h-screen overflow-hidden rounded-t-[2rem] px-6 py-24 md:rounded-t-[2.5rem]"
+      className="relative z-20 flex min-h-screen flex-col overflow-hidden rounded-t-[2rem] md:rounded-t-[2.5rem]"
     >
-      <div
-        ref={blackBgRef}
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -bottom-1.5 z-[18] rounded-t-[2rem] bg-black md:rounded-t-[2.5rem]"
-      />
-
-      <WhatWeDoSvgMask blackBgRef={blackBgRef} ctaRef={ctaRef} />
-
-      <div className="relative z-[25] mx-auto max-w-3xl">
-        <div id="our-story">
+      <div className="flex-1 bg-black px-6 pt-24 rounded-t-[2rem] md:rounded-t-[2.5rem]">
+        <div className="mx-auto max-w-3xl">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
             What we do
           </p>
@@ -68,8 +55,10 @@ export function WhatWeDo() {
             ))}
           </div>
         </div>
+      </div>
 
-        <div className="relative mt-8 flex items-center justify-end gap-4">
+      <div className="px-6 pt-8 pb-8">
+        <div className="mx-auto flex max-w-3xl items-center justify-end gap-4">
           <Link
             href="/login"
             className="text-sm text-muted transition hover:text-foreground"
@@ -77,14 +66,15 @@ export function WhatWeDo() {
             Login
           </Link>
           <Link
-            ref={ctaRef}
             href="/apply"
-            className="relative z-[30] inline-block rounded-full border border-white bg-transparent px-5 py-2.5 text-sm font-medium text-white transition hover:border-white/80 hover:text-white/90"
+            className="inline-block rounded-full border border-white bg-transparent px-5 py-2.5 text-sm font-medium text-white transition hover:border-white/80 hover:text-white/90"
           >
             Request access to Tellus Hub
           </Link>
         </div>
       </div>
+
+      <div aria-hidden className="h-8 bg-black" />
     </section>
   );
 }
