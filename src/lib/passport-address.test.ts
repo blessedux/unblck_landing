@@ -26,12 +26,12 @@ describe("isValidPassportAddress", () => {
     },
     {
       name: "null",
-      address: null as any,
+      address: null as unknown,
       expected: false,
     },
     {
       name: "undefined",
-      address: undefined as any,
+      address: undefined as unknown,
       expected: false,
     },
     {

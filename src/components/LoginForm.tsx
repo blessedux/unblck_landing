@@ -40,7 +40,7 @@ export function LoginForm() {
       <div>
         <h2 className="text-2xl font-bold mb-4">Check your email</h2>
         <p className="text-gray-400">
-          We've sent a magic link to <strong>{email}</strong>. Click it to log
+          We&apos;ve sent a magic link to <strong>{email}</strong>. Click it to log
           in.
         </p>
         <button

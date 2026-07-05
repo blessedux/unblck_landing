@@ -30,7 +30,7 @@ export default async function MemberPage() {
         <div className="max-w-lg text-center">
           <h1 className="text-3xl font-bold mb-4">No Application Found</h1>
           <p className="text-gray-400 mb-8">
-            We couldn't find an application associated with your account.
+            We couldn&apos;t find an application associated with your account.
           </p>
           <Link
             href="/apply"
@@ -51,19 +51,19 @@ export default async function MemberPage() {
           <div className="mb-6 inline-block h-16 w-16 animate-pulse rounded-full bg-yellow-500/20"></div>
           <h1 className="text-3xl font-bold mb-4">Application Under Review</h1>
           <p className="text-gray-400 mb-2">
-            Thank you for applying to UNBLCK Hub! We're currently reviewing your
+            Thank you for applying to UNBLCK Hub! We&apos;re currently reviewing your
             application.
           </p>
           <p className="text-sm text-gray-500">
             Applied {new Date(application.created_at).toLocaleDateString()}
           </p>
           <div className="mt-8">
-            <a
+            <Link
               href="/"
               className="text-sm text-gray-400 hover:text-white transition"
             >
               Back to home
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -77,17 +77,17 @@ export default async function MemberPage() {
         <div className="max-w-lg text-center">
           <h1 className="text-3xl font-bold mb-4">Application Not Approved</h1>
           <p className="text-gray-400 mb-8">
-            Unfortunately, we're unable to offer you a spot at UNBLCK Hub at
+            Unfortunately, we&apos;re unable to offer you a spot at UNBLCK Hub at
             this time. We encourage you to keep building and stay connected with
             our community.
           </p>
           <div className="space-y-3">
-            <a
+            <Link
               href="/"
               className="block text-sm text-gray-400 hover:text-white transition"
             >
               Back to home
-            </a>
+            </Link>
             <p className="text-sm text-gray-500">
               Join us at StellarBarrio events to connect with the community
             </p>
@@ -106,7 +106,7 @@ export default async function MemberPage() {
         <div className="max-w-lg text-center">
           <h1 className="text-3xl font-bold mb-4">Profile Error</h1>
           <p className="text-gray-400">
-            Your application was approved but we couldn't load your profile.
+            Your application was approved but we couldn&apos;t load your profile.
             Please contact support.
           </p>
         </div>
@@ -169,12 +169,12 @@ export default async function MemberPage() {
             <p className="text-gray-400 text-sm mb-4">
               Connect with other builders
             </p>
-            <a
+            <Link
               href="/"
               className="text-sm text-white hover:underline"
             >
               View events →
-            </a>
+            </Link>
           </div>
 
           <div className="border border-gray-800 p-6">
@@ -182,12 +182,12 @@ export default async function MemberPage() {
             <p className="text-gray-400 text-sm mb-4">
               Apply for non-dilutive funding
             </p>
-            <a
+            <Link
               href="/insta-awards/apply"
               className="text-sm text-white hover:underline"
             >
               Learn more →
-            </a>
+            </Link>
           </div>
         </div>
       </div>

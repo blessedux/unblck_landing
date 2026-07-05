@@ -22,7 +22,6 @@ export default async function AdminSchedulePage() {
   }
 
   // Get current week schedule
-  const today = new Date();
   const { data: schedule } = await supabase
     .from("hub_schedule")
     .select("*")
