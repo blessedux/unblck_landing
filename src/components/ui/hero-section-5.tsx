@@ -9,9 +9,6 @@ import { cn } from "@/lib/utils";
 import { Menu, X, ChevronRight } from "lucide-react";
 import { useScroll, motion } from "motion/react";
 
-const HERO_VIDEO_SRC =
-  "https://ik.imagekit.io/lrigu76hy/tailark/dna-video.mp4?updatedAt=1745736251477";
-
 const menuItems = [
   { name: "What we do", href: "#what-we-do" },
   { name: "Insta Awards", href: "#insta-awards" },
@@ -43,8 +40,10 @@ export function HeroSection() {
                 muted
                 playsInline
                 className="size-full object-cover opacity-35 invert-0 lg:opacity-75"
-                src={HERO_VIDEO_SRC}
-              />
+              >
+                <source src="/hero_bg.webm" type="video/webm" />
+                <source src="/hero_bg.mp4" type="video/mp4" />
+              </video>
             </div>
 
             <div className="relative z-10 mx-auto flex max-w-7xl flex-col px-6 lg:block lg:px-12">

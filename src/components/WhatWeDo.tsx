@@ -1,8 +1,10 @@
+import Link from "next/link";
+
 const offerings = [
   {
     title: "Working space",
     description:
-      "A physical hub in Santiago where founders can focus, collaborate, and build alongside other operators.",
+      "A physical hub at Tellus Blockchain Hub STGO where founders can focus, collaborate, and build alongside other operators.",
   },
   {
     title: "Mentorship",
@@ -23,8 +25,8 @@ const offerings = [
 
 export function WhatWeDo() {
   return (
-    <section id="what-we-do" className="border-t border-border px-6 py-24">
-      <div className="mx-auto max-w-3xl">
+    <section id="what-we-do" className="px-6 py-24">
+      <div id="our-story" className="mx-auto max-w-3xl">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
           What we do
         </p>
@@ -45,6 +47,15 @@ export function WhatWeDo() {
               </p>
             </article>
           ))}
+        </div>
+
+        <div className="mt-8 flex justify-end">
+          <Link
+            href="/apply"
+            className="inline-block bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:bg-accent-soft"
+          >
+            Request access to Tellus Hub
+          </Link>
         </div>
       </div>
     </section>

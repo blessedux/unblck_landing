@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { UnblckApplicationForm } from "@/components/UnblckApplicationForm";
+import { HubAccessApplicationForm } from "@/components/HubAccessApplicationForm";
 
 export const metadata: Metadata = {
-  title: "Apply | UNBLCK",
+  title: "Request Access | Tellus Hub",
   description:
-    "Apply to join UNBLCK — Santiago's accelerator for AI and blockchain founders.",
+    "Request access to Tellus Blockchain Hub in Santiago de Chile.",
 };
 
 export default function ApplyPage() {
-  return <UnblckApplicationForm />;
+  return <HubAccessApplicationForm />;
 }

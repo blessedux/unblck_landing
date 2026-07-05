@@ -18,14 +18,14 @@ export const instaAwardsFormSteps: FormStep<InstaAwardsPayload>[] = [
     id: "intro",
     type: "intro",
     question: "Apply to Insta Awards",
-    hint: "A $5,000 non-dilutive grant for Stellar builders. You'll need a referral code from a StellarBarrio event at UNBLCK STGO.",
+    hint: "A $5,000 non-dilutive grant for Stellar builders. You'll need a referral code from a StellarBarrio event at Tellus Blockchain Hub STGO.",
   },
   {
     id: "referral_code",
     type: "text",
     question: "What's your referral code?",
     placeholder: "STELLARBARRIO-MAR26",
-    hint: "Exclusive codes are shared at StellarBarrio events. No code? Come to the next event at UNBLCK STGO.",
+    hint: "Exclusive codes are shared at StellarBarrio events. No code? Come to the next event at Tellus Blockchain Hub STGO.",
     required: true,
   },
   {

@@ -9,13 +9,15 @@ export type UnblckPayload = {
   location: string;
   stage: string;
   motivation: string;
+  passport_username: string;
+  terms_accepted: string;
 };
 
 export const unblckFormSteps: FormStep<UnblckPayload>[] = [
   {
     id: "intro",
     type: "intro",
-    question: "Apply to UNBLCK",
+    question: "Request access to Tellus Hub in Santiago de Chile",
     hint: "A few questions — takes about 3 minutes. We'll review your application and get back to you.",
   },
   {
@@ -80,6 +82,25 @@ export const unblckFormSteps: FormStep<UnblckPayload>[] = [
       "What would joining the hub help you achieve in the next 90 days?",
     required: true,
   },
+  {
+    id: "passport_username",
+    type: "text",
+    question: "What's your Stellar Passport username?",
+    hint: "We use this for identity verification. Don't have one yet?",
+    placeholder: "@yourname or your GitHub username",
+    required: true,
+    linkText: "Create Passport",
+    linkUrl: "https://demo.stellarpassport.xyz/",
+  },
+  {
+    id: "terms_accepted",
+    type: "checkbox",
+    question: "Terms & Conditions",
+    hint: "I agree to the",
+    linkText: "Terms & Conditions",
+    linkUrl: "/terms",
+    required: true,
+  },
 ];
 
 export const emptyUnblckApplication = (): UnblckPayload => ({
@@ -91,13 +112,15 @@ export const emptyUnblckApplication = (): UnblckPayload => ({
   location: "",
   stage: "",
   motivation: "",
+  passport_username: "",
+  terms_accepted: "false",
 });
 
 export const unblckSuccessScreen: SuccessScreen = {
   label: "Application received",
-  title: "Thanks for applying.",
+  title: "Check your email for a magic link",
   description:
-    "We'll review your submission and get back to you within a few days.",
+    "We've sent you a secure login link. Click it to activate your account and check your application status.",
   extra:
-    "In the meantime, come to StellarBarrio at UNBLCK STGO — our monthly builder event and the gateway to Insta Awards.",
+    "Come to StellarBarrio at Tellus Blockchain Hub STGO — our monthly builder event and the gateway to Insta Awards.",
 };

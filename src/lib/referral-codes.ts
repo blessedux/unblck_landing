@@ -26,7 +26,7 @@ export async function validateReferralCode(code: string) {
     return {
       valid: false as const,
       error:
-        "Invalid referral code. Attend a StellarBarrio event at UNBLCK STGO to get one.",
+        "Invalid referral code. Attend a StellarBarrio event at Tellus Blockchain Hub STGO to get one.",
     };
   }
 
@@ -34,7 +34,7 @@ export async function validateReferralCode(code: string) {
     return {
       valid: false as const,
       error:
-        "This referral code has expired. Come to the next StellarBarrio event for a new code.",
+        "This referral code has expired. Come to the next StellarBarrio event at Tellus Blockchain Hub STGO for a new code.",
     };
   }
 

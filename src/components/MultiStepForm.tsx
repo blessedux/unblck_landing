@@ -48,6 +48,8 @@ export function MultiStepForm<T extends Record<string, string>>({
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
 
   const currentStep = formSteps[stepIndex];
   const progress =
@@ -116,12 +118,38 @@ export function MultiStepForm<T extends Record<string, string>>({
     }
   };
 
+  const resendEmail = async () => {
+    setResending(true);
+    setResendSuccess(false);
+    
+    try {
+      const emailValue = values["email" as keyof T] || "";
+      const response = await fetch("/api/resend-magic-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailValue }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to resend email");
+      }
+
+      setResendSuccess(true);
+      setTimeout(() => setResendSuccess(false), 3000);
+    } catch (err) {
+      console.error("Resend error:", err);
+    } finally {
+      setResending(false);
+    }
+  };
+
   const onKeyDown = (event: KeyboardEvent) => {
     if (
       event.key === "Enter" &&
       !event.shiftKey &&
       currentStep.type !== "textarea" &&
-      currentStep.type !== "choice"
+      currentStep.type !== "choice" &&
+      currentStep.type !== "checkbox"
     ) {
       event.preventDefault();
       void goNext();
@@ -151,12 +179,29 @@ export function MultiStepForm<T extends Record<string, string>>({
             {successScreen.extra && (
               <p className="mt-4 text-sm text-muted">{successScreen.extra}</p>
             )}
-            <Link
-              href="/"
-              className="mt-8 inline-block border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground"
-            >
-              Back to home
-            </Link>
+            
+            <div className="mt-8 flex items-center gap-3">
+              <Link
+                href="/"
+                className="inline-block border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground"
+              >
+                Back to home
+              </Link>
+              
+              <button
+                onClick={resendEmail}
+                disabled={resending}
+                className="inline-block border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground disabled:opacity-50"
+              >
+                {resending ? "Sending..." : "Resend email"}
+              </button>
+            </div>
+            
+            {resendSuccess && (
+              <p className="mt-4 text-sm text-green-500">
+                Email sent! Check your inbox.
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -203,7 +248,19 @@ export function MultiStepForm<T extends Record<string, string>>({
                   {currentStep.question}
                 </h1>
                 {currentStep.hint && (
-                  <p className="mt-2 text-sm text-muted">{currentStep.hint}</p>
+                  <div className="mt-2 text-sm text-muted">
+                    {currentStep.hint}{" "}
+                    {currentStep.linkText && currentStep.linkUrl && currentStep.type !== "checkbox" && (
+                      <a
+                        href={currentStep.linkUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block mt-2 bg-foreground px-3 py-1.5 text-xs font-medium text-background transition hover:bg-accent-soft"
+                      >
+                        {currentStep.linkText}
+                      </a>
+                    )}
+                  </div>
                 )}
 
                 <div className="mt-6">
@@ -227,6 +284,30 @@ export function MultiStepForm<T extends Record<string, string>>({
                         );
                       })}
                     </div>
+                  ) : currentStep.type === "checkbox" ? (
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={values[fieldKey] === "true"}
+                        onChange={(event) =>
+                          updateValue(fieldKey, event.target.checked ? "true" : "false")
+                        }
+                        className="mt-1 h-5 w-5 cursor-pointer"
+                      />
+                      <span className="text-base text-muted">
+                        {currentStep.hint}{" "}
+                        {currentStep.linkText && currentStep.linkUrl && (
+                          <a
+                            href={currentStep.linkUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-white hover:underline"
+                          >
+                            {currentStep.linkText}
+                          </a>
+                        )}
+                      </span>
+                    </label>
                   ) : currentStep.type === "textarea" ? (
                     <textarea
                       autoFocus
@@ -281,7 +362,8 @@ export function MultiStepForm<T extends Record<string, string>>({
               </button>
               {currentStep.type !== "intro" &&
                 currentStep.type !== "textarea" &&
-                currentStep.type !== "choice" && (
+                currentStep.type !== "choice" &&
+                currentStep.type !== "checkbox" && (
                   <span className="text-xs text-muted">Enter ↵</span>
                 )}
             </div>
