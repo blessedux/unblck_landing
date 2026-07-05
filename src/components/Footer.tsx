@@ -34,28 +34,35 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer id="contact" className="px-6 pb-12 pt-24">
-      <div className="relative mx-auto max-w-3xl">
-        <div className="absolute left-0 top-0 flex items-center gap-4">
-          {socialLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={link.label}
-              className="text-muted transition-colors hover:text-foreground"
-            >
-              {link.icon}
-            </a>
-          ))}
-        </div>
+    <footer
+      id="contact"
+      className="relative z-30 mt-auto border-t border-white/10 bg-black px-6 py-10 sm:px-8 sm:py-12"
+    >
+      <div className="mx-auto max-w-6xl">
+        <div className="flex flex-col gap-10 sm:flex-row sm:items-end sm:justify-between">
+          <div className="text-left">
+            <div className="flex items-center gap-4">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.label}
+                  className="text-white transition-opacity hover:opacity-70"
+                >
+                  {link.icon}
+                </a>
+              ))}
+            </div>
+            <p className="mt-3 text-sm text-white/75">Triana 861, Providencia</p>
+            <p className="mt-1 text-sm text-white/75">Santiago, Chile</p>
+          </div>
 
-        <div className="flex flex-col items-center justify-end">
-          <div className="relative h-24 w-full max-w-xs font-sans text-[#E1E0CC] sm:h-28 sm:max-w-sm">
+          <div className="relative h-20 w-full max-w-[220px] font-sans text-[#E1E0CC] sm:ml-auto sm:h-24 sm:max-w-xs">
             <CursorDrivenParticleTypography
               text="UNBLCK"
-              fontSize={56}
+              fontSize={52}
               particleDensity={5}
               particleSize={1.25}
               dispersionStrength={18}
@@ -63,10 +70,11 @@ export function Footer() {
               className="min-h-0"
             />
           </div>
-          <p className="mt-8 text-center text-xs text-muted">
-            © {new Date().getFullYear()} UNBLCK · AI & blockchain accelerator · Santiago, Chile
-          </p>
         </div>
+
+        <p className="mt-10 text-center text-xs text-white/50">
+          © {new Date().getFullYear()} UNBLCK · AI & blockchain accelerator
+        </p>
       </div>
     </footer>
   );

@@ -1,4 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import Image from "next/image";
+import { FundCardEventGallery } from "@/components/FundCardEventGallery";
+
+const LUMA_EVENTS_URL = "https://luma.com/telluscoop";
 
 const fundingJourney = [
   {
@@ -44,18 +50,18 @@ const instaAwardsSteps = [
 
 export function InstaAwards() {
   return (
-    <section id="insta-awards" className="border-t border-border px-6 py-24">
+    <section id="insta-awards" className="relative z-30 -mt-px border-t border-border bg-background px-6 py-24">
       <div className="mx-auto max-w-3xl">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
           Funding & Founder Journey
         </p>
         <h2 className="mt-4 text-2xl font-medium tracking-tight sm:text-3xl">
-          From first check to demo day.
+          From idea to demo day.
         </h2>
         <p className="mt-4 max-w-xl text-muted leading-relaxed">
-          UNBLCK supports founders through the entire journey — from grant
-          capital to get you started, through go-to-market strategy, to demo day
-          presentations for follow-on funding.
+          UNBLCK supports founders through the entire journey, from idea, to product and 
+          capital to get you started, we guide you through go-to-market strategy, to demo day
+          presentations for follow-on funding and growth. 
         </p>
 
         <div className="mt-12 divide-y divide-border border-y border-border">
@@ -71,16 +77,59 @@ export function InstaAwards() {
         </div>
 
         <div className="mt-24 border-t border-border pt-16">
-          <div className="border border-border bg-white/[0.02] p-8 rounded-2xl">
-            <div className="flex items-start justify-between gap-4 mb-6">
-              <div>
-                <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
-                  Current Fund · Stellar SCF
-                </p>
-                <h3 className="mt-3 text-xl font-medium tracking-tight sm:text-2xl">
-                  Stellar Insta Awards
-                </h3>
+          <div className="group/card relative border border-border bg-white/[0.02] p-8 rounded-2xl transition-all duration-300 hover:bg-white/[0.04] hover:shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+            <div className="mb-6 flex items-start justify-between gap-4 sm:gap-6">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="https://stellar.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="opacity-100 transition-opacity hover:opacity-60"
+                  >
+                    <Image
+                      src="/stellar_logo_black.jpeg"
+                      alt="Stellar Development Foundation"
+                      width={120}
+                      height={40}
+                      className="h-10 w-auto rounded-lg object-contain invert"
+                    />
+                  </Link>
+                  <Link
+                    href="https://telluscoop.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="opacity-100 transition-opacity hover:opacity-60"
+                  >
+                    <Image
+                      src="/tellus_logo.jpg"
+                      alt="Tellus Coop"
+                      width={40}
+                      height={40}
+                      className="h-10 w-10 rounded-lg object-cover"
+                    />
+                  </Link>
+                </div>
+
+                <div className="mt-6">
+                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
+                    Current Fund · Stellar SCF
+                  </p>
+                  <h3 className="mt-3 text-xl font-medium tracking-tight sm:text-2xl">
+                    Stellar Insta Awards
+                  </h3>
+                </div>
               </div>
+
+              <Link
+                href={LUMA_EVENTS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Tellus Coop events on Luma"
+                className="group/event-image relative aspect-square size-32 shrink-0 overflow-hidden rounded-xl border border-border bg-white/[0.03] transition hover:border-white/20 hover:bg-white/[0.06] sm:size-40 md:size-48"
+              >
+                <FundCardEventGallery />
+              </Link>
             </div>
 
             <div className="mb-6">

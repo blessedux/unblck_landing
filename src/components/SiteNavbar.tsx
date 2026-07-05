@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navItems = [
   { label: "Accelerator", href: "#insta-awards" },
@@ -9,6 +10,20 @@ const navItems = [
 ];
 
 export function SiteNavbar() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/member")) {
+    return null;
+  }
+
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <nav className="fixed left-1/2 top-0 z-50 -translate-x-1/2">
       <div className="flex w-fit items-center justify-center gap-6 rounded-b-2xl bg-black px-5 py-2 sm:gap-8 sm:px-6 md:rounded-b-3xl md:px-7">
@@ -16,6 +31,7 @@ export function SiteNavbar() {
           <Link
             key={item.label}
             href={item.href}
+            onClick={(e) => handleSmoothScroll(e, item.href)}
             className="text-[10px] transition-colors sm:text-xs md:text-sm"
             style={{ color: "rgba(225, 224, 204, 0.8)" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#E1E0CC")}
