@@ -2,8 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getMemberApplication, getMemberProfile } from "@/lib/auth/member";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { BookingCalendar } from "@/components/BookingCalendar";
-import { CoffeeBadge } from "@/components/CoffeeBadge";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -22,6 +20,15 @@ export default async function MemberPage() {
     redirect("/login");
   }
 
+  // Check for member profile first (approved members)
+  const profile = await getMemberProfile(user.id);
+
+  if (profile) {
+    // User is an approved member, redirect to hub app
+    redirect("/member/hub");
+  }
+
+  // No member profile, check for application status
   const application = await getMemberApplication(user.id);
 
   if (!application) {
@@ -32,12 +39,20 @@ export default async function MemberPage() {
           <p className="text-gray-400 mb-8">
             We couldn&apos;t find an application associated with your account.
           </p>
-          <Link
-            href="/apply"
-            className="inline-block bg-white text-black px-6 py-3 font-medium hover:bg-gray-200 transition"
-          >
-            Apply to UNBLCK
-          </Link>
+          <div className="flex flex-col gap-3">
+            <Link
+              href="/apply"
+              className="inline-block bg-white text-black px-6 py-3 font-medium hover:bg-gray-200 transition rounded-full"
+            >
+              Request Hub Access
+            </Link>
+            <Link
+              href="/accelerator/apply"
+              className="inline-block border border-white/20 text-white px-6 py-3 font-medium hover:bg-white/10 transition rounded-full"
+            >
+              Apply to Accelerator
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -96,109 +111,4 @@ export default async function MemberPage() {
       </div>
     );
   }
-
-  // Approved status - show member home
-  const profile = await getMemberProfile(user.id);
-
-  if (!profile) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center px-6">
-        <div className="max-w-lg text-center">
-          <h1 className="text-3xl font-bold mb-4">Profile Error</h1>
-          <p className="text-gray-400">
-            Your application was approved but we couldn&apos;t load your profile.
-            Please contact support.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Welcome to UNBLCK Hub</h1>
-          <Link
-            href="/"
-            className="text-sm text-gray-400 hover:text-white transition"
-          >
-            Home
-          </Link>
-        </div>
-
-        <div className="mb-8 p-6 border border-gray-800 bg-white/5">
-          <p className="text-sm text-gray-400">Member Status</p>
-          <p className="mt-2 text-xl font-semibold">
-            {profile.stellar_funded ? "Stellar Funded" : "Ambassador"}
-          </p>
-          {profile.passport_verified && (
-            <p className="mt-2 text-sm text-green-500">
-              ✓ Passport Verified
-            </p>
-          )}
-        </div>
-
-        <div className="mb-8">
-          <CoffeeBadge />
-        </div>
-
-        <div className="mb-8">
-          <BookingCalendar />
-        </div>
-
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <Link href="/member/hub" className="border border-gray-800 p-6 hover:bg-white/5 transition-colors rounded-2xl">
-            <h2 className="text-xl font-semibold mb-2">Tellus Hub App</h2>
-            <p className="text-gray-400 text-sm mb-4">
-              Book rooms, view events, explore Santiago
-            </p>
-            <span className="text-sm text-white">Open app →</span>
-          </Link>
-
-          <div className="border border-gray-800 p-6 rounded-2xl">
-            <h2 className="text-xl font-semibold mb-2">Content Library</h2>
-            <p className="text-gray-400 text-sm mb-4">
-              Access resources, guides, and materials
-            </p>
-            <span className="text-xs text-gray-500">Coming soon</span>
-          </div>
-
-          <div className="border border-gray-800 p-6 rounded-2xl">
-            <h2 className="text-xl font-semibold mb-2">Schedule Meetings</h2>
-            <p className="text-gray-400 text-sm mb-4">
-              Book time with founders and investors
-            </p>
-            <span className="text-xs text-gray-500">Coming soon</span>
-          </div>
-
-          <div className="border border-gray-800 p-6 rounded-2xl">
-            <h2 className="text-xl font-semibold mb-2">Community</h2>
-            <p className="text-gray-400 text-sm mb-4">
-              Connect with other builders
-            </p>
-            <Link
-              href="/"
-              className="text-sm text-white hover:underline"
-            >
-              View events →
-            </Link>
-          </div>
-
-          <div className="border border-gray-800 p-6 rounded-2xl">
-            <h2 className="text-xl font-semibold mb-2">Insta Awards</h2>
-            <p className="text-gray-400 text-sm mb-4">
-              Apply for non-dilutive funding
-            </p>
-            <Link
-              href="/insta-awards/apply"
-              className="text-sm text-white hover:underline"
-            >
-              Learn more →
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 }
