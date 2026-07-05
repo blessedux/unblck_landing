@@ -4,9 +4,10 @@ import { createSupabaseAdmin } from "@/lib/supabase/admin";
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { date: string } }
+  { params }: { params: Promise<{ date: string }> }
 ) {
   try {
+    const { date } = await params;
     const supabase = await createClient();
 
     const {
@@ -22,7 +23,7 @@ export async function DELETE(
       .from("bookings")
       .delete()
       .eq("member_id", user.id)
-      .eq("booking_date", params.date);
+      .eq("booking_date", date);
 
     if (error) {
       console.error("Booking delete error:", error);

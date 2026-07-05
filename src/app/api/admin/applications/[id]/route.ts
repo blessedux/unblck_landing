@@ -5,9 +5,10 @@ import { isAdminEmail } from "@/lib/auth/admin";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
 
     const {
@@ -31,7 +32,7 @@ export async function PATCH(
     const { data: application } = await adminSupabase
       .from("unblck_applications")
       .select("*")
-      .eq("id", params.id)
+      .eq("id", id)
       .single();
 
     if (!application) {
@@ -50,7 +51,7 @@ export async function PATCH(
         passport_verified: body.passport_verified,
         stellar_funded: body.stellar_funded,
       })
-      .eq("id", params.id);
+      .eq("id", id);
 
     if (updateError) {
       console.error("Application update error:", updateError);

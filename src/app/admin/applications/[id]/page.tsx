@@ -31,8 +31,9 @@ type Application = {
 export default async function ApplicationDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const supabase = await createClient();
 
   const {
@@ -48,7 +49,7 @@ export default async function ApplicationDetailPage({
   const { data: application } = await adminSupabase
     .from("unblck_applications")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single<Application>();
 
   if (!application) {
