@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AdminApplicationsList } from "@/components/AdminApplicationsList";
-import { AdminBookingsCalendar } from "@/components/AdminBookingsCalendar";
+import { HubAccessApplicationsList } from "@/components/HubAccessApplicationsList";
+import { AcceleratorApplicationsList } from "@/components/AcceleratorApplicationsList";
+import { HubScheduleView } from "@/components/HubScheduleView";
 
-type Tab = "applications" | "bookings";
+type Tab = "hub_access" | "accelerator" | "schedule";
 
 export function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<Tab>("applications");
+  const [activeTab, setActiveTab] = useState<Tab>("hub_access");
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -47,31 +48,42 @@ export function AdminDashboard() {
         <div className="mb-6 border-b border-gray-800">
           <div className="flex gap-8">
             <button
-              onClick={() => setActiveTab("applications")}
+              onClick={() => setActiveTab("hub_access")}
               className={`pb-4 text-sm font-medium transition border-b-2 ${
-                activeTab === "applications"
+                activeTab === "hub_access"
                   ? "border-white text-white"
                   : "border-transparent text-gray-400 hover:text-gray-300"
               }`}
             >
-              UNBLCK Applications
+              Hub Access Applications
             </button>
             <button
-              onClick={() => setActiveTab("bookings")}
+              onClick={() => setActiveTab("accelerator")}
               className={`pb-4 text-sm font-medium transition border-b-2 ${
-                activeTab === "bookings"
+                activeTab === "accelerator"
                   ? "border-white text-white"
                   : "border-transparent text-gray-400 hover:text-gray-300"
               }`}
             >
-              Hub Scheduled Visitors
+              Accelerator Applications
+            </button>
+            <button
+              onClick={() => setActiveTab("schedule")}
+              className={`pb-4 text-sm font-medium transition border-b-2 ${
+                activeTab === "schedule"
+                  ? "border-white text-white"
+                  : "border-transparent text-gray-400 hover:text-gray-300"
+              }`}
+            >
+              Hub Schedule & Members
             </button>
           </div>
         </div>
 
         {/* Tab content */}
-        {activeTab === "applications" && <AdminApplicationsList />}
-        {activeTab === "bookings" && <AdminBookingsCalendar />}
+        {activeTab === "hub_access" && <HubAccessApplicationsList />}
+        {activeTab === "accelerator" && <AcceleratorApplicationsList />}
+        {activeTab === "schedule" && <HubScheduleView />}
       </div>
     </div>
   );

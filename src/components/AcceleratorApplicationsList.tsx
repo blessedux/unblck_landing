@@ -13,7 +13,7 @@ type Application = {
   created_at: string;
 };
 
-export function AdminApplicationsList() {
+export function AcceleratorApplicationsList() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +26,11 @@ export function AdminApplicationsList() {
       const response = await fetch("/api/admin/applications");
       if (!response.ok) throw new Error("Failed to load applications");
       const data = await response.json();
-      setApplications(data.applications || []);
+      // Filter for accelerator applications only
+      const acceleratorApps = data.applications?.filter(
+        (app: Application) => app.application_type === "accelerator"
+      ) || [];
+      setApplications(acceleratorApps);
     } catch (err) {
       console.error("Failed to load applications:", err);
     } finally {
