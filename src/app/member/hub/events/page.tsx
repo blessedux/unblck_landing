@@ -7,11 +7,55 @@ export const metadata: Metadata = {
 
 export default function EventsPage() {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-4 py-8 max-w-6xl">
       <h1 className="text-3xl font-bold text-white mb-6">Events</h1>
       <p className="text-gray-400 mb-8">
-        Events calendar coming soon...
+        Join us for StellarBarrio meetups, workshops, and community events.
       </p>
+
+      {/* Luma Calendar Embed */}
+      <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
+        <div className="aspect-[16/10] md:aspect-[16/9] relative">
+          <iframe
+            src="https://lu.ma/embed/calendar/cal-EXAMPLE123/events"
+            width="100%"
+            height="100%"
+            frameBorder="0"
+            style={{
+              border: "none",
+              borderRadius: "1rem",
+            }}
+            allowFullScreen
+            aria-hidden="false"
+            tabIndex={0}
+            className="absolute inset-0"
+          ></iframe>
+        </div>
+      </div>
+
+      <div className="mt-8 p-6 rounded-2xl border border-white/10 bg-white/5">
+        <h2 className="text-xl font-semibold text-white mb-2">How to RSVP</h2>
+        <ol className="list-decimal list-inside text-gray-400 space-y-2">
+          <li>Click on any event above to view details</li>
+          <li>You&apos;ll be redirected to Luma to complete your registration</li>
+          <li>Events are free for all Tellus Hub members</li>
+          <li>Bring your enthusiasm and join the community!</li>
+        </ol>
+      </div>
+
+      <div className="mt-6">
+        <p className="text-sm text-gray-500 text-center">
+          Can&apos;t find the event you&apos;re looking for?{" "}
+          <a
+            href="https://lu.ma/unblck"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:underline"
+          >
+            Visit our Luma page
+          </a>
+        </p>
+      </div>
     </div>
   );
 }

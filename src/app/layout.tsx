@@ -23,6 +23,19 @@ export const metadata: Metadata = {
       "An accelerator for AI and blockchain founders. Workspace, mentorship, and funding to go from builder to unicorn rider.",
     type: "website",
   },
+  manifest: "/manifest.json",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
+  themeColor: "#000000",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Tellus Hub",
+  },
 };
 
 export default function RootLayout({
