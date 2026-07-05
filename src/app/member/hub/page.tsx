@@ -1,14 +1,20 @@
-import { Metadata } from "next";
-import Link from "next/link";
+"use client";
+
+import { useIsMobile } from "@/hooks/use-mobile";
+import { HubMenuLinks } from "@/components/HubMenuLinks";
 import { BookingCalendar } from "@/components/BookingCalendar";
 import { CoffeeBadge } from "@/components/CoffeeBadge";
-
-export const metadata: Metadata = {
-  title: "Tellus Hub - Home",
-  description: "Welcome to Tellus Blockchain Hub STGO",
-};
+import Link from "next/link";
 
 export default function HubHomePage() {
+  const isMobile = useIsMobile();
+
+  // On mobile, show center flip menu
+  if (isMobile) {
+    return <HubMenuLinks />;
+  }
+
+  // On desktop, show full dashboard
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-8">
@@ -16,9 +22,12 @@ export default function HubHomePage() {
       </div>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-black mb-4">Hub Access Schedule</h2>
+        <h2 className="text-2xl font-bold text-black mb-4">
+          Hub Access Schedule
+        </h2>
         <p className="text-black/60 mb-4">
-          Book your hub access days (3 days per week for Builders, unlimited for Founders)
+          Book your hub access days (3 days per week for Builders, unlimited for
+          Founders)
         </p>
         <BookingCalendar />
       </div>
