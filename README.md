@@ -85,7 +85,7 @@ Resend does not allow sending from `*.vercel.app`. Verify your own domain in Res
 1. Resend → Domains: verify your sending domain, set `RESEND_FROM` in Vercel
 2. Vercel: `NEXT_PUBLIC_SITE_URL` = your live app URL (Vercel or custom)
 3. Supabase → Auth → URL Configuration: **Site URL** and **Redirect URLs** must match `NEXT_PUBLIC_SITE_URL` (e.g. `https://unblck-landing.vercel.app/auth/callback**`)
-4. Optional: disable Supabase built-in auth emails so only Resend sends
+4. Supabase → Authentication → Providers → **Email: keep enabled** (required for `generateLink` magic links and password login). We send emails via Resend only — Supabase does not need custom SMTP. Do **not** disable the Email provider; that causes "Email logins are disabled".
 
 ## Booking timezone
 
