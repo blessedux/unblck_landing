@@ -42,7 +42,8 @@ export function CoffeeBadge() {
     return null;
   }
 
-  const sozuUrl = process.env.NEXT_PUBLIC_SOZU_WALLET_URL || "https://sozuwallet.app";
+  const sozuUrl =
+    process.env.NEXT_PUBLIC_SOZU_WALLET_URL || "https://credit.sozu.capital";
 
   return (
     <div className="rounded-2xl border border-green-700/30 bg-green-700/10 p-5">

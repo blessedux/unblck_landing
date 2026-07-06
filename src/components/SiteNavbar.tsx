@@ -8,7 +8,11 @@ export function SiteNavbar() {
   const pathname = usePathname();
   const { t } = useLocale();
 
-  if (pathname?.startsWith("/member")) {
+  if (
+    pathname?.startsWith("/member") ||
+    pathname?.startsWith("/apply") ||
+    pathname?.endsWith("/apply")
+  ) {
     return null;
   }
 

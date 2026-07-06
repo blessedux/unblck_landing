@@ -7,7 +7,12 @@ export function LanguageToggle() {
   const pathname = usePathname();
   const { locale, setLocale } = useLocale();
 
-  if (pathname?.startsWith("/member") || pathname?.startsWith("/admin")) {
+  if (
+    pathname?.startsWith("/member") ||
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/apply") ||
+    pathname?.endsWith("/apply")
+  ) {
     return null;
   }
 

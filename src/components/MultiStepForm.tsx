@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { ChoiceOption, FormStep, SuccessScreen } from "@/lib/forms/types";
 
@@ -39,6 +39,7 @@ function canAdvance<T extends Record<string, string>>(
   if (!step.required) return true;
 
   const value = values[step.id as keyof T] ?? "";
+  if (step.type === "checkbox") return value === "true";
   return value.trim().length > 0;
 }
 
@@ -61,6 +62,15 @@ export function MultiStepForm<T extends Record<string, string>>({
   const [error, setError] = useState<string | null>(null);
   const [resending, setResending] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
+  const [allowAutoFocus, setAllowAutoFocus] = useState(false);
+
+  useEffect(() => {
+    setAllowAutoFocus(!window.matchMedia("(pointer: coarse)").matches);
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [stepIndex]);
 
   const currentStep = formSteps[stepIndex];
   const progress =
@@ -90,6 +100,9 @@ export function MultiStepForm<T extends Record<string, string>>({
     }
 
     if (stepIndex < formSteps.length - 1) {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
       setStepIndex((prev) => prev + 1);
       return;
     }
@@ -235,7 +248,7 @@ export function MultiStepForm<T extends Record<string, string>>({
         </Link>
       </header>
 
-      <div className="flex flex-1 items-center px-6 pb-24">
+        <div className="flex flex-1 items-start px-6 pb-24 pt-20 sm:items-center sm:pt-0">
         <div className="mx-auto w-full max-w-2xl">
           <div key={stepIndex} className="animate-fade-up">
             {currentStep.type === "intro" ? (
@@ -327,7 +340,7 @@ export function MultiStepForm<T extends Record<string, string>>({
                     </label>
                   ) : currentStep.type === "textarea" ? (
                     <textarea
-                      autoFocus
+                      autoFocus={allowAutoFocus}
                       rows={5}
                       value={values[fieldKey]}
                       onChange={(event) =>
@@ -338,7 +351,7 @@ export function MultiStepForm<T extends Record<string, string>>({
                     />
                   ) : (
                     <input
-                      autoFocus
+                      autoFocus={allowAutoFocus}
                       type={currentStep.type === "email" ? "email" : "text"}
                       value={values[fieldKey]}
                       onChange={(event) =>
@@ -369,7 +382,7 @@ export function MultiStepForm<T extends Record<string, string>>({
                 type="button"
                 onClick={() => void goNext()}
                 disabled={submitting}
-                className="bg-foreground px-5 py-2 text-sm font-medium text-background transition hover:bg-accent-soft disabled:opacity-50"
+                className="touch-manipulation bg-foreground px-5 py-2 text-sm font-medium text-background transition hover:bg-accent-soft disabled:opacity-50"
               >
                 {stepIndex === formSteps.length - 1
                   ? submitting

@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useInView } from "motion/react";
+import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
-import { useRef } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 
 interface WordsPullUpProps {
@@ -19,19 +18,17 @@ export const WordsPullUp = ({
   showAsterisk = false,
   style,
 }: WordsPullUpProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true });
   const words = text.split(" ");
 
   return (
-    <div ref={ref} className={`inline-flex flex-wrap ${className}`} style={style}>
+    <div className={`inline-flex flex-wrap ${className}`} style={style}>
       {words.map((word, i) => {
         const isLast = i === words.length - 1;
         return (
           <motion.span
             key={i}
             initial={{ y: 20, opacity: 0 }}
-            animate={isInView ? { y: 0, opacity: 1 } : {}}
+            animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
             className="inline-block relative"
             style={{ marginRight: isLast ? 0 : "0.25em" }}
@@ -63,9 +60,6 @@ export const WordsPullUpMultiStyle = ({
   className = "",
   style,
 }: WordsPullUpMultiStyleProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true });
-
   const words: { word: string; className?: string }[] = [];
   segments.forEach((seg) => {
     seg.text.split(" ").forEach((w) => {
@@ -74,12 +68,12 @@ export const WordsPullUpMultiStyle = ({
   });
 
   return (
-    <div ref={ref} className={`inline-flex flex-wrap justify-center ${className}`} style={style}>
+    <div className={`inline-flex flex-wrap justify-center ${className}`} style={style}>
       {words.map((w, i) => (
         <motion.span
           key={i}
           initial={{ y: 20, opacity: 0 }}
-          animate={isInView ? { y: 0, opacity: 1 } : {}}
+          animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
           className={`inline-block ${w.className ?? ""}`}
           style={{ marginRight: "0.25em" }}

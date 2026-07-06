@@ -12,7 +12,21 @@ export function FixedHeroVideo() {
     const video2 = video2Ref.current;
     if (!video1 || !video2) return;
 
+    const tryPlay = () => {
+      void video1.play().catch(() => {});
+    };
+
+    tryPlay();
     video2.currentTime = 0.1;
+
+    const unlockOnTouch = () => {
+      tryPlay();
+      document.removeEventListener("touchstart", unlockOnTouch);
+    };
+    document.addEventListener("touchstart", unlockOnTouch, {
+      once: true,
+      passive: true,
+    });
 
     const handleTimeUpdate = () => {
       const video = activeVideo === 1 ? video1 : video2;
@@ -44,6 +58,8 @@ export function FixedHeroVideo() {
         autoPlay
         muted
         playsInline
+        preload="auto"
+        disablePictureInPicture
         className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
         style={{ opacity: activeVideo === 1 ? 1 : 0 }}
       >
@@ -55,6 +71,8 @@ export function FixedHeroVideo() {
         ref={video2Ref}
         muted
         playsInline
+        preload="auto"
+        disablePictureInPicture
         className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
         style={{ opacity: activeVideo === 2 ? 1 : 0 }}
       >
