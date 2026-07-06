@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { ChoiceOption, FormStep, SuccessScreen } from "@/lib/forms/types";
 
@@ -86,6 +86,8 @@ export function MultiStepForm<T extends Record<string, string>>({
   };
 
   const goNext = async () => {
+    if (submitting) return;
+
     if (!canAdvance(currentStep, values)) {
       setError(t.form.validationRequired);
       return;
@@ -167,6 +169,11 @@ export function MultiStepForm<T extends Record<string, string>>({
     }
   };
 
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void goNext();
+  };
+
   const onKeyDown = (event: KeyboardEvent) => {
     if (
       event.key === "Enter" &&
@@ -182,7 +189,7 @@ export function MultiStepForm<T extends Record<string, string>>({
 
   if (submitted) {
     return (
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-dvh flex-col">
         <header className="px-6 py-5">
           <Link
             href="/"
@@ -191,8 +198,8 @@ export function MultiStepForm<T extends Record<string, string>>({
             UNBLCK
           </Link>
         </header>
-        <div className="flex flex-1 items-center px-6 pb-24">
-          <div className="mx-auto w-full max-w-2xl animate-fade-up">
+        <div className="flex flex-1 items-start px-6 pb-24 pt-8 sm:items-center">
+          <div className="mx-auto w-full max-w-2xl">
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
               {successScreen.label}
             </p>
@@ -231,7 +238,11 @@ export function MultiStepForm<T extends Record<string, string>>({
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <form
+      className="relative z-10 flex min-h-dvh flex-col touch-manipulation"
+      onSubmit={handleFormSubmit}
+      noValidate
+    >
       <div className="h-px w-full bg-border">
         <div
           className="h-full bg-foreground transition-all duration-300"
@@ -248,9 +259,9 @@ export function MultiStepForm<T extends Record<string, string>>({
         </Link>
       </header>
 
-        <div className="flex flex-1 items-start px-6 pb-24 pt-20 sm:items-center sm:pt-0">
+      <div className="flex flex-1 items-start px-6 pb-24 pt-8 sm:items-center sm:pt-0">
         <div className="mx-auto w-full max-w-2xl">
-          <div key={stepIndex} className="animate-fade-up">
+          <div>
             {currentStep.type === "intro" ? (
               <div>
                 <h1 className="text-2xl font-medium sm:text-3xl">
@@ -303,7 +314,7 @@ export function MultiStepForm<T extends Record<string, string>>({
                             key={choice.value}
                             type="button"
                             onClick={() => updateValue(fieldKey, choice.value)}
-                            className={`border px-4 py-3 text-left text-sm transition ${
+                            className={`min-h-12 touch-manipulation border px-4 py-3 text-left text-base transition ${
                               selected
                                 ? "border-foreground bg-foreground text-background"
                                 : "border-border text-muted hover:border-foreground hover:text-foreground"
@@ -347,7 +358,7 @@ export function MultiStepForm<T extends Record<string, string>>({
                         updateValue(fieldKey, event.target.value)
                       }
                       placeholder={currentStep.placeholder}
-                      className="w-full resize-none border border-border bg-surface px-4 py-3 text-base outline-none focus:border-foreground"
+                      className="w-full resize-none border border-border bg-surface px-4 py-3 text-base outline-none focus:border-foreground touch-manipulation"
                     />
                   ) : (
                     <input
@@ -359,7 +370,7 @@ export function MultiStepForm<T extends Record<string, string>>({
                       }
                       onKeyDown={onKeyDown}
                       placeholder={currentStep.placeholder}
-                      className="w-full border-b border-border bg-transparent py-3 text-xl outline-none placeholder:text-muted/50 focus:border-foreground"
+                      className="w-full touch-manipulation border-b border-border bg-transparent py-3 text-xl outline-none placeholder:text-muted/50 focus:border-foreground"
                     />
                   )}
                 </div>
@@ -368,21 +379,20 @@ export function MultiStepForm<T extends Record<string, string>>({
 
             {error && <p className="mt-4 text-sm text-muted">{error}</p>}
 
-            <div className="mt-8 flex items-center gap-3">
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               {stepIndex > 0 && (
                 <button
                   type="button"
                   onClick={goBack}
-                  className="border border-border px-4 py-2 text-sm text-muted transition hover:border-foreground hover:text-foreground"
+                  className="min-h-12 touch-manipulation border border-border px-4 py-2 text-sm text-muted transition hover:border-foreground hover:text-foreground"
                 >
                   {t.form.back}
                 </button>
               )}
               <button
-                type="button"
-                onClick={() => void goNext()}
+                type="submit"
                 disabled={submitting}
-                className="touch-manipulation bg-foreground px-5 py-2 text-sm font-medium text-background transition hover:bg-accent-soft disabled:opacity-50"
+                className="min-h-12 min-w-[8rem] touch-manipulation bg-foreground px-6 py-3 text-sm font-medium text-background transition hover:bg-accent-soft disabled:opacity-50"
               >
                 {stepIndex === formSteps.length - 1
                   ? submitting
@@ -400,6 +410,6 @@ export function MultiStepForm<T extends Record<string, string>>({
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 }

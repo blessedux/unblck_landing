@@ -24,6 +24,8 @@ export function HubAccessApplicationForm() {
 
   useEffect(() => {
     document.title = t.hubApply.pageTitle;
+    document.body.style.overflow = "auto";
+    document.body.style.touchAction = "auto";
   }, [t.hubApply.pageTitle]);
 
   return (
