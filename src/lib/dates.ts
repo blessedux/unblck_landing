@@ -1,3 +1,5 @@
+export const HUB_TIME_ZONE = "America/Santiago";
+
 /** Format a date as YYYY-MM-DD in local time (avoids UTC shift from toISOString). */
 export function formatLocalDate(date: Date): string {
   const y = date.getFullYear();
@@ -6,10 +8,28 @@ export function formatLocalDate(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
+/** Format a date as YYYY-MM-DD in the hub timezone (Santiago, GMT-4 in winter). */
+export function formatHubDate(date = new Date()): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: HUB_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
 /** Parse a YYYY-MM-DD string as local midnight. */
 export function parseLocalDate(dateStr: string): Date {
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(y, m - 1, d);
+}
+
+/** Today's date in the hub timezone, represented as a date-only local midnight. */
+export function getHubToday(now = new Date()): Date {
+  return parseLocalDate(formatHubDate(now));
 }
 
 export function isSameLocalDay(a: Date, b: Date): boolean {

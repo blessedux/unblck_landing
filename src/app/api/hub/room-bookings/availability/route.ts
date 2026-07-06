@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
-import { formatLocalDate } from "@/lib/dates";
+import { formatHubDate } from "@/lib/dates";
 
 export async function GET() {
   try {
@@ -30,7 +30,7 @@ export async function GET() {
 
     const isFounder = profile.stellar_funded;
     const memberTier = isFounder ? "Founder" : "Builder";
-    const today = formatLocalDate(new Date());
+    const today = formatHubDate();
 
     let hasHotDeskToday = isFounder;
 

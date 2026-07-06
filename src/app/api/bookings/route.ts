@@ -5,6 +5,7 @@ import { getMemberProfile } from "@/lib/auth/member";
 import { getWeeklyCredits, getMemberOpenDays } from "@/lib/booking-credits";
 import {
   formatLocalDate,
+  getHubToday,
   parseLocalDate,
   isCurrentWeek,
   getWeekStart,
@@ -32,7 +33,7 @@ export async function GET() {
       );
     }
 
-    const now = new Date();
+    const now = getHubToday();
     const weekStart = formatLocalDate(getWeekStart(now));
 
     const { data: schedule } = await adminSupabase

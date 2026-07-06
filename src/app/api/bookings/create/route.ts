@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { getMemberProfile } from "@/lib/auth/member";
 import { canBook, getMemberOpenDays } from "@/lib/booking-credits";
-import { formatLocalDate, parseLocalDate, isCurrentWeek, getWeekStart } from "@/lib/dates";
+import { formatLocalDate, parseLocalDate, isCurrentWeek, getWeekStart, getHubToday } from "@/lib/dates";
 
 export async function POST(request: Request) {
   try {
@@ -52,8 +52,9 @@ export async function POST(request: Request) {
 
     // Check if booking is allowed
     const tier = profile.stellar_funded ? "stellar_funded" : "ambassador";
+    const now = getHubToday();
 
-    if (tier === "ambassador" && !isCurrentWeek(targetDate, new Date())) {
+    if (tier === "ambassador" && !isCurrentWeek(targetDate, now)) {
       return NextResponse.json(
         { error: "Builders can only book days in the current week." },
         { status: 403 }
@@ -63,7 +64,7 @@ export async function POST(request: Request) {
     const result = canBook({
       tier,
       targetDate,
-      now: new Date(),
+      now,
       existingBookings,
       openDays,
     });

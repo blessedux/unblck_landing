@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-import { formatLocalDate } from "@/lib/dates";
+import { formatHubDate } from "@/lib/dates";
 
 export async function GET() {
   try {
@@ -20,7 +20,7 @@ export async function GET() {
       .from("room_bookings")
       .select("*")
       .eq("member_id", user.id)
-      .gte("booking_date", formatLocalDate(new Date()))
+      .gte("booking_date", formatHubDate())
       .order("booking_date")
       .order("start_time");
 

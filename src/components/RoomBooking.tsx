@@ -9,7 +9,7 @@ import {
   formatSlotLabel,
   isValidSlotStart,
 } from "@/lib/room-slots";
-import { formatLocalDate } from "@/lib/dates";
+import { HUB_TIME_ZONE } from "@/lib/dates";
 
 type Room = {
   id: string;
@@ -44,12 +44,12 @@ export function RoomBooking() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const today = formatLocalDate(new Date());
-  const todayLabel = new Date().toLocaleDateString("en-US", {
+  const todayLabel = new Intl.DateTimeFormat("en-US", {
+    timeZone: HUB_TIME_ZONE,
     weekday: "long",
     month: "long",
     day: "numeric",
-  });
+  }).format(new Date());
 
   const loadAvailability = useCallback(async () => {
     try {

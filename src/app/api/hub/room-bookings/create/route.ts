@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
-import { formatLocalDate } from "@/lib/dates";
+import { formatHubDate } from "@/lib/dates";
 import { timeToMinutes } from "@/lib/room-slots";
 
 export async function POST(request: NextRequest) {
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { room_id, start_time, duration_minutes } = body;
-    const booking_date = formatLocalDate(new Date());
+    const booking_date = formatHubDate();
 
     if (!room_id || !start_time || !duration_minutes) {
       return NextResponse.json(

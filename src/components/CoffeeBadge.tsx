@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatLocalDate } from "@/lib/dates";
+import { formatHubDate } from "@/lib/dates";
 
 type BookingData = {
   bookings: string[];
@@ -33,7 +33,7 @@ export function CoffeeBadge() {
     return null;
   }
 
-  const today = formatLocalDate(new Date());
+  const today = formatHubDate();
   const hasBookingToday = data.bookings.includes(today);
   const isStellarFunded = data.tier === "stellar_funded";
   const eligible = hasBookingToday || isStellarFunded;

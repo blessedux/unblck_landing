@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatHubDate } from "@/lib/dates";
 
 type Booking = {
   id: string;
@@ -91,7 +92,7 @@ export function AdminBookingsCalendar() {
     return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
   };
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = formatHubDate();
 
   if (loading) {
     return (

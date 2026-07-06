@@ -52,6 +52,23 @@ Open [http://localhost:3000](http://localhost:3000).
 | `NEXT_PUBLIC_SITE_URL` | Production origin (e.g. `https://unblck.cl`) — used for auth magic link redirects |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (server-only) |
+| `ADMIN_EMAILS` | Comma-separated admin allowlist (password login at `/login`) |
+| `ADMIN_PASSWORD` | Shared password for all `ADMIN_EMAILS` accounts |
+
+## Admin setup (production)
+
+1. Set `ADMIN_EMAILS` and `ADMIN_PASSWORD` in your hosting env (e.g. Vercel).
+2. Point `.env.local` at prod Supabase and run once (or again after password/email changes):
+
+```bash
+npm run seed:admin
+```
+
+This syncs every email in `ADMIN_EMAILS` into Supabase with the password from `ADMIN_PASSWORD`. Admins then log in at `/login` with email + password — no magic link.
+
+## Booking timezone
+
+Hub booking "today" is calculated with `America/Santiago` via `src/lib/dates.ts`, so production servers running in UTC still use Santiago/GMT-4 dates for availability and booking gates.
 
 ## Supabase tables
 

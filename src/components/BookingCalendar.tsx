@@ -7,6 +7,7 @@ import {
   isCurrentWeek,
   startOfLocalDay,
   parseLocalDate,
+  getHubToday,
 } from "@/lib/dates";
 import { BookingPassModal } from "@/components/BookingPassModal";
 import { HubPassCards } from "@/components/HubPassCards";
@@ -51,7 +52,7 @@ export function BookingCalendar({ compact = false }: BookingCalendarProps) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [passDetails, setPassDetails] = useState<HubPassDetails | null>(null);
 
-  const today = startOfLocalDay(new Date());
+  const today = startOfLocalDay(getHubToday());
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
   const { daysInMonth, startingDayOfWeek } = getMonthGrid(

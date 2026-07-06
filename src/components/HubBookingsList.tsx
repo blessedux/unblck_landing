@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatHubDate } from "@/lib/dates";
 
 type Booking = {
   id: string;
@@ -101,8 +102,7 @@ export function HubBookingsList() {
         {sortedDates.map((date) => {
           const dayData = bookingsByDate[date];
           const dateObj = new Date(date + "T00:00:00");
-          const isToday =
-            new Date().toISOString().split("T")[0] === date;
+          const isToday = formatHubDate() === date;
 
           return (
             <div key={date} className="p-4">
