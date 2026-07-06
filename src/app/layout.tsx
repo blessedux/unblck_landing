@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import { SiteNavbar } from "@/components/SiteNavbar";
+import { LocaleProvider } from "@/contexts/LocaleContext";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -48,8 +50,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SiteNavbar />
-        {children}
+        <LocaleProvider>
+          <LanguageToggle />
+          <SiteNavbar />
+          {children}
+        </LocaleProvider>
       </body>
     </html>
   );

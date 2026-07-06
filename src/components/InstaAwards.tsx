@@ -2,70 +2,29 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useLocale } from "@/contexts/LocaleContext";
 import { FundCardEventGallery } from "@/components/FundCardEventGallery";
 
 const LUMA_EVENTS_URL = "https://luma.com/telluscoop";
 
-const fundingJourney = [
-  {
-    phase: "Build",
-    title: "Get grant capital",
-    description:
-      "Start with non-dilutive funding to validate your idea and ship your first version. No equity taken, just capital to accelerate.",
-  },
-  {
-    phase: "Launch",
-    title: "Go to market",
-    description:
-      "Work with our team to refine positioning, build your go-to-market strategy, and prepare for your first users and customers.",
-  },
-  {
-    phase: "Scale",
-    title: "Demo day & next rounds",
-    description:
-      "Present to investors at our demo days. Get introductions to VCs, angels, and follow-on capital to scale your startup.",
-  },
-];
-
-const instaAwardsSteps = [
-  {
-    step: "01",
-    title: "Attend StellarBarrio",
-    description:
-      "Come to a StellarBarrio event at Tellus Blockchain Hub STGO. You'll receive an exclusive referral code to apply.",
-  },
-  {
-    step: "02",
-    title: "Submit your application",
-    description:
-      "Use your referral code to apply. Tell us about your Stellar build, on-chain use case, and what the grant unlocks.",
-  },
-  {
-    step: "03",
-    title: "Join the pipeline",
-    description:
-      "Selected teams receive the $5,000 grant, acceleration support, and a path to demo day.",
-  },
-];
-
 export function InstaAwards() {
+  const { t } = useLocale();
+
   return (
     <section id="insta-awards" className="relative z-30 -mt-px border-t border-border bg-background px-6 py-24">
       <div className="mx-auto max-w-3xl">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
-          Funding & Founder Journey
+          {t.instaAwards.label}
         </p>
         <h2 className="mt-4 text-2xl font-medium tracking-tight sm:text-3xl">
-          From idea to demo day.
+          {t.instaAwards.heading}
         </h2>
         <p className="mt-4 max-w-xl text-muted leading-relaxed">
-          UNBLCK supports founders through the entire journey, from idea, to product and 
-          capital to get you started, we guide you through go-to-market strategy, to demo day
-          presentations for follow-on funding and growth. 
+          {t.instaAwards.intro}
         </p>
 
         <div className="mt-12 divide-y divide-border border-y border-border">
-          {fundingJourney.map((item) => (
+          {t.instaAwards.journey.map((item) => (
             <article key={item.phase} className="py-6">
               <p className="text-xs text-muted">{item.phase}</p>
               <h3 className="mt-1 text-sm font-medium">{item.title}</h3>
@@ -113,10 +72,10 @@ export function InstaAwards() {
 
                 <div className="mt-6">
                   <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
-                    Current Fund · Stellar SCF
+                    {t.instaAwards.fundLabel}
                   </p>
                   <h3 className="mt-3 text-xl font-medium tracking-tight sm:text-2xl">
-                    Stellar Insta Awards
+                    {t.instaAwards.fundTitle}
                   </h3>
                 </div>
               </div>
@@ -125,7 +84,7 @@ export function InstaAwards() {
                 href={LUMA_EVENTS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="View Tellus Coop events on Luma"
+                aria-label={t.instaAwards.lumaAriaLabel}
                 className="group/event-image relative aspect-square size-32 shrink-0 overflow-hidden rounded-xl border border-border bg-white/[0.03] transition hover:border-white/20 hover:bg-white/[0.06] sm:size-40 md:size-48"
               >
                 <FundCardEventGallery />
@@ -134,30 +93,29 @@ export function InstaAwards() {
 
             <div className="mb-6">
               <div className="flex items-baseline gap-3 mb-3">
-                <span className="text-3xl font-medium">$5,000</span>
-                <span className="text-sm text-muted">non-dilutive grant</span>
+                <span className="text-3xl font-medium">{t.instaAwards.grantAmount}</span>
+                <span className="text-sm text-muted">{t.instaAwards.grantType}</span>
               </div>
               <p className="text-sm text-muted leading-relaxed max-w-2xl">
-                No equity taken, no ownership stake — just capital and
-                acceleration to push your Stellar startup from prototype to market.
+                {t.instaAwards.fundDescription}
               </p>
             </div>
 
             <ul className="mb-8 flex flex-wrap gap-2 text-sm text-muted">
-              <li className="border border-border px-3 py-1.5 rounded-full">No equity taken</li>
-              <li className="border border-border px-3 py-1.5 rounded-full">Demo day pipeline</li>
-              <li className="border border-border px-3 py-1.5 rounded-full">
-                StellarBarrio exclusive
-              </li>
+              {t.instaAwards.tags.map((tag) => (
+                <li key={tag} className="border border-border px-3 py-1.5 rounded-full">
+                  {tag}
+                </li>
+              ))}
             </ul>
 
             <div className="mb-8">
-              <h4 className="text-sm font-medium mb-4">How to apply</h4>
+              <h4 className="text-sm font-medium mb-4">{t.instaAwards.howToApply}</h4>
               <div className="space-y-4">
-                {instaAwardsSteps.map((item) => (
-                  <div key={item.step} className="flex gap-4">
+                {t.instaAwards.steps.map((item, index) => (
+                  <div key={item.title} className="flex gap-4">
                     <span className="text-xs text-muted font-medium min-w-[2rem]">
-                      {item.step}
+                      {String(index + 1).padStart(2, "0")}
                     </span>
                     <div>
                       <h5 className="text-sm font-medium">{item.title}</h5>
@@ -170,25 +128,27 @@ export function InstaAwards() {
               </div>
             </div>
 
-            <Link
-              href="/insta-awards/apply"
-              className="group inline-flex items-center gap-2 bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:gap-3 hover:bg-accent-soft rounded-full"
-            >
-              Apply to fund
-              <svg
-                className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
+            <div className="flex justify-end">
+              <Link
+                href="/insta-awards/apply"
+                className="group inline-flex items-center gap-2 bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:gap-3 hover:bg-accent-soft rounded-full"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
-              </svg>
-            </Link>
+                {t.instaAwards.applyCta}
+                <svg
+                  className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </svg>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

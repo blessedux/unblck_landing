@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion, useInView } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface WordsPullUpProps {
   text: string;
@@ -91,6 +92,8 @@ export const WordsPullUpMultiStyle = ({
 };
 
 const PrismaHero = () => {
+  const { t } = useLocale();
+
   return (
     <>
       {/* Scroll height spacer — content lives in the fixed layer below */}
@@ -111,14 +114,14 @@ const PrismaHero = () => {
                 </h1>
               </div>
 
-              <div className="col-span-12 ml-6 flex flex-col gap-5 pb-6 sm:ml-8 md:ml-10 lg:col-span-4 lg:ml-12 lg:pb-10 xl:ml-16">
+              <div className="col-span-12 flex flex-col gap-5 pb-6 sm:ml-8 md:ml-10 lg:col-span-4 lg:ml-12 lg:pb-10 xl:ml-16">
                 <motion.p
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
                   className="max-w-[13rem] text-xs leading-snug text-primary/70 sm:max-w-[15rem] sm:text-sm md:max-w-[16rem] md:text-base"
                 >
-                  On the search for cracked and jacked founders in Latam.
+                  {t.hero.subtitle}
                 </motion.p>
 
                 <motion.div
@@ -128,9 +131,9 @@ const PrismaHero = () => {
                 >
                   <Link
                     href="/accelerator/apply"
-                    className="group inline-flex items-center gap-2 self-start rounded-full bg-primary py-1 pl-5 pr-1 text-sm font-medium text-black transition-all hover:gap-3 sm:text-base"
+                    className="group inline-flex items-center gap-2 self-end rounded-full bg-primary py-1 pl-5 pr-1 text-sm font-medium text-black transition-all hover:gap-3 lg:self-start sm:text-base"
                   >
-                    Apply to accelerator
+                    {t.hero.cta}
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black transition-transform group-hover:scale-110 sm:h-10 sm:w-10">
                       <ArrowRight className="h-4 w-4" style={{ color: "#E1E0CC" }} />
                     </span>

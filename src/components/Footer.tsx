@@ -1,4 +1,7 @@
+"use client";
+
 import { CursorDrivenParticleTypography } from "@/components/ui/cursor-driven-particles-typography";
+import { useLocale } from "@/contexts/LocaleContext";
 
 const socialLinks = [
   {
@@ -33,47 +36,50 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const { t } = useLocale();
+
   return (
     <footer
       id="contact"
       className="relative z-30 mt-auto border-t border-white/10 bg-black px-6 py-10 sm:px-8 sm:py-12"
     >
       <div className="mx-auto max-w-6xl">
-        <div className="flex flex-col gap-10 sm:flex-row sm:items-end sm:justify-between">
-          <div className="text-left">
-            <div className="flex items-center gap-4">
-              {socialLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={link.label}
-                  className="text-white transition-opacity hover:opacity-70"
-                >
-                  {link.icon}
-                </a>
-              ))}
-            </div>
-            <p className="mt-3 text-sm text-white/75">Triana 861, Providencia</p>
-            <p className="mt-1 text-sm text-white/75">Santiago, Chile</p>
+        <div className="text-left">
+          <div className="flex items-center gap-4">
+            {socialLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.label}
+                className="text-white transition-opacity hover:opacity-70"
+              >
+                {link.icon}
+              </a>
+            ))}
           </div>
+          <p className="mt-3 text-sm text-white/75">Triana 861, Providencia</p>
+          <p className="mt-1 text-sm text-white/75">Santiago, Chile</p>
+        </div>
 
-          <div className="relative h-20 w-full max-w-[220px] font-sans text-[#E1E0CC] sm:ml-auto sm:h-24 sm:max-w-xs">
-            <CursorDrivenParticleTypography
-              text="UNBLCK"
-              fontSize={52}
-              particleDensity={5}
-              particleSize={1.25}
-              dispersionStrength={18}
-              color="#E1E0CC"
-              className="min-h-0"
-            />
-          </div>
+        <div className="relative mx-auto mt-10 flex h-36 w-full max-w-lg justify-center font-sans text-[#E1E0CC] sm:mt-12 sm:h-24">
+          <CursorDrivenParticleTypography
+            text="UNBLCK"
+            fontSize={52}
+            mobileFontSize={84}
+            particleDensity={5}
+            mobileParticleDensity={2}
+            particleSize={1.25}
+            dispersionStrength={20}
+            color="#E1E0CC"
+            className="min-h-0"
+            accelerometerOnMobile
+          />
         </div>
 
         <p className="mt-10 text-center text-xs text-white/50">
-          © {new Date().getFullYear()} UNBLCK · AI & blockchain accelerator
+          © {new Date().getFullYear()} UNBLCK · {t.footer.copyright}
         </p>
       </div>
     </footer>

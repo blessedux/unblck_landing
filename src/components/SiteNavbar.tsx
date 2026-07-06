@@ -2,19 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const navItems = [
-  { label: "Accelerator", href: "#insta-awards" },
-  { label: "Hub", href: "#what-we-do" },
-  { label: "Our story", href: "#our-story" },
-];
+import { useLocale } from "@/contexts/LocaleContext";
 
 export function SiteNavbar() {
   const pathname = usePathname();
+  const { t } = useLocale();
 
   if (pathname?.startsWith("/member")) {
     return null;
   }
+
+  const navItems = [
+    { label: t.nav.accelerator, href: "#insta-awards" },
+    { label: t.nav.hub, href: "#what-we-do" },
+    { label: t.nav.ourStory, href: "#our-story" },
+  ];
 
   const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -29,7 +31,7 @@ export function SiteNavbar() {
       <div className="flex w-fit items-center justify-center gap-6 rounded-b-2xl bg-black px-5 py-2 sm:gap-8 sm:px-6 md:rounded-b-3xl md:px-7">
         {navItems.map((item) => (
           <Link
-            key={item.label}
+            key={item.href}
             href={item.href}
             onClick={(e) => handleSmoothScroll(e, item.href)}
             className="text-[10px] transition-colors sm:text-xs md:text-sm"
@@ -44,7 +46,7 @@ export function SiteNavbar() {
           href="/accelerator/apply"
           className="shrink-0 rounded-full bg-primary px-3 py-1 text-[10px] font-medium text-black transition-opacity hover:opacity-90 sm:px-4 sm:py-1.5 sm:text-xs md:text-sm"
         >
-          Apply
+          {t.nav.apply}
         </Link>
       </div>
     </nav>
