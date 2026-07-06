@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { useLocale } from "@/contexts/LocaleContext";
 import {
   formatLocalDate,
   isSameLocalDay,
@@ -44,6 +45,8 @@ type BookingCalendarProps = {
 };
 
 export function BookingCalendar({ compact = false }: BookingCalendarProps) {
+  const { t, locale } = useLocale();
+  const copy = t.memberHub.bookings;
   const [data, setData] = useState<BookingData | null>(null);
   const [memberName, setMemberName] = useState("Member");
   const [loading, setLoading] = useState(true);
@@ -77,7 +80,7 @@ export function BookingCalendar({ compact = false }: BookingCalendarProps) {
         setMemberName(member.full_name || "Member");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : copy.loadFailed);
     } finally {
       setLoading(false);
     }
@@ -132,7 +135,7 @@ export function BookingCalendar({ compact = false }: BookingCalendarProps) {
       setSelectedDate(null);
       await loadBookings();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : copy.loadFailed);
     } finally {
       setActionLoading(false);
     }
@@ -145,7 +148,7 @@ export function BookingCalendar({ compact = false }: BookingCalendarProps) {
   if (loading) {
     return (
       <div className={cardClass}>
-        <p className="text-black/60 text-sm">Loading bookings...</p>
+        <p className="text-black/60 text-sm">{copy.loading}</p>
       </div>
     );
   }
@@ -153,7 +156,7 @@ export function BookingCalendar({ compact = false }: BookingCalendarProps) {
   if (!data) {
     return (
       <div className={cardClass}>
-        <p className="text-red-600 text-sm">Failed to load bookings</p>
+        <p className="text-red-600 text-sm">{copy.loadFailed}</p>
       </div>
     );
   }
@@ -210,8 +213,9 @@ export function BookingCalendar({ compact = false }: BookingCalendarProps) {
     );
   }
 
+  const dateLocale = locale === "es" ? "es-CL" : "en-US";
   const selectedLabel = selectedDate
-    ? parseLocalDate(selectedDate).toLocaleDateString("en-US", {
+    ? parseLocalDate(selectedDate).toLocaleDateString(dateLocale, {
         weekday: "long",
         month: "long",
         day: "numeric",
@@ -227,18 +231,20 @@ export function BookingCalendar({ compact = false }: BookingCalendarProps) {
           <h2
             className={`font-semibold text-black ${compact ? "text-base" : "text-xl"}`}
           >
-            Hub Bookings
+            {copy.title}
           </h2>
           <div className="text-right">
             {isUnlimited ? (
               <p
                 className={`text-green-700 font-medium ${compact ? "text-xs" : "text-sm"}`}
               >
-                Unlimited
+                {copy.unlimited}
               </p>
             ) : (
               <p className={`text-black/60 ${compact ? "text-xs" : "text-sm"}`}>
-                {data.credits.remaining}/{data.credits.total} credits · Mon–Fri
+                {copy.credits
+                  .replace("{remaining}", String(data.credits.remaining))
+                  .replace("{total}", String(data.credits.total))}
               </p>
             )}
           </div>
@@ -248,15 +254,13 @@ export function BookingCalendar({ compact = false }: BookingCalendarProps) {
           <h3
             className={`font-medium text-black ${compact ? "text-sm" : "text-lg"}`}
           >
-            {today.toLocaleDateString("en-US", {
+            {today.toLocaleDateString(dateLocale, {
               month: "long",
               year: "numeric",
             })}
           </h3>
           <p className="text-[10px] text-black/50 mt-1">
-            {isBuilder
-              ? "Mon–Fri · schedule your week each Sunday."
-              : "Mon–Fri hub access."}
+            {isBuilder ? copy.builderHint : copy.founderHint}
           </p>
         </div>
 
@@ -277,18 +281,18 @@ export function BookingCalendar({ compact = false }: BookingCalendarProps) {
         <div className="flex gap-3 mt-3 text-[10px] text-black/50">
           <span className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 rounded border-2 border-green-600 bg-green-600/20" />
-            Selected
+            {copy.selected}
           </span>
           <span className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 rounded border-2 border-[#a67c52] bg-[#d4a574]/40" />
-            Booked
+            {copy.booked}
           </span>
         </div>
       </div>
 
       {selectedDate && (
         <div className="mt-3 rounded-2xl border border-black/10 bg-white/70 backdrop-blur-sm p-4 shadow-lg">
-          <p className="text-sm text-black/60 mb-1">Request pass for</p>
+          <p className="text-sm text-black/60 mb-1">{copy.requestPassFor}</p>
           <p className="font-semibold text-black mb-3">{selectedLabel}</p>
           <button
             type="button"
@@ -296,7 +300,7 @@ export function BookingCalendar({ compact = false }: BookingCalendarProps) {
             disabled={actionLoading}
             className="w-full rounded-full bg-black text-[#f5e6d3] py-3 text-sm font-medium hover:bg-black/90 transition disabled:opacity-50"
           >
-            {actionLoading ? "Confirming..." : "Confirm and request pass"}
+            {actionLoading ? copy.confirming : copy.confirmPass}
           </button>
         </div>
       )}

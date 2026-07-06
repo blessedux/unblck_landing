@@ -73,6 +73,78 @@ export interface Translations {
   footer: {
     copyright: string;
   };
+  memberHub: {
+    brandSubtitle: string;
+    nav: {
+      menu: string;
+      backToMenu: string;
+      rooms: string;
+      events: string;
+      tour: string;
+    };
+    tourComingSoon: {
+      title: string;
+      description: string;
+    };
+    profile: {
+      stellarPassport: string;
+      logout: string;
+      loggingOut: string;
+      notVerified: string;
+      language: string;
+    };
+    home: {
+      hubAccess: string;
+    };
+    coffee: {
+      title: string;
+      description: string;
+      redeem: string;
+      modal: {
+        title: string;
+        faucetTitle: string;
+        faucetBody: string;
+        latrianaTitle: string;
+        latrianaBody: string;
+        goToWallet: string;
+        close: string;
+      };
+    };
+    bookings: {
+      title: string;
+      unlimited: string;
+      credits: string;
+      builderHint: string;
+      founderHint: string;
+      loading: string;
+      loadFailed: string;
+      selected: string;
+      booked: string;
+      requestPassFor: string;
+      confirming: string;
+      confirmPass: string;
+    };
+    memberStatus: {
+      noApplication: {
+        title: string;
+        description: string;
+        hubAccess: string;
+        accelerator: string;
+      };
+      pending: {
+        title: string;
+        description: string;
+        appliedOn: string;
+        backHome: string;
+      };
+      rejected: {
+        title: string;
+        description: string;
+        backHome: string;
+        community: string;
+      };
+    };
+  };
   form: {
     back: string;
     continue: string;
@@ -322,6 +394,84 @@ export const en: Translations = {
   },
   footer: {
     copyright: "AI & blockchain accelerator",
+  },
+  memberHub: {
+    brandSubtitle: "Tellus Cooperative Blockchain Hub Santiago",
+    nav: {
+      menu: "Menu",
+      backToMenu: "← Menu",
+      rooms: "Rooms",
+      events: "Events",
+      tour: "Tour",
+    },
+    tourComingSoon: {
+      title: "Coming soon",
+      description: "Currently under development.",
+    },
+    profile: {
+      stellarPassport: "Stellar Passport",
+      logout: "Logout",
+      loggingOut: "Logging out...",
+      notVerified: "Not verified",
+      language: "Language",
+    },
+    home: {
+      hubAccess: "Hub Access",
+    },
+    coffee: {
+      title: "☕ Coffee Available Today",
+      description: "You have hub access today. Redeem your coffee token at the hub.",
+      redeem: "Redeem coffee",
+      modal: {
+        title: "Your daily coffee",
+        faucetTitle: "Coffee token faucet",
+        faucetBody:
+          "In the office there's a coffee token faucet. Tap your phone on it to claim your daily dose of caffeine — on the house, for free.",
+        latrianaTitle: "Pay at LATRIANA",
+        latrianaBody:
+          "Downstairs, the LATRIANA coffee shop accepts payments with Sozu. Claim your coffee by paying with the coffee token there.",
+        goToWallet: "Go to Sozu Wallet",
+        close: "Close",
+      },
+    },
+    bookings: {
+      title: "Hub Bookings",
+      unlimited: "Unlimited",
+      credits: "{remaining}/{total} credits · Mon–Fri",
+      builderHint: "Mon–Fri · schedule your week each Sunday.",
+      founderHint: "Mon–Fri hub access.",
+      loading: "Loading bookings...",
+      loadFailed: "Failed to load bookings",
+      selected: "Selected",
+      booked: "Booked",
+      requestPassFor: "Request pass for",
+      confirming: "Confirming...",
+      confirmPass: "Confirm and request pass",
+    },
+    memberStatus: {
+      noApplication: {
+        title: "No Application Found",
+        description:
+          "We couldn't find an application associated with your account.",
+        hubAccess: "Request Hub Access",
+        accelerator: "Apply to Accelerator",
+      },
+      pending: {
+        title: "Application Under Review",
+        description:
+          "Thank you for applying to UNBLCK Hub! We're currently reviewing your application.",
+        appliedOn: "Applied {date}",
+        backHome: "Back to home",
+      },
+      rejected: {
+        title: "Application Not Approved",
+        description:
+          "Unfortunately, we're unable to offer you a spot at UNBLCK Hub at this time. We encourage you to keep building and stay connected with our community.",
+        backHome: "Back to home",
+        community:
+          "Join us at StellarBarrio events to connect with the community",
+      },
+    },
   },
   form: {
     back: "Back",

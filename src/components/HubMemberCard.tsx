@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { User } from "lucide-react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 type MemberData = {
   full_name: string;
@@ -21,6 +22,7 @@ function getInitials(name: string): string {
 }
 
 export function HubMemberCard() {
+  const { t } = useLocale();
   const [member, setMember] = useState<MemberData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -61,8 +63,8 @@ export function HubMemberCard() {
   const passportLabel = member.passport_verified
     ? member.passport_username
       ? `@${member.passport_username.replace(/^@/, "")}`
-      : "Verified"
-    : "Not verified";
+      : t.memberHub.profile.stellarPassport
+    : t.memberHub.profile.notVerified;
 
   return (
     <div className="rounded-2xl border border-black/10 bg-white/50 p-4">
@@ -85,7 +87,7 @@ export function HubMemberCard() {
             rel="noopener noreferrer"
             className="text-sm text-black/60 hover:text-black transition-colors"
           >
-            {member.tier} · Stellar Passport ({passportLabel}) →
+            {member.tier} · {t.memberHub.profile.stellarPassport} ({passportLabel}) →
           </a>
         </div>
       </div>

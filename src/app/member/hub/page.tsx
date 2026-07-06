@@ -1,7 +1,5 @@
 import { HubMenuLinks } from "@/components/HubMenuLinks";
-import { BookingCalendar } from "@/components/BookingCalendar";
-import { CoffeeBadge } from "@/components/CoffeeBadge";
-import { HubMemberCard } from "@/components/HubMemberCard";
+import { HubHomeAside } from "@/components/HubHomeAside";
 
 export default function HubHomePage() {
   return (
@@ -15,19 +13,7 @@ export default function HubHomePage() {
         </div>
       </div>
 
-      <aside className="flex flex-col px-6 py-8 md:justify-center md:px-8 lg:px-12 md:py-10">
-        <div className="mb-6 max-w-md">
-          <CoffeeBadge />
-        </div>
-
-        <div className="w-full max-w-md">
-          <h2 className="mb-3 text-xl font-bold text-black">Hub Access</h2>
-          <div className="mb-4">
-            <HubMemberCard />
-          </div>
-          <BookingCalendar compact />
-        </div>
-      </aside>
+      <HubHomeAside />
     </div>
   );
 }

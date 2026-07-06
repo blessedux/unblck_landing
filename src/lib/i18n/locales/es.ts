@@ -117,6 +117,84 @@ export const es: Translations = {
   footer: {
     copyright: "Aceleradora de AI y blockchain",
   },
+  memberHub: {
+    brandSubtitle: "Tellus Cooperative Blockchain Hub Santiago",
+    nav: {
+      menu: "Menú",
+      backToMenu: "← Menú",
+      rooms: "Salas",
+      events: "Eventos",
+      tour: "Tour",
+    },
+    tourComingSoon: {
+      title: "Próximamente",
+      description: "Actualmente en desarrollo.",
+    },
+    profile: {
+      stellarPassport: "Stellar Passport",
+      logout: "Cerrar sesión",
+      loggingOut: "Cerrando sesión...",
+      notVerified: "Sin verificar",
+      language: "Idioma",
+    },
+    home: {
+      hubAccess: "Acceso al Hub",
+    },
+    coffee: {
+      title: "☕ Café disponible hoy",
+      description: "Tienes acceso al hub hoy. Canjea tu token de café en el hub.",
+      redeem: "Canjear café",
+      modal: {
+        title: "Tu café diario",
+        faucetTitle: "Faucet de token de café",
+        faucetBody:
+          "En la oficina hay un faucet de token de café. Acerca tu teléfono para reclamar tu dosis diaria de cafeína — de la casa, gratis.",
+        latrianaTitle: "Paga en LATRIANA",
+        latrianaBody:
+          "Abajo, la cafetería LATRIANA acepta pagos con Sozu. Reclama tu café pagando con el token de café allí.",
+        goToWallet: "Ir a Sozu Wallet",
+        close: "Cerrar",
+      },
+    },
+    bookings: {
+      title: "Reservas del Hub",
+      unlimited: "Ilimitado",
+      credits: "{remaining}/{total} créditos · lun–vie",
+      builderHint: "Lun–vie · agenda tu semana cada domingo.",
+      founderHint: "Acceso al hub lun–vie.",
+      loading: "Cargando reservas...",
+      loadFailed: "No se pudieron cargar las reservas",
+      selected: "Seleccionado",
+      booked: "Reservado",
+      requestPassFor: "Pedir pase para",
+      confirming: "Confirmando...",
+      confirmPass: "Confirmar y pedir pase",
+    },
+    memberStatus: {
+      noApplication: {
+        title: "No encontramos tu postulación",
+        description:
+          "No encontramos una postulación asociada a tu cuenta.",
+        hubAccess: "Pedir acceso al Hub",
+        accelerator: "Postular a la Aceleradora",
+      },
+      pending: {
+        title: "Postulación en revisión",
+        description:
+          "¡Gracias por postular a UNBLCK Hub! Estamos revisando tu postulación.",
+        appliedOn: "Postulaste el {date}",
+        backHome: "Volver al inicio",
+      },
+      rejected: {
+        title: "Postulación no aprobada",
+        description:
+          "Por ahora no podemos ofrecerte un cupo en UNBLCK Hub. Te animamos a seguir construyendo y conectarte con la comunidad.",
+        backHome: "Volver al inicio",
+        community:
+          "Únete a los eventos StellarBarrio para conectar con la comunidad",
+      },
+    },
+  },
   form: {
     back: "Atrás",
     continue: "Continuar",
