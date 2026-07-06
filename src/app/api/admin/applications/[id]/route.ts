@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { isAdminEmail } from "@/lib/auth/admin";
+import { sendApprovalEmail } from "@/lib/email/send-approval-email";
+import { getSiteUrl } from "@/lib/site-url";
 
 export async function PATCH(
   request: Request,
@@ -82,6 +84,23 @@ export async function PATCH(
           { error: "Could not create member profile" },
           { status: 500 }
         );
+      }
+    }
+
+    // Send confirmation email on transition into approved status
+    const justApproved =
+      body.status === "approved" && application.status !== "approved";
+
+    if (justApproved && application.email) {
+      try {
+        await sendApprovalEmail({
+          to: application.email,
+          fullName: application.full_name,
+          loginUrl: `${getSiteUrl(request)}/login`,
+        });
+      } catch (emailError) {
+        // Don't fail the approval if the email can't be sent
+        console.error("Approval email error:", emailError);
       }
     }
 
