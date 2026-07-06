@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { memberAuthCallbackUrl } from "@/lib/site-url";
 import { useState, type FormEvent } from "react";
 
 export function LoginForm() {
@@ -36,7 +37,7 @@ export function LoginForm() {
         const { error: signInError } = await supabase.auth.signInWithOtp({
           email,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=/member`,
+            emailRedirectTo: memberAuthCallbackUrl(),
           },
         });
 

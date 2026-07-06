@@ -49,6 +49,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Variable | Description |
 |----------|-------------|
+| `NEXT_PUBLIC_SITE_URL` | Production origin (e.g. `https://unblck.cl`) — used for auth magic link redirects |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (server-only) |
 

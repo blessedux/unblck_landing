@@ -88,7 +88,11 @@ export const es: Translations = {
     grantType: "grant sin dilución",
     fundDescription:
       "Sin equity ni participación accionaria, capital y aceleración para llevar tu startup construida sobre al red de Stellar de prototipo al mercado.",
-    tags: ["Sin dilución", "Pipeline demo day", "Exclusivo StellarBarrio"],
+    tags: [
+      { id: "non-dilutive", label: "Sin dilución" },
+      { id: "demo-day-pipeline", label: "Camino a demo day" },
+      { id: "stellarbarrio-exclusive", label: "Exclusivo StellarBarrio" },
+    ],
     howToApply: "Cómo postular",
     steps: [
       {

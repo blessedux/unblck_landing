@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { UnblckPayload } from "@/lib/forms/unblck-form";
+import { memberAuthCallbackUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 
 function isValidEmail(email: string) {
@@ -76,7 +77,7 @@ export async function POST(request: Request) {
         type: "magiclink",
         email,
         options: {
-          redirectTo: `${request.headers.get("origin")}/auth/callback?next=/member`,
+          redirectTo: memberAuthCallbackUrl(request),
         },
       });
 

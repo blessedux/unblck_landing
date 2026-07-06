@@ -103,8 +103,8 @@ export function InstaAwards() {
 
             <ul className="mb-8 flex flex-wrap gap-2 text-sm text-muted">
               {t.instaAwards.tags.map((tag) => (
-                <li key={tag} className="border border-border px-3 py-1.5 rounded-full">
-                  {tag}
+                <li key={tag.id} className="border border-border px-3 py-1.5 rounded-full">
+                  {tag.label}
                 </li>
               ))}
             </ul>

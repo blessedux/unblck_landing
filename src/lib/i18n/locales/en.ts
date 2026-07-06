@@ -29,6 +29,11 @@ export interface StepItem {
   description: string;
 }
 
+export interface FundTag {
+  id: string;
+  label: string;
+}
+
 export interface Translations {
   nav: {
     accelerator: string;
@@ -59,7 +64,7 @@ export interface Translations {
     grantAmount: string;
     grantType: string;
     fundDescription: string;
-    tags: string[];
+    tags: FundTag[];
     howToApply: string;
     steps: StepItem[];
     applyCta: string;
@@ -156,7 +161,11 @@ export const en: Translations = {
     grantType: "non-dilutive grant",
     fundDescription:
       "No equity or ownership stake — capital and acceleration to take your startup built on the Stellar network from prototype to market.",
-    tags: ["Non-dilutive", "Demo day pipeline", "StellarBarrio exclusive"],
+    tags: [
+      { id: "non-dilutive", label: "Non-dilutive" },
+      { id: "demo-day-pipeline", label: "Demo day pipeline" },
+      { id: "stellarbarrio-exclusive", label: "StellarBarrio exclusive" },
+    ],
     howToApply: "How to apply",
     steps: [
       {

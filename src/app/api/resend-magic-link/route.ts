@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { memberAuthCallbackUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 
 export async function POST(request: Request) {
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
       type: "magiclink",
       email,
       options: {
-        redirectTo: `${request.headers.get("origin")}/auth/callback?next=/member`,
+        redirectTo: memberAuthCallbackUrl(request),
       },
     });
 
