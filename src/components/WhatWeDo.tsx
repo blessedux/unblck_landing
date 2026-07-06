@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { VideoPillLink } from "@/components/VideoPillLink";
 
 const offerings = [
   {
@@ -31,7 +32,7 @@ export function WhatWeDo() {
       id="what-we-do"
       className="relative z-20 flex min-h-screen flex-col overflow-hidden rounded-t-[2rem] md:rounded-t-[2.5rem]"
     >
-      <div className="flex-1 bg-black px-6 pt-24 rounded-t-[2rem] md:rounded-t-[2.5rem]">
+      <div className="flex-1 bg-black px-6 pt-24 pb-8 rounded-t-[2rem] md:rounded-t-[2.5rem]">
         <div className="mx-auto max-w-3xl">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
             What we do
@@ -54,23 +55,18 @@ export function WhatWeDo() {
               </article>
             ))}
           </div>
-        </div>
-      </div>
 
-      <div className="px-6 pt-8 pb-8">
-        <div className="mx-auto flex max-w-3xl items-center justify-end gap-4">
-          <Link
-            href="/login"
-            className="text-sm text-muted transition hover:text-foreground"
-          >
-            Login
-          </Link>
-          <Link
-            href="/apply"
-            className="inline-block rounded-full border border-white bg-transparent px-5 py-2.5 text-sm font-medium text-white transition hover:border-white/80 hover:text-white/90"
-          >
-            Request access to Tellus Hub
-          </Link>
+          <div className="mt-8 flex items-center justify-end gap-4">
+            <Link
+              href="/login"
+              className="text-sm text-muted transition hover:text-foreground"
+            >
+              Login
+            </Link>
+            <VideoPillLink href="/apply">
+              Request access to Tellus Hub
+            </VideoPillLink>
+          </div>
         </div>
       </div>
 
