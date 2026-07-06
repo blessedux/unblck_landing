@@ -25,10 +25,16 @@ interface LocaleContextValue {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
-function readStoredLocale(): Locale {
+export function resolveLocale(): Locale {
   if (typeof window === "undefined") return defaultLocale;
+
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === "en" || stored === "es") return stored;
+
+  const browserLang = navigator.language.toLowerCase();
+  if (browserLang.startsWith("es")) return "es";
+  if (browserLang.startsWith("en")) return "en";
+
   return defaultLocale;
 }
 
@@ -36,7 +42,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(defaultLocale);
 
   useEffect(() => {
-    setLocaleState(readStoredLocale());
+    setLocaleState(resolveLocale());
   }, []);
 
   useEffect(() => {

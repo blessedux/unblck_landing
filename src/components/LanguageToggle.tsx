@@ -9,9 +9,7 @@ export function LanguageToggle() {
 
   if (
     pathname?.startsWith("/member") ||
-    pathname?.startsWith("/admin") ||
-    pathname?.startsWith("/apply") ||
-    pathname?.endsWith("/apply")
+    pathname?.startsWith("/admin")
   ) {
     return null;
   }
@@ -23,7 +21,7 @@ export function LanguageToggle() {
       type="button"
       onClick={() => setLocale(nextLocale)}
       aria-label={nextLocale === "es" ? "Cambiar a español" : "Switch to English"}
-      className="fixed top-5 right-12 z-[60] text-[11px] font-medium text-white/60 transition-colors hover:text-white sm:top-4 sm:text-sm"
+      className="fixed top-5 right-12 z-[60] text-[11px] font-medium text-white/60 transition-colors hover:text-white sm:top-4 sm:text-sm max-[480px]:top-4 max-[480px]:right-4"
     >
       {nextLocale.toUpperCase()}
     </button>

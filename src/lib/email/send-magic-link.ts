@@ -1,22 +1,8 @@
-import { Resend } from "resend";
-
-function getResendClient() {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    throw new Error("RESEND_API_KEY is not configured");
-  }
-  return new Resend(apiKey);
-}
-
-function getFromAddress() {
-  const from = process.env.RESEND_FROM?.trim();
-  if (!from) {
-    throw new Error(
-      "RESEND_FROM is not configured — use an address on your verified Resend domain",
-    );
-  }
-  return from;
-}
+import {
+  getResendClient,
+  getResendFromAddress,
+  shouldSkipResendInDev,
+} from "@/lib/email/resend-config";
 
 export async function sendMagicLinkEmail({
   to,
@@ -25,10 +11,17 @@ export async function sendMagicLinkEmail({
   to: string;
   magicLink: string;
 }) {
+  if (shouldSkipResendInDev()) {
+    console.info(
+      `[dev] Resend not configured — magic link for ${to}:\n${magicLink}`,
+    );
+    return;
+  }
+
   const resend = getResendClient();
 
   const { error } = await resend.emails.send({
-    from: getFromAddress(),
+    from: getResendFromAddress(),
     to: [to],
     subject: "Your UNBLCK login link",
     text: `Click the link below to log in to UNBLCK. This link expires soon.\n\n${magicLink}\n\nIf you didn't request this, you can ignore this email.`,

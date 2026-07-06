@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { AcceleratorPayload } from "@/lib/forms/accelerator-form";
+import { configurationErrorResponse } from "@/lib/api-error";
 import { generateAndSendMagicLink } from "@/lib/auth/magic-link";
 import { memberAuthCallbackUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
@@ -109,9 +110,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Accelerator application API error:", error);
-    return NextResponse.json(
-      { error: "Server configuration error" },
-      { status: 500 },
-    );
+    return configurationErrorResponse(error);
   }
 }

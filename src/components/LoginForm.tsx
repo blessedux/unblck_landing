@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { useState, type FormEvent } from "react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 type LoginFormProps = {
   passwordLoginEmails?: string[];
@@ -19,6 +20,7 @@ function usesPasswordLogin(
 }
 
 export function LoginForm({ passwordLoginEmails = [] }: LoginFormProps) {
+  const { t } = useLocale();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +39,7 @@ export function LoginForm({ passwordLoginEmails = [] }: LoginFormProps) {
 
       if (wantsPassword || (showPassword && password)) {
         if (!password) {
-          setError("Enter your password to continue.");
+          setError(t.login.passwordRequired);
           return;
         }
 
@@ -62,12 +64,12 @@ export function LoginForm({ passwordLoginEmails = [] }: LoginFormProps) {
       const json = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        throw new Error(json.error || "Could not send magic link");
+        throw new Error(json.error || t.login.magicLinkFailed);
       }
 
       setSent(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : t.login.errorGeneric);
     } finally {
       setLoading(false);
     }
@@ -76,16 +78,20 @@ export function LoginForm({ passwordLoginEmails = [] }: LoginFormProps) {
   if (sent) {
     return (
       <div>
-        <h2 className="text-2xl font-bold mb-4">Check your email</h2>
+        <h2 className="text-2xl font-bold mb-4">{t.login.checkEmailTitle}</h2>
         <p className="text-gray-400">
-          We&apos;ve sent a magic link to <strong>{email}</strong>. Click it to log
-          in.
+          {t.login.checkEmailBody.split("{email}").map((part, index, parts) => (
+            <span key={index}>
+              {part}
+              {index < parts.length - 1 && <strong>{email}</strong>}
+            </span>
+          ))}
         </p>
         <button
           onClick={() => setSent(false)}
           className="mt-6 text-sm text-gray-400 hover:text-white transition"
         >
-          Try a different email
+          {t.login.tryDifferentEmail}
         </button>
       </div>
     );
@@ -95,7 +101,7 @@ export function LoginForm({ passwordLoginEmails = [] }: LoginFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label htmlFor="email" className="block text-sm font-medium mb-2">
-          Email
+          {t.login.emailLabel}
         </label>
         <input
           id="email"
@@ -110,14 +116,14 @@ export function LoginForm({ passwordLoginEmails = [] }: LoginFormProps) {
           required
           disabled={loading}
           className="w-full px-4 py-3 bg-white/5 border border-gray-800 text-white placeholder-gray-500 focus:border-white focus:outline-none disabled:opacity-50"
-          placeholder="you@company.com"
+          placeholder={t.login.emailPlaceholder}
         />
       </div>
 
       {showPassword && (
         <div className="animate-fade-in">
           <label htmlFor="password" className="block text-sm font-medium mb-2">
-            Password
+            {t.login.passwordLabel}
           </label>
           <input
             id="password"
@@ -138,13 +144,13 @@ export function LoginForm({ passwordLoginEmails = [] }: LoginFormProps) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-white text-black py-3 px-4 font-medium hover:bg-gray-200 transition disabled:opacity-50"
+        className="w-full rounded-full bg-white text-black py-3 px-4 font-medium hover:bg-gray-200 transition disabled:opacity-50"
       >
         {loading
-          ? "Processing..."
+          ? t.login.processing
           : usesPasswordLogin(email, passwordLoginEmails) || showPassword
-            ? "Login with password"
-            : "Send magic link"}
+            ? t.login.loginWithPassword
+            : t.login.sendMagicLink}
       </button>
 
       {!showPassword && !usesPasswordLogin(email, passwordLoginEmails) && (
@@ -153,7 +159,7 @@ export function LoginForm({ passwordLoginEmails = [] }: LoginFormProps) {
           onClick={() => setShowPassword(true)}
           className="w-full text-xs text-gray-500 hover:text-gray-300 transition text-center"
         >
-          Login with password instead
+          {t.login.loginWithPasswordInstead}
         </button>
       )}
     </form>

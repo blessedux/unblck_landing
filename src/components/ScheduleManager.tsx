@@ -85,7 +85,7 @@ export function ScheduleManager({
       <div className="flex items-center justify-between">
         <button
           onClick={() => setWeekOffset((prev) => prev - 1)}
-          className="px-4 py-2 border border-gray-800 text-gray-400 hover:text-white transition"
+          className="px-4 py-2 rounded-full border border-gray-800 text-gray-400 hover:text-white transition"
         >
           ← Previous Week
         </button>
@@ -94,7 +94,7 @@ export function ScheduleManager({
         </h2>
         <button
           onClick={() => setWeekOffset((prev) => prev + 1)}
-          className="px-4 py-2 border border-gray-800 text-gray-400 hover:text-white transition"
+          className="px-4 py-2 rounded-full border border-gray-800 text-gray-400 hover:text-white transition"
         >
           Next Week →
         </button>
@@ -109,7 +109,7 @@ export function ScheduleManager({
               <button
                 key={weekday.value}
                 onClick={() => toggleDay(weekday.value)}
-                className={`px-4 py-3 border text-sm font-medium transition ${
+                className={`px-4 py-3 rounded-full border text-sm font-medium transition ${
                   isOpen
                     ? "border-white bg-white text-black"
                     : "border-gray-800 text-gray-400 hover:border-gray-600"
@@ -138,7 +138,7 @@ export function ScheduleManager({
       <button
         onClick={handleSave}
         disabled={loading}
-        className="w-full bg-white text-black py-3 px-6 font-medium hover:bg-gray-200 transition disabled:opacity-50"
+        className="w-full rounded-full bg-white text-black py-3 px-6 font-medium hover:bg-gray-200 transition disabled:opacity-50"
       >
         {loading ? "Saving..." : "Save Schedule"}
       </button>

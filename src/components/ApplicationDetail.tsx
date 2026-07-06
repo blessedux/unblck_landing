@@ -198,7 +198,7 @@ export function ApplicationDetail({ application }: ApplicationDetailProps) {
             <button
               onClick={() => handleUpdate()}
               disabled={loading}
-              className="px-6 py-2 bg-white/10 text-white border border-gray-800 hover:bg-white/20 transition disabled:opacity-50"
+              className="px-6 py-2 rounded-full bg-white/10 text-white border border-gray-800 hover:bg-white/20 transition disabled:opacity-50"
             >
               {loading ? "Saving..." : "Save Notes & Flags"}
             </button>
@@ -208,14 +208,14 @@ export function ApplicationDetail({ application }: ApplicationDetailProps) {
                 <button
                   onClick={() => handleUpdate("approved")}
                   disabled={loading}
-                  className="px-6 py-2 bg-green-500 text-white hover:bg-green-600 transition disabled:opacity-50"
+                  className="px-6 py-2 rounded-full bg-green-500 text-white hover:bg-green-600 transition disabled:opacity-50"
                 >
                   {loading ? "Approving..." : "Approve"}
                 </button>
                 <button
                   onClick={() => handleUpdate("rejected")}
                   disabled={loading}
-                  className="px-6 py-2 bg-red-500 text-white hover:bg-red-600 transition disabled:opacity-50"
+                  className="px-6 py-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition disabled:opacity-50"
                 >
                   {loading ? "Rejecting..." : "Reject"}
                 </button>
@@ -225,7 +225,7 @@ export function ApplicationDetail({ application }: ApplicationDetailProps) {
 
           <div className="mt-4">
             <span
-              className={`inline-block px-4 py-2 text-sm font-medium ${
+              className={`inline-block rounded-full px-4 py-2 text-sm font-medium ${
                 status === "pending"
                   ? "bg-yellow-500/10 text-yellow-500"
                   : status === "approved"

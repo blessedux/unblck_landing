@@ -1,4 +1,5 @@
 import type { Translations } from "@/lib/i18n";
+import { TELLUS_COOP_JOIN_URL } from "@/lib/tellus-coop";
 import type { FormStep, SuccessScreen } from "./types";
 
 export type HubAccessPayload = {
@@ -6,6 +7,7 @@ export type HubAccessPayload = {
   email: string;
   project_name: string;
   location: string;
+  stellar_ambassador: string;
   passport_username: string;
   terms_accepted: string;
 };
@@ -15,6 +17,11 @@ export const HUB_LOCATION_VALUES = {
   santiago: "Santiago",
   relocating: "Relocating to Santiago",
   remote: "Remote — not based in Chile",
+} as const;
+
+export const STELLAR_AMBASSADOR_VALUES = {
+  yes: "yes",
+  no: "no",
 } as const;
 
 export function getHubAccessFormSteps(
@@ -69,6 +76,29 @@ export function getHubAccessFormSteps(
       ],
     },
     {
+      id: "stellar_ambassador",
+      type: "choice",
+      question: copy.fields.ambassador.question,
+      hint: copy.fields.ambassador.hint,
+      required: true,
+      choices: [
+        {
+          value: STELLAR_AMBASSADOR_VALUES.yes,
+          label: copy.fields.ambassador.choices.yes,
+        },
+        {
+          value: STELLAR_AMBASSADOR_VALUES.no,
+          label: copy.fields.ambassador.choices.no,
+        },
+      ],
+      gate: {
+        blockWhenValue: STELLAR_AMBASSADOR_VALUES.no,
+        message: copy.fields.ambassador.gateMessage,
+        linkText: copy.fields.ambassador.gateLinkText,
+        linkUrl: TELLUS_COOP_JOIN_URL,
+      },
+    },
+    {
       id: "passport_username",
       type: "text",
       question: copy.fields.passport.question,
@@ -106,6 +136,7 @@ export const emptyHubAccessApplication = (): HubAccessPayload => ({
   email: "",
   project_name: "",
   location: "",
+  stellar_ambassador: "",
   passport_username: "",
   terms_accepted: "false",
 });

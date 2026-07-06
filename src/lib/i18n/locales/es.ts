@@ -131,6 +131,29 @@ export const es: Translations = {
     resending: "Enviando...",
     emailSent: "¡Email enviado! Revisa tu bandeja de entrada.",
   },
+  login: {
+    pageTitle: "Iniciar sesión | UNBLCK",
+    pageDescription: "Accede a tu cuenta del UNBLCK Hub",
+    welcome: "Bienvenido de nuevo",
+    subtitle:
+      "Los miembros usan magic link. Los admins inician sesión con contraseña.",
+    emailLabel: "Email",
+    emailPlaceholder: "tu@empresa.com",
+    passwordLabel: "Contraseña",
+    passwordRequired: "Ingresa tu contraseña para continuar.",
+    sendMagicLink: "Enviar magic link",
+    loginWithPassword: "Iniciar sesión con contraseña",
+    loginWithPasswordInstead: "Iniciar sesión con contraseña",
+    processing: "Procesando...",
+    checkEmailTitle: "Revisa tu email",
+    checkEmailBody:
+      "Te enviamos un magic link a {email}. Haz clic para iniciar sesión.",
+    tryDifferentEmail: "Probar con otro email",
+    noAccount: "¿No tienes cuenta?",
+    applyHere: "Postula aquí",
+    errorGeneric: "Algo salió mal",
+    magicLinkFailed: "No se pudo enviar el magic link",
+  },
   hubApply: {
     pageTitle: "Pedir acceso | Tellus Hub",
     pageDescription:
@@ -160,6 +183,17 @@ export const es: Translations = {
           remote: "Remoto — fuera de Chile",
         },
       },
+      ambassador: {
+        question: "¿Eres Stellar Ambassador?",
+        hint: "El acceso al hub es para Stellar Ambassadors. ¿Aún no lo eres? Únete a la cooperativa en Tellus.",
+        choices: {
+          yes: "Sí, soy Stellar Ambassador",
+          no: "No, aún no",
+        },
+        gateMessage:
+          "Necesitas ser Stellar Ambassador para pedir acceso al hub. Únete a la cooperativa Tellus para serlo — en telluscoop.org, toca “Join the cooperative” en la página principal.",
+        gateLinkText: "Ser Stellar Ambassador",
+      },
       passport: {
         question: "¿Cuál es tu usuario de Stellar Passport?",
         hint: "Lo usamos para verificar tu identidad. ¿Aún no tienes uno?",
@@ -179,6 +213,98 @@ export const es: Translations = {
         "Te enviamos un enlace seguro de inicio de sesión. Haz clic para activar tu cuenta y acceder al hub.",
       extra:
         "Ven a StellarBarrio en Tellus Blockchain Hub STGO — nuestro evento mensual de builders.",
+    },
+  },
+  acceleratorApply: {
+    pageTitle: "Postular | UNBLCK Accelerator",
+    pageDescription:
+      "Postula a UNBLCK — la aceleradora de Santiago para founders de AI y blockchain.",
+    intro: {
+      question: "Postula a UNBLCK Accelerator",
+      hint: "Postulación completa para nuestro programa de aceleración. Toma unos 5 minutos.",
+    },
+    fields: {
+      fullName: {
+        question: "¿Cómo te llamas?",
+        placeholder: "Jane Doe",
+      },
+      email: {
+        question: "¿Cuál es tu email?",
+        placeholder: "tu@empresa.com",
+      },
+      projectName: {
+        question: "¿Cómo se llama tu proyecto o empresa?",
+        placeholder: "Acme Labs",
+      },
+      projectLink: {
+        question: "Link del proyecto (web, deck o demo)",
+        placeholder: "https://",
+      },
+      buildDescription: {
+        question: "¿Qué estás construyendo?",
+        placeholder:
+          "Cuéntanos sobre tu producto — blockchain, AI o ambos. ¿Para quién es? ¿Qué problema resuelve?",
+      },
+      location: {
+        question: "¿Dónde estás ubicado?",
+        choices: {
+          santiago: "Santiago",
+          relocating: "Me estoy mudando a Santiago",
+          remote: "Remoto — fuera de Chile",
+        },
+      },
+      stage: {
+        question: "¿En qué etapa está tu proyecto?",
+        choices: {
+          idea: "Idea",
+          prototype: "Prototipo/MVP",
+          live: "Producto en vivo",
+          scaling: "Creciendo/Escalando",
+        },
+      },
+      teamSize: {
+        question: "¿Qué tan grande es tu equipo?",
+        choices: {
+          solo: "Founder solo",
+          small: "2-3 personas",
+          medium: "4-6 personas",
+          large: "7+ personas",
+        },
+      },
+      fundingStatus: {
+        question: "¿Cuál es tu estado de financiamiento?",
+        choices: {
+          preSeed: "Pre-seed / Bootstrapped",
+          grants: "Recibió grants",
+          angel: "Angel funding",
+          seed: "Seed funded",
+          seriesA: "Series A+",
+        },
+      },
+      motivation: {
+        question: "¿Por qué UNBLCK?",
+        placeholder:
+          "¿Qué te ayudaría unirte a la aceleradora a lograr? ¿Cuáles son tus metas para los próximos 90 días?",
+      },
+      passport: {
+        question: "¿Cuál es tu usuario de Stellar Passport?",
+        hint: "Lo usamos para verificar tu identidad. ¿Aún no tienes uno?",
+        placeholder: "@tunombre o tu usuario de GitHub",
+        linkText: "Crear Passport",
+      },
+      terms: {
+        question: "Términos y Condiciones",
+        hint: "Acepto los",
+        linkText: "Términos y Condiciones",
+      },
+    },
+    success: {
+      label: "Postulación recibida",
+      title: "Revisa tu email para el magic link",
+      description:
+        "Te enviamos un enlace seguro de inicio de sesión. Haz clic para activar tu cuenta y revisar el estado de tu postulación.",
+      extra:
+        "Ven a StellarBarrio en Tellus Blockchain Hub STGO — nuestro evento mensual de builders y la puerta de entrada a Insta Awards.",
     },
   },
 };

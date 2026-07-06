@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { ChoiceOption, FormStep, SuccessScreen } from "@/lib/forms/types";
@@ -31,11 +32,21 @@ function getAnswerableSteps<T extends Record<string, string>>(
   return steps.filter((step) => step.id !== "intro");
 }
 
+function isGateBlocked<T extends Record<string, string>>(
+  step: FormStep<T>,
+  values: T,
+) {
+  if (!step.gate || step.id === "intro") return false;
+  const value = values[step.id as keyof T] ?? "";
+  return value === step.gate.blockWhenValue;
+}
+
 function canAdvance<T extends Record<string, string>>(
   step: FormStep<T>,
   values: T,
 ) {
   if (step.id === "intro") return true;
+  if (isGateBlocked(step, values)) return false;
   if (!step.required) return true;
 
   const value = values[step.id as keyof T] ?? "";
@@ -50,6 +61,7 @@ export function MultiStepForm<T extends Record<string, string>>({
   successScreen,
   onValidateStep,
 }: MultiStepFormProps<T>) {
+  const router = useRouter();
   const { t } = useLocale();
   const answerableSteps = useMemo(
     () => getAnswerableSteps(formSteps),
@@ -72,6 +84,17 @@ export function MultiStepForm<T extends Record<string, string>>({
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [stepIndex]);
 
+  useEffect(() => {
+    const onEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") {
+        router.push("/");
+      }
+    };
+
+    window.addEventListener("keydown", onEscape);
+    return () => window.removeEventListener("keydown", onEscape);
+  }, [router]);
+
   const currentStep = formSteps[stepIndex];
   const progress =
     stepIndex === 0
@@ -79,6 +102,8 @@ export function MultiStepForm<T extends Record<string, string>>({
       : Math.round((stepIndex / (formSteps.length - 1)) * 100);
 
   const fieldKey = currentStep.id as keyof T;
+  const gateBlocked = isGateBlocked(currentStep, values);
+  const gate = currentStep.gate;
 
   const updateValue = (key: keyof T, value: string) => {
     setValues((prev) => ({ ...prev, [key]: value }));
@@ -214,7 +239,7 @@ export function MultiStepForm<T extends Record<string, string>>({
             <div className="mt-8 flex items-center gap-3">
               <Link
                 href="/"
-                className="inline-block border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground"
+                className="inline-block rounded-full border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground"
               >
                 {t.form.backToHome}
               </Link>
@@ -222,7 +247,7 @@ export function MultiStepForm<T extends Record<string, string>>({
               <button
                 onClick={resendEmail}
                 disabled={resending}
-                className="inline-block border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground disabled:opacity-50"
+                className="inline-block rounded-full border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground disabled:opacity-50"
               >
                 {resending ? t.form.resending : t.form.resendEmail}
               </button>
@@ -296,7 +321,7 @@ export function MultiStepForm<T extends Record<string, string>>({
                         href={currentStep.linkUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-block mt-2 bg-foreground px-3 py-1.5 text-xs font-medium text-background transition hover:bg-accent-soft"
+                        className="inline-block mt-2 rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background transition hover:bg-accent-soft"
                       >
                         {currentStep.linkText}
                       </a>
@@ -306,25 +331,40 @@ export function MultiStepForm<T extends Record<string, string>>({
 
                 <div className="mt-6">
                   {currentStep.type === "choice" ? (
-                    <div className="grid gap-2">
-                      {normalizeChoices(currentStep.choices).map((choice) => {
-                        const selected = values[fieldKey] === choice.value;
-                        return (
-                          <button
-                            key={choice.value}
-                            type="button"
-                            onClick={() => updateValue(fieldKey, choice.value)}
-                            className={`min-h-12 touch-manipulation border px-4 py-3 text-left text-base transition ${
-                              selected
-                                ? "border-foreground bg-foreground text-background"
-                                : "border-border text-muted hover:border-foreground hover:text-foreground"
-                            }`}
+                    <>
+                      <div className="grid gap-2">
+                        {normalizeChoices(currentStep.choices).map((choice) => {
+                          const selected = values[fieldKey] === choice.value;
+                          return (
+                            <button
+                              key={choice.value}
+                              type="button"
+                              onClick={() => updateValue(fieldKey, choice.value)}
+                              className={`min-h-12 touch-manipulation rounded-full border px-4 py-3 text-left text-base transition ${
+                                selected
+                                  ? "border-foreground bg-foreground text-background"
+                                  : "border-border text-muted hover:border-foreground hover:text-foreground"
+                              }`}
+                            >
+                              {choice.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {gateBlocked && gate && (
+                        <div className="mt-6 rounded-2xl border border-border bg-surface/50 p-5">
+                          <p className="text-sm text-muted">{gate.message}</p>
+                          <a
+                            href={gate.linkUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-4 inline-block rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition hover:bg-accent-soft"
                           >
-                            {choice.label}
-                          </button>
-                        );
-                      })}
-                    </div>
+                            {gate.linkText}
+                          </a>
+                        </div>
+                      )}
+                    </>
                   ) : currentStep.type === "checkbox" ? (
                     <label className="flex items-start gap-3 cursor-pointer">
                       <input
@@ -384,22 +424,24 @@ export function MultiStepForm<T extends Record<string, string>>({
                 <button
                   type="button"
                   onClick={goBack}
-                  className="min-h-12 touch-manipulation border border-border px-4 py-2 text-sm text-muted transition hover:border-foreground hover:text-foreground"
+                  className="min-h-12 touch-manipulation rounded-full border border-border px-4 py-2 text-sm text-muted transition hover:border-foreground hover:text-foreground"
                 >
                   {t.form.back}
                 </button>
               )}
-              <button
-                type="submit"
-                disabled={submitting}
-                className="min-h-12 min-w-[8rem] touch-manipulation bg-foreground px-6 py-3 text-sm font-medium text-background transition hover:bg-accent-soft disabled:opacity-50"
-              >
-                {stepIndex === formSteps.length - 1
-                  ? submitting
-                    ? t.form.submitting
-                    : t.form.submit
-                  : t.form.continue}
-              </button>
+              {!gateBlocked && (
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="min-h-12 min-w-[8rem] touch-manipulation rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition hover:bg-accent-soft disabled:opacity-50"
+                >
+                  {stepIndex === formSteps.length - 1
+                    ? submitting
+                      ? t.form.submitting
+                      : t.form.submit
+                    : t.form.continue}
+                </button>
+              )}
               {currentStep.type !== "intro" &&
                 currentStep.type !== "textarea" &&
                 currentStep.type !== "choice" &&

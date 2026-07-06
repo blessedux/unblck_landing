@@ -11,7 +11,8 @@ export function SiteNavbar() {
   if (
     pathname?.startsWith("/member") ||
     pathname?.startsWith("/apply") ||
-    pathname?.endsWith("/apply")
+    pathname?.endsWith("/apply") ||
+    pathname === "/login"
   ) {
     return null;
   }

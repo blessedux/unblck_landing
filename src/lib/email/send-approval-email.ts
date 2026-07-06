@@ -1,22 +1,8 @@
-import { Resend } from "resend";
-
-function getResendClient() {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    throw new Error("RESEND_API_KEY is not configured");
-  }
-  return new Resend(apiKey);
-}
-
-function getFromAddress() {
-  const from = process.env.RESEND_FROM?.trim();
-  if (!from) {
-    throw new Error(
-      "RESEND_FROM is not configured — use an address on your verified Resend domain",
-    );
-  }
-  return from;
-}
+import {
+  getResendClient,
+  getResendFromAddress,
+  shouldSkipResendInDev,
+} from "@/lib/email/resend-config";
 
 export async function sendApprovalEmail({
   to,
@@ -27,11 +13,18 @@ export async function sendApprovalEmail({
   fullName?: string | null;
   loginUrl: string;
 }) {
+  if (shouldSkipResendInDev()) {
+    console.info(
+      `[dev] Resend not configured — approval email for ${to}:\n${loginUrl}`,
+    );
+    return;
+  }
+
   const resend = getResendClient();
   const greeting = fullName?.trim() ? `Hola ${fullName.trim()}` : "Hola";
 
   const { error } = await resend.emails.send({
-    from: getFromAddress(),
+    from: getResendFromAddress(),
     to: [to],
     subject: "¡Bienvenido a UNBLCK! Tu acceso fue aprobado",
     text: `${greeting},\n\n¡Buenas noticias! Tu postulación a UNBLCK fue aprobada y ya tienes acceso al Tellus Blockchain Hub STGO.\n\nEntra a tu cuenta acá: ${loginUrl}\n\nUsa este mismo correo para iniciar sesión con tu enlace mágico. Nos vemos en el hub.\n\n— El equipo de UNBLCK`,

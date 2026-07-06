@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import type { HubAccessPayload } from "@/lib/forms/hub-form";
+import { STELLAR_AMBASSADOR_VALUES } from "@/lib/forms/hub-form";
+import { configurationErrorResponse } from "@/lib/api-error";
 import { generateAndSendMagicLink } from "@/lib/auth/magic-link";
 import { memberAuthCallbackUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
@@ -22,6 +24,10 @@ function validate(payload: HubAccessPayload) {
   }
   if (!payload.project_name?.trim()) errors.push("Project description is required");
   if (!payload.location?.trim()) errors.push("Location is required");
+
+  if (payload.stellar_ambassador !== STELLAR_AMBASSADOR_VALUES.yes) {
+    errors.push("You must be a Stellar Ambassador to request hub access");
+  }
 
   if (!payload.passport_username?.trim()) {
     errors.push("Stellar Passport username is required");
@@ -78,6 +84,7 @@ export async function POST(request: Request) {
         project_link: null,
         build_description: null,
         location: body.location.trim(),
+        stellar_ambassador: body.stellar_ambassador === STELLAR_AMBASSADOR_VALUES.yes,
         stage: null,
         motivation: null,
         passport_address: body.passport_username.trim(),
@@ -100,9 +107,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Hub access application API error:", error);
-    return NextResponse.json(
-      { error: "Server configuration error" },
-      { status: 500 },
-    );
+    return configurationErrorResponse(error);
   }
 }

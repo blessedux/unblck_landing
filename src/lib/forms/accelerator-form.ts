@@ -1,4 +1,6 @@
+import type { Translations } from "@/lib/i18n";
 import type { FormStep, SuccessScreen } from "./types";
+import { HUB_LOCATION_VALUES } from "./hub-form";
 
 export type AcceleratorPayload = {
   full_name: string;
@@ -15,115 +17,203 @@ export type AcceleratorPayload = {
   terms_accepted: string;
 };
 
-export const acceleratorFormSteps: FormStep<AcceleratorPayload>[] = [
-  {
-    id: "intro",
-    type: "intro",
-    question: "Apply to UNBLCK Accelerator",
-    hint: "A comprehensive application for our full accelerator program. Takes about 5 minutes.",
-  },
-  {
-    id: "full_name",
-    type: "text",
-    question: "What's your name?",
-    placeholder: "Jane Doe",
-    required: true,
-  },
-  {
-    id: "email",
-    type: "email",
-    question: "What's your email?",
-    placeholder: "you@company.com",
-    required: true,
-  },
-  {
-    id: "project_name",
-    type: "text",
-    question: "What's your project or company called?",
-    placeholder: "Acme Labs",
-    required: true,
-  },
-  {
-    id: "project_link",
-    type: "url",
-    question: "Project link (website, deck, or demo)",
-    placeholder: "https://",
-    required: false,
-  },
-  {
-    id: "build_description",
-    type: "textarea",
-    question: "What are you building?",
-    placeholder:
-      "Tell us about your product — blockchain, AI, or both. Who's it for? What problem does it solve?",
-    required: true,
-  },
-  {
-    id: "location",
-    type: "choice",
-    question: "Where are you based?",
-    required: true,
-    choices: [
-      "Santiago",
-      "Relocating to Santiago",
-      "Remote — not based in Chile",
-    ],
-  },
-  {
-    id: "stage",
-    type: "choice",
-    question: "What stage is your project?",
-    required: true,
-    choices: ["Idea", "Prototype/MVP", "Live product", "Growing/Scaling"],
-  },
-  {
-    id: "team_size",
-    type: "choice",
-    question: "How big is your team?",
-    required: true,
-    choices: ["Solo founder", "2-3 people", "4-6 people", "7+ people"],
-  },
-  {
-    id: "funding_status",
-    type: "choice",
-    question: "What's your funding status?",
-    required: true,
-    choices: [
-      "Pre-seed / Bootstrapped",
-      "Received grants",
-      "Angel funding",
-      "Seed funded",
-      "Series A+",
-    ],
-  },
-  {
-    id: "motivation",
-    type: "textarea",
-    question: "Why UNBLCK?",
-    placeholder:
-      "What would joining the accelerator help you achieve? What are your goals for the next 90 days?",
-    required: true,
-  },
-  {
-    id: "passport_username",
-    type: "text",
-    question: "What's your Stellar Passport username?",
-    hint: "We use this for identity verification. Don't have one yet?",
-    placeholder: "@yourname or your GitHub username",
-    required: true,
-    linkText: "Create Passport",
-    linkUrl: "https://demo.stellarpassport.xyz/",
-  },
-  {
-    id: "terms_accepted",
-    type: "checkbox",
-    question: "Terms & Conditions",
-    hint: "I agree to the",
-    linkText: "Terms & Conditions",
-    linkUrl: "/terms",
-    required: true,
-  },
-];
+/** Canonical values stored in the database — always English. */
+export const ACCELERATOR_STAGE_VALUES = {
+  idea: "Idea",
+  prototype: "Prototype/MVP",
+  live: "Live product",
+  scaling: "Growing/Scaling",
+} as const;
+
+export const ACCELERATOR_TEAM_SIZE_VALUES = {
+  solo: "Solo founder",
+  small: "2-3 people",
+  medium: "4-6 people",
+  large: "7+ people",
+} as const;
+
+export const ACCELERATOR_FUNDING_VALUES = {
+  preSeed: "Pre-seed / Bootstrapped",
+  grants: "Received grants",
+  angel: "Angel funding",
+  seed: "Seed funded",
+  seriesA: "Series A+",
+} as const;
+
+export function getAcceleratorFormSteps(
+  copy: Translations["acceleratorApply"],
+): FormStep<AcceleratorPayload>[] {
+  return [
+    {
+      id: "intro",
+      type: "intro",
+      question: copy.intro.question,
+      hint: copy.intro.hint,
+    },
+    {
+      id: "full_name",
+      type: "text",
+      question: copy.fields.fullName.question,
+      placeholder: copy.fields.fullName.placeholder,
+      required: true,
+    },
+    {
+      id: "email",
+      type: "email",
+      question: copy.fields.email.question,
+      placeholder: copy.fields.email.placeholder,
+      required: true,
+    },
+    {
+      id: "project_name",
+      type: "text",
+      question: copy.fields.projectName.question,
+      placeholder: copy.fields.projectName.placeholder,
+      required: true,
+    },
+    {
+      id: "project_link",
+      type: "url",
+      question: copy.fields.projectLink.question,
+      placeholder: copy.fields.projectLink.placeholder,
+      required: false,
+    },
+    {
+      id: "build_description",
+      type: "textarea",
+      question: copy.fields.buildDescription.question,
+      placeholder: copy.fields.buildDescription.placeholder,
+      required: true,
+    },
+    {
+      id: "location",
+      type: "choice",
+      question: copy.fields.location.question,
+      required: true,
+      choices: [
+        {
+          value: HUB_LOCATION_VALUES.santiago,
+          label: copy.fields.location.choices.santiago,
+        },
+        {
+          value: HUB_LOCATION_VALUES.relocating,
+          label: copy.fields.location.choices.relocating,
+        },
+        {
+          value: HUB_LOCATION_VALUES.remote,
+          label: copy.fields.location.choices.remote,
+        },
+      ],
+    },
+    {
+      id: "stage",
+      type: "choice",
+      question: copy.fields.stage.question,
+      required: true,
+      choices: [
+        { value: ACCELERATOR_STAGE_VALUES.idea, label: copy.fields.stage.choices.idea },
+        {
+          value: ACCELERATOR_STAGE_VALUES.prototype,
+          label: copy.fields.stage.choices.prototype,
+        },
+        { value: ACCELERATOR_STAGE_VALUES.live, label: copy.fields.stage.choices.live },
+        {
+          value: ACCELERATOR_STAGE_VALUES.scaling,
+          label: copy.fields.stage.choices.scaling,
+        },
+      ],
+    },
+    {
+      id: "team_size",
+      type: "choice",
+      question: copy.fields.teamSize.question,
+      required: true,
+      choices: [
+        {
+          value: ACCELERATOR_TEAM_SIZE_VALUES.solo,
+          label: copy.fields.teamSize.choices.solo,
+        },
+        {
+          value: ACCELERATOR_TEAM_SIZE_VALUES.small,
+          label: copy.fields.teamSize.choices.small,
+        },
+        {
+          value: ACCELERATOR_TEAM_SIZE_VALUES.medium,
+          label: copy.fields.teamSize.choices.medium,
+        },
+        {
+          value: ACCELERATOR_TEAM_SIZE_VALUES.large,
+          label: copy.fields.teamSize.choices.large,
+        },
+      ],
+    },
+    {
+      id: "funding_status",
+      type: "choice",
+      question: copy.fields.fundingStatus.question,
+      required: true,
+      choices: [
+        {
+          value: ACCELERATOR_FUNDING_VALUES.preSeed,
+          label: copy.fields.fundingStatus.choices.preSeed,
+        },
+        {
+          value: ACCELERATOR_FUNDING_VALUES.grants,
+          label: copy.fields.fundingStatus.choices.grants,
+        },
+        {
+          value: ACCELERATOR_FUNDING_VALUES.angel,
+          label: copy.fields.fundingStatus.choices.angel,
+        },
+        {
+          value: ACCELERATOR_FUNDING_VALUES.seed,
+          label: copy.fields.fundingStatus.choices.seed,
+        },
+        {
+          value: ACCELERATOR_FUNDING_VALUES.seriesA,
+          label: copy.fields.fundingStatus.choices.seriesA,
+        },
+      ],
+    },
+    {
+      id: "motivation",
+      type: "textarea",
+      question: copy.fields.motivation.question,
+      placeholder: copy.fields.motivation.placeholder,
+      required: true,
+    },
+    {
+      id: "passport_username",
+      type: "text",
+      question: copy.fields.passport.question,
+      hint: copy.fields.passport.hint,
+      placeholder: copy.fields.passport.placeholder,
+      required: true,
+      linkText: copy.fields.passport.linkText,
+      linkUrl: "https://demo.stellarpassport.xyz/",
+    },
+    {
+      id: "terms_accepted",
+      type: "checkbox",
+      question: copy.fields.terms.question,
+      hint: copy.fields.terms.hint,
+      linkText: copy.fields.terms.linkText,
+      linkUrl: "/terms",
+      required: true,
+    },
+  ];
+}
+
+export function getAcceleratorSuccessScreen(
+  copy: Translations["acceleratorApply"]["success"],
+): SuccessScreen {
+  return {
+    label: copy.label,
+    title: copy.title,
+    description: copy.description,
+    extra: copy.extra,
+  };
+}
 
 export const emptyAcceleratorApplication = (): AcceleratorPayload => ({
   full_name: "",
@@ -139,12 +229,3 @@ export const emptyAcceleratorApplication = (): AcceleratorPayload => ({
   passport_username: "",
   terms_accepted: "false",
 });
-
-export const acceleratorSuccessScreen: SuccessScreen = {
-  label: "Application received",
-  title: "Check your email for a magic link",
-  description:
-    "We've sent you a secure login link. Click it to activate your account and check your application status.",
-  extra:
-    "Come to StellarBarrio at Tellus Blockchain Hub STGO — our monthly builder event and the gateway to Insta Awards.",
-};

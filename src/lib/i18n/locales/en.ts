@@ -87,6 +87,27 @@ export interface Translations {
     resending: string;
     emailSent: string;
   };
+  login: {
+    pageTitle: string;
+    pageDescription: string;
+    welcome: string;
+    subtitle: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    passwordLabel: string;
+    passwordRequired: string;
+    sendMagicLink: string;
+    loginWithPassword: string;
+    loginWithPasswordInstead: string;
+    processing: string;
+    checkEmailTitle: string;
+    checkEmailBody: string;
+    tryDifferentEmail: string;
+    noAccount: string;
+    applyHere: string;
+    errorGeneric: string;
+    magicLinkFailed: string;
+  };
   hubApply: {
     pageTitle: string;
     pageDescription: string;
@@ -102,6 +123,74 @@ export interface Translations {
         question: string;
         choices: { santiago: string; relocating: string; remote: string };
       };
+      ambassador: {
+        question: string;
+        hint: string;
+        choices: { yes: string; no: string };
+        gateMessage: string;
+        gateLinkText: string;
+      };
+      passport: {
+        question: string;
+        hint: string;
+        placeholder: string;
+        linkText: string;
+      };
+      terms: { question: string; hint: string; linkText: string };
+    };
+    success: {
+      label: string;
+      title: string;
+      description: string;
+      extra: string;
+    };
+  };
+  acceleratorApply: {
+    pageTitle: string;
+    pageDescription: string;
+    intro: {
+      question: string;
+      hint: string;
+    };
+    fields: {
+      fullName: { question: string; placeholder: string };
+      email: { question: string; placeholder: string };
+      projectName: { question: string; placeholder: string };
+      projectLink: { question: string; placeholder: string };
+      buildDescription: { question: string; placeholder: string };
+      location: {
+        question: string;
+        choices: { santiago: string; relocating: string; remote: string };
+      };
+      stage: {
+        question: string;
+        choices: {
+          idea: string;
+          prototype: string;
+          live: string;
+          scaling: string;
+        };
+      };
+      teamSize: {
+        question: string;
+        choices: {
+          solo: string;
+          small: string;
+          medium: string;
+          large: string;
+        };
+      };
+      fundingStatus: {
+        question: string;
+        choices: {
+          preSeed: string;
+          grants: string;
+          angel: string;
+          seed: string;
+          seriesA: string;
+        };
+      };
+      motivation: { question: string; placeholder: string };
       passport: {
         question: string;
         hint: string;
@@ -248,6 +337,28 @@ export const en: Translations = {
     resending: "Sending...",
     emailSent: "Email sent! Check your inbox.",
   },
+  login: {
+    pageTitle: "Login | UNBLCK",
+    pageDescription: "Access your UNBLCK Hub account",
+    welcome: "Welcome back",
+    subtitle: "Members use a magic link. Admins sign in with password.",
+    emailLabel: "Email",
+    emailPlaceholder: "you@company.com",
+    passwordLabel: "Password",
+    passwordRequired: "Enter your password to continue.",
+    sendMagicLink: "Send magic link",
+    loginWithPassword: "Login with password",
+    loginWithPasswordInstead: "Login with password instead",
+    processing: "Processing...",
+    checkEmailTitle: "Check your email",
+    checkEmailBody:
+      "We've sent a magic link to {email}. Click it to log in.",
+    tryDifferentEmail: "Try a different email",
+    noAccount: "Don't have an account?",
+    applyHere: "Apply here",
+    errorGeneric: "Something went wrong",
+    magicLinkFailed: "Could not send magic link",
+  },
   hubApply: {
     pageTitle: "Request Access | Tellus Hub",
     pageDescription:
@@ -277,6 +388,17 @@ export const en: Translations = {
           remote: "Remote — not based in Chile",
         },
       },
+      ambassador: {
+        question: "Are you a Stellar Ambassador?",
+        hint: "Hub access is for Stellar Ambassadors. Not one yet? Join the cooperative at Tellus.",
+        choices: {
+          yes: "Yes, I'm a Stellar Ambassador",
+          no: "No, not yet",
+        },
+        gateMessage:
+          "You need to be a Stellar Ambassador to request hub access. Join the Tellus cooperative to become one — on telluscoop.org, tap “Join the cooperative” on the homepage.",
+        gateLinkText: "Become a Stellar Ambassador",
+      },
       passport: {
         question: "What's your Stellar Passport username?",
         hint: "We use this for identity verification. Don't have one yet?",
@@ -296,6 +418,98 @@ export const en: Translations = {
         "We've sent you a secure login link. Click it to activate your account and access the hub.",
       extra:
         "Come to StellarBarrio at Tellus Blockchain Hub STGO — our monthly builder event.",
+    },
+  },
+  acceleratorApply: {
+    pageTitle: "Apply | UNBLCK Accelerator",
+    pageDescription:
+      "Apply to join UNBLCK — Santiago's accelerator for AI and blockchain founders.",
+    intro: {
+      question: "Apply to UNBLCK Accelerator",
+      hint: "A comprehensive application for our full accelerator program. Takes about 5 minutes.",
+    },
+    fields: {
+      fullName: {
+        question: "What's your name?",
+        placeholder: "Jane Doe",
+      },
+      email: {
+        question: "What's your email?",
+        placeholder: "you@company.com",
+      },
+      projectName: {
+        question: "What's your project or company called?",
+        placeholder: "Acme Labs",
+      },
+      projectLink: {
+        question: "Project link (website, deck, or demo)",
+        placeholder: "https://",
+      },
+      buildDescription: {
+        question: "What are you building?",
+        placeholder:
+          "Tell us about your product — blockchain, AI, or both. Who's it for? What problem does it solve?",
+      },
+      location: {
+        question: "Where are you based?",
+        choices: {
+          santiago: "Santiago",
+          relocating: "Relocating to Santiago",
+          remote: "Remote — not based in Chile",
+        },
+      },
+      stage: {
+        question: "What stage is your project?",
+        choices: {
+          idea: "Idea",
+          prototype: "Prototype/MVP",
+          live: "Live product",
+          scaling: "Growing/Scaling",
+        },
+      },
+      teamSize: {
+        question: "How big is your team?",
+        choices: {
+          solo: "Solo founder",
+          small: "2-3 people",
+          medium: "4-6 people",
+          large: "7+ people",
+        },
+      },
+      fundingStatus: {
+        question: "What's your funding status?",
+        choices: {
+          preSeed: "Pre-seed / Bootstrapped",
+          grants: "Received grants",
+          angel: "Angel funding",
+          seed: "Seed funded",
+          seriesA: "Series A+",
+        },
+      },
+      motivation: {
+        question: "Why UNBLCK?",
+        placeholder:
+          "What would joining the accelerator help you achieve? What are your goals for the next 90 days?",
+      },
+      passport: {
+        question: "What's your Stellar Passport username?",
+        hint: "We use this for identity verification. Don't have one yet?",
+        placeholder: "@yourname or your GitHub username",
+        linkText: "Create Passport",
+      },
+      terms: {
+        question: "Terms & Conditions",
+        hint: "I agree to the",
+        linkText: "Terms & Conditions",
+      },
+    },
+    success: {
+      label: "Application received",
+      title: "Check your email for a magic link",
+      description:
+        "We've sent you a secure login link. Click it to activate your account and check your application status.",
+      extra:
+        "Come to StellarBarrio at Tellus Blockchain Hub STGO — our monthly builder event and the gateway to Insta Awards.",
     },
   },
 };

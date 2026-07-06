@@ -3,6 +3,13 @@ export type ChoiceOption = {
   label: string;
 };
 
+export type ChoiceGate = {
+  blockWhenValue: string;
+  message: string;
+  linkText: string;
+  linkUrl: string;
+};
+
 export type FormStep<T extends Record<string, string>> = {
   id: keyof T | "intro";
   type: "intro" | "text" | "email" | "url" | "textarea" | "choice" | "checkbox";
@@ -13,6 +20,8 @@ export type FormStep<T extends Record<string, string>> = {
   choices?: string[] | ChoiceOption[];
   linkText?: string;
   linkUrl?: string;
+  /** Blocks continue when a choice value is selected; shows external CTA instead */
+  gate?: ChoiceGate;
 };
 
 export type SuccessScreen = {

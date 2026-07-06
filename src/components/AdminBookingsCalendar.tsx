@@ -128,7 +128,7 @@ export function AdminBookingsCalendar() {
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={previousMonth}
-            className="px-3 py-1 text-sm border border-gray-700 hover:bg-white/5 transition"
+            className="px-3 py-1 text-sm rounded-full border border-gray-700 hover:bg-white/5 transition"
           >
             ← Previous
           </button>
@@ -140,7 +140,7 @@ export function AdminBookingsCalendar() {
           </h3>
           <button
             onClick={nextMonth}
-            className="px-3 py-1 text-sm border border-gray-700 hover:bg-white/5 transition"
+            className="px-3 py-1 text-sm rounded-full border border-gray-700 hover:bg-white/5 transition"
           >
             Next →
           </button>
