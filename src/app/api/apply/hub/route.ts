@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { HubAccessPayload } from "@/lib/forms/hub-form";
+import { generateAndSendMagicLink } from "@/lib/auth/magic-link";
 import { memberAuthCallbackUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 
@@ -62,23 +63,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create auth user and send magic link
-    const { data: authData, error: authError } =
-      await supabase.auth.admin.generateLink({
-        type: "magiclink",
-        email,
-        options: {
-          redirectTo: memberAuthCallbackUrl(request),
-        },
-      });
-
-    if (authError || !authData.user) {
-      console.error("Auth link generation error:", authError);
-      return NextResponse.json(
-        { error: "Could not create account. Please try again." },
-        { status: 500 },
-      );
-    }
+    const authUser = await generateAndSendMagicLink(
+      email,
+      memberAuthCallbackUrl(request),
+    );
 
     // Insert hub access application
     const { error: insertError } = await supabase
@@ -95,14 +83,14 @@ export async function POST(request: Request) {
         passport_address: body.passport_username.trim(),
         terms_version: termsVersion,
         terms_accepted_at: new Date().toISOString(),
-        auth_user_id: authData.user.id,
+        auth_user_id: authUser.id,
         status: "pending",
         application_type: "hub_access",
       });
 
     if (insertError) {
       console.error("Hub access application insert error:", insertError);
-      await supabase.auth.admin.deleteUser(authData.user.id);
+      await supabase.auth.admin.deleteUser(authUser.id);
       return NextResponse.json(
         { error: "Could not save application. Try again." },
         { status: 500 },

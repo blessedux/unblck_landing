@@ -1,7 +1,6 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { memberAuthCallbackUrl } from "@/lib/site-url";
 import { useState, type FormEvent } from "react";
 
 type LoginFormProps = {
@@ -54,14 +53,18 @@ export function LoginForm({ passwordLoginEmails = [] }: LoginFormProps) {
         return;
       }
 
-      const { error: signInError } = await supabase.auth.signInWithOtp({
-          email,
-          options: {
-            emailRedirectTo: memberAuthCallbackUrl(),
-          },
-        });
+      const response = await fetch("/api/auth/magic-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
-      if (signInError) throw signInError;
+      const json = (await response.json()) as { error?: string };
+
+      if (!response.ok) {
+        throw new Error(json.error || "Could not send magic link");
+      }
+
       setSent(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

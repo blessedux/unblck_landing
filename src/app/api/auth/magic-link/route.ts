@@ -5,7 +5,7 @@ import { createSupabaseAdmin } from "@/lib/supabase/admin";
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as { email: string };
+    const body = (await request.json()) as { email?: string };
     const email = body.email?.trim().toLowerCase();
 
     if (!email) {
@@ -18,11 +18,11 @@ export async function POST(request: Request) {
       .from("unblck_applications")
       .select("id, auth_user_id")
       .eq("email", email)
-      .single();
+      .maybeSingle();
 
-    if (!application || !application.auth_user_id) {
+    if (!application?.auth_user_id) {
       return NextResponse.json(
-        { error: "No application found for this email" },
+        { error: "No account found for this email" },
         { status: 404 },
       );
     }
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("Resend API error:", error);
+    console.error("Magic link API error:", error);
     return NextResponse.json(
       { error: "Could not send email. Please try again." },
       { status: 500 },
