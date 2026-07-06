@@ -13,9 +13,8 @@ export function SiteNavbar() {
   }
 
   const navItems = [
-    { label: t.nav.accelerator, href: "#insta-awards" },
     { label: t.nav.hub, href: "#what-we-do" },
-    { label: t.nav.ourStory, href: "#our-story" },
+    { label: t.nav.accelerator, href: "#insta-awards" },
   ];
 
   const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {

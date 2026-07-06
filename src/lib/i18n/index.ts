@@ -9,4 +9,4 @@ export function getTranslations(locale: Locale): Translations {
   return dictionaries[locale];
 }
 
-export const defaultLocale: Locale = "en";
+export const defaultLocale: Locale = "es";
