@@ -73,6 +73,50 @@ export interface Translations {
   footer: {
     copyright: string;
   };
+  form: {
+    back: string;
+    continue: string;
+    submit: string;
+    submitting: string;
+    enterHint: string;
+    stepProgress: string;
+    validationRequired: string;
+    submissionFailed: string;
+    backToHome: string;
+    resendEmail: string;
+    resending: string;
+    emailSent: string;
+  };
+  hubApply: {
+    pageTitle: string;
+    pageDescription: string;
+    intro: {
+      question: string;
+      hint: string;
+    };
+    fields: {
+      fullName: { question: string; placeholder: string };
+      email: { question: string; placeholder: string };
+      projectName: { question: string; placeholder: string };
+      location: {
+        question: string;
+        choices: { santiago: string; relocating: string; remote: string };
+      };
+      passport: {
+        question: string;
+        hint: string;
+        placeholder: string;
+        linkText: string;
+      };
+      terms: { question: string; hint: string; linkText: string };
+    };
+    success: {
+      label: string;
+      title: string;
+      description: string;
+      extra: string;
+    };
+  };
 }
 
 export const en: Translations = {
@@ -189,5 +233,69 @@ export const en: Translations = {
   },
   footer: {
     copyright: "AI & blockchain accelerator",
+  },
+  form: {
+    back: "Back",
+    continue: "Continue",
+    submit: "Submit",
+    submitting: "Submitting...",
+    enterHint: "Enter ↵",
+    stepProgress: "{current} of {total}",
+    validationRequired: "Please complete this question to continue.",
+    submissionFailed: "Something went wrong",
+    backToHome: "Back to home",
+    resendEmail: "Resend email",
+    resending: "Sending...",
+    emailSent: "Email sent! Check your inbox.",
+  },
+  hubApply: {
+    pageTitle: "Request Access | Tellus Hub",
+    pageDescription:
+      "Request access to Tellus Blockchain Hub in Santiago de Chile.",
+    intro: {
+      question: "Request access to Tellus Hub in Santiago de Chile",
+      hint: "Quick application for workspace access. Takes 2 minutes.",
+    },
+    fields: {
+      fullName: {
+        question: "What's your name?",
+        placeholder: "Jane Doe",
+      },
+      email: {
+        question: "What's your email?",
+        placeholder: "you@company.com",
+      },
+      projectName: {
+        question: "What are you working on?",
+        placeholder: "Brief description of your project",
+      },
+      location: {
+        question: "Where are you based?",
+        choices: {
+          santiago: "Santiago",
+          relocating: "Relocating to Santiago",
+          remote: "Remote — not based in Chile",
+        },
+      },
+      passport: {
+        question: "What's your Stellar Passport username?",
+        hint: "We use this for identity verification. Don't have one yet?",
+        placeholder: "@yourname or your GitHub username",
+        linkText: "Create Passport",
+      },
+      terms: {
+        question: "Terms & Conditions",
+        hint: "I agree to the",
+        linkText: "Terms & Conditions",
+      },
+    },
+    success: {
+      label: "Application received",
+      title: "Check your email for a magic link",
+      description:
+        "We've sent you a secure login link. Click it to activate your account and access the hub.",
+      extra:
+        "Come to StellarBarrio at Tellus Blockchain Hub STGO — our monthly builder event.",
+    },
   },
 };

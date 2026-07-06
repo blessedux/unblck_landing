@@ -49,11 +49,11 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Variable | Description |
 |----------|-------------|
-| `NEXT_PUBLIC_SITE_URL` | Production origin (e.g. `https://unblck-landing.vercel.app`) — used for auth magic link redirects |
+| `NEXT_PUBLIC_SITE_URL` | App origin where users land after login (e.g. `https://unblck-landing.vercel.app`) |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (server-only) |
 | `RESEND_API_KEY` | Resend API key for magic link emails |
-| `RESEND_FROM` | Sender address (must match a verified Resend domain) |
+| `RESEND_FROM` | Sender on your **verified Resend domain** (e.g. `UNBLCK <noreply@yourdomain.com>`) |
 | `ADMIN_EMAILS` | Comma-separated admin allowlist (password login at `/login`) |
 | `ADMIN_PASSWORD` | Shared password for all `ADMIN_EMAILS` accounts |
 
@@ -70,13 +70,22 @@ This syncs every email in `ADMIN_EMAILS` into Supabase with the password from `A
 
 ## Magic link email (Resend)
 
-Magic links are generated via Supabase Auth but **sent through Resend** (not Supabase email), avoiding Supabase rate limits.
+Magic links are generated via Supabase Auth but **sent through Resend** (not Supabase email).
 
-1. Verify `unblck-landing.vercel.app` (or your domain) in [Resend](https://resend.com/domains).
-2. Set `RESEND_API_KEY`, `RESEND_FROM`, and `NEXT_PUBLIC_SITE_URL` in Vercel.
-3. In Supabase → Authentication → Email, disable automatic emails or configure a no-op send hook so Supabase doesn't double-send.
+**Two different domains — don't mix them up:**
 
-Default sender: `UNBLCK <onboarding@unblck-landing.vercel.app>`
+| Setting | What it's for | Example |
+|---------|---------------|---------|
+| `RESEND_FROM` | Email **sender** — must be on a domain verified in Resend | `UNBLCK <noreply@tellus.foundation>` |
+| `NEXT_PUBLIC_SITE_URL` | App **redirect** after the user clicks the link | `https://unblck-landing.vercel.app` |
+
+Resend does not allow sending from `*.vercel.app`. Verify your own domain in Resend, then set `RESEND_FROM` to an address on that domain.
+
+**Checklist:**
+1. Resend → Domains: verify your sending domain, set `RESEND_FROM` in Vercel
+2. Vercel: `NEXT_PUBLIC_SITE_URL` = your live app URL (Vercel or custom)
+3. Supabase → Auth → URL Configuration: **Site URL** and **Redirect URLs** must match `NEXT_PUBLIC_SITE_URL` (e.g. `https://unblck-landing.vercel.app/auth/callback**`)
+4. Optional: disable Supabase built-in auth emails so only Resend sends
 
 ## Booking timezone
 

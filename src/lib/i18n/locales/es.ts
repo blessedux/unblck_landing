@@ -17,9 +17,9 @@ export const es: Translations = {
     label: "Qué hacemos",
     heading: "Todo lo que necesitas para pasar de builder a startup.",
     intro:
-      "UNBLCK es un programa de aceleración denro del Tellus Blockchain Hub STGO para lanzar y escalar en Web3 integrando tecnologías emergentes, AI y blockchain, sin hacerlo en solitario.",
+      "UNBLCK es un programa de aceleración dentro del Tellus Blockchain Hub STGO para lanzar y escalar en Web3 integrando tecnologías emergentes, AI y blockchain, sin hacerlo en solitario.",
     introLink: {
-      before: "UNBLCK es un programa de aceleración denro del ",
+      before: "UNBLCK es un programa de aceleración dentro del ",
       label: "Tellus Blockchain Hub STGO",
       after:
         " para lanzar y escalar en Web3 integrando tecnologías emergentes, AI y blockchain, sin hacerlo en solitario.",
@@ -87,7 +87,7 @@ export const es: Translations = {
     grantAmount: "$5.000",
     grantType: "grant sin dilución",
     fundDescription:
-      "Sin equity ni participación accionaria, capital y aceleración para llevar tu startup construida sobre al red de Stellar de prototipo al mercado.",
+      "Sin equity ni participación accionaria, capital y aceleración para llevar tu startup construida sobre la red de Stellar de prototipo al mercado.",
     tags: [
       { id: "non-dilutive", label: "Sin dilución" },
       { id: "demo-day-pipeline", label: "Camino a demo day" },
@@ -116,5 +116,69 @@ export const es: Translations = {
   },
   footer: {
     copyright: "Aceleradora de AI y blockchain",
+  },
+  form: {
+    back: "Atrás",
+    continue: "Continuar",
+    submit: "Enviar",
+    submitting: "Enviando...",
+    enterHint: "Enter ↵",
+    stepProgress: "{current} de {total}",
+    validationRequired: "Completa esta pregunta para continuar.",
+    submissionFailed: "Algo salió mal",
+    backToHome: "Volver al inicio",
+    resendEmail: "Reenviar email",
+    resending: "Enviando...",
+    emailSent: "¡Email enviado! Revisa tu bandeja de entrada.",
+  },
+  hubApply: {
+    pageTitle: "Pedir acceso | Tellus Hub",
+    pageDescription:
+      "Pide acceso al Tellus Blockchain Hub en Santiago de Chile.",
+    intro: {
+      question: "Pide acceso al Tellus Hub en Santiago de Chile",
+      hint: "Postulación rápida para acceso al workspace. Toma 2 minutos.",
+    },
+    fields: {
+      fullName: {
+        question: "¿Cómo te llamas?",
+        placeholder: "Jane Doe",
+      },
+      email: {
+        question: "¿Cuál es tu email?",
+        placeholder: "tu@empresa.com",
+      },
+      projectName: {
+        question: "¿En qué estás trabajando?",
+        placeholder: "Breve descripción de tu proyecto",
+      },
+      location: {
+        question: "¿Dónde estás ubicado?",
+        choices: {
+          santiago: "Santiago",
+          relocating: "Me estoy mudando a Santiago",
+          remote: "Remoto — fuera de Chile",
+        },
+      },
+      passport: {
+        question: "¿Cuál es tu usuario de Stellar Passport?",
+        hint: "Lo usamos para verificar tu identidad. ¿Aún no tienes uno?",
+        placeholder: "@tunombre o tu usuario de GitHub",
+        linkText: "Crear Passport",
+      },
+      terms: {
+        question: "Términos y Condiciones",
+        hint: "Acepto los",
+        linkText: "Términos y Condiciones",
+      },
+    },
+    success: {
+      label: "Postulación recibida",
+      title: "Revisa tu email para el magic link",
+      description:
+        "Te enviamos un enlace seguro de inicio de sesión. Haz clic para activar tu cuenta y acceder al hub.",
+      extra:
+        "Ven a StellarBarrio en Tellus Blockchain Hub STGO — nuestro evento mensual de builders.",
+    },
   },
 };

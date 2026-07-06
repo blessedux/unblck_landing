@@ -1,3 +1,8 @@
+export type ChoiceOption = {
+  value: string;
+  label: string;
+};
+
 export type FormStep<T extends Record<string, string>> = {
   id: keyof T | "intro";
   type: "intro" | "text" | "email" | "url" | "textarea" | "choice" | "checkbox";
@@ -5,7 +10,7 @@ export type FormStep<T extends Record<string, string>> = {
   hint?: string;
   placeholder?: string;
   required?: boolean;
-  choices?: string[];
+  choices?: string[] | ChoiceOption[];
   linkText?: string;
   linkUrl?: string;
 };

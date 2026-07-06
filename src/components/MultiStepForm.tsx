@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState, type KeyboardEvent } from "react";
-import type { FormStep, SuccessScreen } from "@/lib/forms/types";
+import { useLocale } from "@/contexts/LocaleContext";
+import type { ChoiceOption, FormStep, SuccessScreen } from "@/lib/forms/types";
 
 type MultiStepFormProps<T extends Record<string, string>> = {
   formSteps: FormStep<T>[];
@@ -14,6 +15,15 @@ type MultiStepFormProps<T extends Record<string, string>> = {
     values: T,
   ) => Promise<string | null>;
 };
+
+function normalizeChoices(
+  choices?: string[] | ChoiceOption[],
+): ChoiceOption[] {
+  if (!choices) return [];
+  return choices.map((choice) =>
+    typeof choice === "string" ? { value: choice, label: choice } : choice,
+  );
+}
 
 function getAnswerableSteps<T extends Record<string, string>>(
   steps: FormStep<T>[],
@@ -39,6 +49,7 @@ export function MultiStepForm<T extends Record<string, string>>({
   successScreen,
   onValidateStep,
 }: MultiStepFormProps<T>) {
+  const { t } = useLocale();
   const answerableSteps = useMemo(
     () => getAnswerableSteps(formSteps),
     [formSteps],
@@ -66,7 +77,7 @@ export function MultiStepForm<T extends Record<string, string>>({
 
   const goNext = async () => {
     if (!canAdvance(currentStep, values)) {
-      setError("Please complete this question to continue.");
+      setError(t.form.validationRequired);
       return;
     }
 
@@ -104,7 +115,7 @@ export function MultiStepForm<T extends Record<string, string>>({
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "Something went wrong",
+          : t.form.submissionFailed,
       );
     } finally {
       setSubmitting(false);
@@ -185,22 +196,20 @@ export function MultiStepForm<T extends Record<string, string>>({
                 href="/"
                 className="inline-block border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground"
               >
-                Back to home
+                {t.form.backToHome}
               </Link>
-              
+
               <button
                 onClick={resendEmail}
                 disabled={resending}
                 className="inline-block border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground disabled:opacity-50"
               >
-                {resending ? "Sending..." : "Resend email"}
+                {resending ? t.form.resending : t.form.resendEmail}
               </button>
             </div>
-            
+
             {resendSuccess && (
-              <p className="mt-4 text-sm text-green-500">
-                Email sent! Check your inbox.
-              </p>
+              <p className="mt-4 text-sm text-green-500">{t.form.emailSent}</p>
             )}
           </div>
         </div>
@@ -241,8 +250,16 @@ export function MultiStepForm<T extends Record<string, string>>({
             ) : (
               <div>
                 <p className="text-xs text-muted">
-                  {answerableSteps.findIndex((s) => s.id === currentStep.id) + 1}{" "}
-                  of {answerableSteps.length}
+                  {t.form.stepProgress
+                    .replace(
+                      "{current}",
+                      String(
+                        answerableSteps.findIndex(
+                          (s) => s.id === currentStep.id,
+                        ) + 1,
+                      ),
+                    )
+                    .replace("{total}", String(answerableSteps.length))}
                 </p>
                 <h1 className="mt-3 text-xl font-medium sm:text-2xl">
                   {currentStep.question}
@@ -266,20 +283,20 @@ export function MultiStepForm<T extends Record<string, string>>({
                 <div className="mt-6">
                   {currentStep.type === "choice" ? (
                     <div className="grid gap-2">
-                      {currentStep.choices?.map((choice) => {
-                        const selected = values[fieldKey] === choice;
+                      {normalizeChoices(currentStep.choices).map((choice) => {
+                        const selected = values[fieldKey] === choice.value;
                         return (
                           <button
-                            key={choice}
+                            key={choice.value}
                             type="button"
-                            onClick={() => updateValue(fieldKey, choice)}
+                            onClick={() => updateValue(fieldKey, choice.value)}
                             className={`border px-4 py-3 text-left text-sm transition ${
                               selected
                                 ? "border-foreground bg-foreground text-background"
                                 : "border-border text-muted hover:border-foreground hover:text-foreground"
                             }`}
                           >
-                            {choice}
+                            {choice.label}
                           </button>
                         );
                       })}
@@ -345,7 +362,7 @@ export function MultiStepForm<T extends Record<string, string>>({
                   onClick={goBack}
                   className="border border-border px-4 py-2 text-sm text-muted transition hover:border-foreground hover:text-foreground"
                 >
-                  Back
+                  {t.form.back}
                 </button>
               )}
               <button
@@ -356,15 +373,15 @@ export function MultiStepForm<T extends Record<string, string>>({
               >
                 {stepIndex === formSteps.length - 1
                   ? submitting
-                    ? "Submitting..."
-                    : "Submit"
-                  : "Continue"}
+                    ? t.form.submitting
+                    : t.form.submit
+                  : t.form.continue}
               </button>
               {currentStep.type !== "intro" &&
                 currentStep.type !== "textarea" &&
                 currentStep.type !== "choice" &&
                 currentStep.type !== "checkbox" && (
-                  <span className="text-xs text-muted">Enter ↵</span>
+                  <span className="text-xs text-muted">{t.form.enterHint}</span>
                 )}
             </div>
           </div>

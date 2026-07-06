@@ -9,10 +9,13 @@ function getResendClient() {
 }
 
 function getFromAddress() {
-  return (
-    process.env.RESEND_FROM ??
-    "UNBLCK <onboarding@unblck-landing.vercel.app>"
-  );
+  const from = process.env.RESEND_FROM?.trim();
+  if (!from) {
+    throw new Error(
+      "RESEND_FROM is not configured — use an address on your verified Resend domain",
+    );
+  }
+  return from;
 }
 
 export async function sendMagicLinkEmail({
