@@ -1,5 +1,7 @@
 export const CANONICAL_SITE_ORIGIN = "https://unblck.cl";
 
+const PRODUCTION_HOSTS = new Set(["unblck.cl", "www.unblck.cl"]);
+
 const LEGACY_VERCEL_HOSTS = new Set([
   "unblck-landing.vercel.app",
   "unblck-landing-mentes-projects.vercel.app",
@@ -32,6 +34,15 @@ function resolveCanonicalOrigin(url: string): string {
 
 /** Production site origin for auth redirects and emails. */
 export function getSiteUrl(request?: Request): string {
+  if (request) {
+    const host =
+      request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+    const bare = host?.split(":")[0]?.toLowerCase();
+    if (bare && PRODUCTION_HOSTS.has(bare)) {
+      return `https://${bare}`;
+    }
+  }
+
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (fromEnv) {
     return resolveCanonicalOrigin(fromEnv);

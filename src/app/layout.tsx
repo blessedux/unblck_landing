@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { AuthHashRedirect } from "@/components/AuthHashRedirect";
 import { SiteNavbar } from "@/components/SiteNavbar";
 import { LocaleProvider } from "@/contexts/LocaleContext";
 import "./globals.css";
@@ -50,6 +51,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LocaleProvider>
+          <AuthHashRedirect />
           <LanguageToggle />
           <SiteNavbar />
           {children}
