@@ -1,7 +1,22 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import {
+  CANONICAL_SITE_ORIGIN,
+  shouldRedirectToCanonicalHost,
+} from "@/lib/site-url";
 
 export async function middleware(request: NextRequest) {
+  const host = request.headers.get("host") ?? "";
+  if (
+    process.env.VERCEL_ENV === "production" &&
+    shouldRedirectToCanonicalHost(host)
+  ) {
+    const url = request.nextUrl.clone();
+    url.protocol = "https:";
+    url.host = new URL(CANONICAL_SITE_ORIGIN).host;
+    return NextResponse.redirect(url, 308);
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });

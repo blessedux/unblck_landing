@@ -1,6 +1,7 @@
 import type { User } from "@supabase/supabase-js";
 import { sendMagicLinkEmail } from "@/lib/email/send-magic-link";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
+import { ensureMagicLinkRedirect } from "@/lib/site-url";
 
 export async function generateAndSendMagicLink(
   email: string,
@@ -18,7 +19,10 @@ export async function generateAndSendMagicLink(
     throw error ?? new Error("Could not generate magic link");
   }
 
-  const magicLink = data.properties?.action_link;
+  const magicLink = ensureMagicLinkRedirect(
+    data.properties?.action_link ?? "",
+    redirectTo,
+  );
   if (!magicLink) {
     throw new Error("No action link returned from Supabase");
   }

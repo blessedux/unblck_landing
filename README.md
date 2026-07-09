@@ -49,7 +49,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Variable | Description |
 |----------|-------------|
-| `NEXT_PUBLIC_SITE_URL` | App origin where users land after login (e.g. `https://unblck-landing.vercel.app`) |
+| `NEXT_PUBLIC_SITE_URL` | App origin where users land after login (e.g. `https://unblck.cl`) |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (server-only) |
 | `RESEND_API_KEY` | Resend API key for magic link emails |
@@ -77,14 +77,14 @@ Magic links are generated via Supabase Auth but **sent through Resend** (not Sup
 | Setting | What it's for | Example |
 |---------|---------------|---------|
 | `RESEND_FROM` | Email **sender** — must be on a domain verified in Resend | `UNBLCK <noreply@tellus.foundation>` |
-| `NEXT_PUBLIC_SITE_URL` | App **redirect** after the user clicks the link | `https://unblck-landing.vercel.app` |
+| `NEXT_PUBLIC_SITE_URL` | App **redirect** after the user clicks the link | `https://unblck.cl` |
 
 Resend does not allow sending from `*.vercel.app`. Verify your own domain in Resend, then set `RESEND_FROM` to an address on that domain.
 
 **Checklist:**
 1. Resend → Domains: verify your sending domain, set `RESEND_FROM` in Vercel
 2. Vercel: `NEXT_PUBLIC_SITE_URL` = your live app URL (Vercel or custom)
-3. Supabase → Auth → URL Configuration: **Site URL** and **Redirect URLs** must match `NEXT_PUBLIC_SITE_URL` (e.g. `https://unblck-landing.vercel.app/auth/callback**`)
+3. Supabase → Auth → URL Configuration: **Site URL** = `https://unblck.cl` and **Redirect URLs** must include `https://unblck.cl/auth/callback**` (and `https://www.unblck.cl/auth/callback**` if you use www)
 4. Supabase → Authentication → Providers → **Email: keep enabled** (required for `generateLink` magic links and password login). We send emails via Resend only — Supabase does not need custom SMTP. Do **not** disable the Email provider; that causes "Email logins are disabled".
 
 ## Booking timezone
