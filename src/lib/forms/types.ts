@@ -10,6 +10,11 @@ export type ChoiceGate = {
   linkUrl: string;
 };
 
+export type TermsHighlight = {
+  icon: string;
+  text: string;
+};
+
 export type FormStep<T extends Record<string, string>> = {
   id: keyof T | "intro";
   type: "intro" | "text" | "email" | "url" | "textarea" | "choice" | "checkbox";
@@ -20,6 +25,8 @@ export type FormStep<T extends Record<string, string>> = {
   choices?: string[] | ChoiceOption[];
   linkText?: string;
   linkUrl?: string;
+  fullTermsLink?: string;
+  highlights?: TermsHighlight[];
   /** Blocks continue when a choice value is selected; shows external CTA instead */
   gate?: ChoiceGate;
 };

@@ -115,6 +115,8 @@ export function getHubAccessFormSteps(
       hint: copy.fields.terms.hint,
       linkText: copy.fields.terms.linkText,
       linkUrl: "/terms",
+      fullTermsLink: copy.fields.terms.fullTermsLink,
+      highlights: copy.fields.terms.highlights,
       required: true,
     },
   ];
