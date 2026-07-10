@@ -27,7 +27,7 @@ export async function subscribeEmail(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email,
+        email_address: email,
         ...(metadata ? { metadata } : {}),
       }),
     });

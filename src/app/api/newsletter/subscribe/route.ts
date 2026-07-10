@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sendNewsletterWelcomeEmail } from "@/lib/email/send-newsletter-welcome-email";
 import { subscribeEmail } from "@/lib/newsletter/buttondown";
 
 function isValidEmail(email: string) {
@@ -21,6 +22,12 @@ export async function POST(request: Request) {
         { error: result.error ?? "Subscription failed" },
         { status: 502 },
       );
+    }
+
+    try {
+      await sendNewsletterWelcomeEmail({ to: email });
+    } catch (emailError) {
+      console.error("Newsletter welcome email error:", emailError);
     }
 
     return NextResponse.json({ ok: true });
