@@ -36,6 +36,14 @@ export function ApplicationDetail({ application }: ApplicationDetailProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const handleRevoke = async () => {
+    const confirmed = window.confirm(
+      "¿Revocar acceso al hub? Se eliminará el perfil del miembro, se cancelarán las reservas futuras de salas y se enviará un correo de notificación.",
+    );
+    if (!confirmed) return;
+    await handleUpdate("rejected");
+  };
+
   const handleUpdate = async (newStatus?: string) => {
     setLoading(true);
     setError(null);
@@ -220,6 +228,26 @@ export function ApplicationDetail({ application }: ApplicationDetailProps) {
                   {loading ? "Rejecting..." : "Reject"}
                 </button>
               </>
+            )}
+
+            {status === "approved" && (
+              <button
+                onClick={handleRevoke}
+                disabled={loading}
+                className="px-6 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition disabled:opacity-50"
+              >
+                {loading ? "Revocando..." : "Revocar acceso"}
+              </button>
+            )}
+
+            {status === "rejected" && (
+              <button
+                onClick={() => handleUpdate("approved")}
+                disabled={loading}
+                className="px-6 py-2 rounded-full bg-green-500 text-white hover:bg-green-600 transition disabled:opacity-50"
+              >
+                {loading ? "Reaprobando..." : "Re-approve"}
+              </button>
             )}
           </div>
 

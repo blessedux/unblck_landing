@@ -3,7 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { isAdminEmail } from "@/lib/auth/admin";
 import { sendApprovalEmail } from "@/lib/email/send-approval-email";
+import { sendRevocationEmail } from "@/lib/email/send-revocation-email";
 import { getSiteUrl } from "@/lib/site-url";
+import {
+  isValidStatusTransition,
+  revokeMemberAccess,
+} from "@/lib/admin/revoke-member-access";
 
 export async function PATCH(
   request: Request,
@@ -30,7 +35,6 @@ export async function PATCH(
 
     const adminSupabase = createSupabaseAdmin();
 
-    // Get the application
     const { data: application } = await adminSupabase
       .from("unblck_applications")
       .select("*")
@@ -44,15 +48,49 @@ export async function PATCH(
       );
     }
 
-    // Update application
+    if (
+      body.status &&
+      body.status !== application.status &&
+      !isValidStatusTransition(application.status, body.status)
+    ) {
+      return NextResponse.json(
+        { error: "Invalid status transition" },
+        { status: 400 }
+      );
+    }
+
+    const justRevoked =
+      body.status === "rejected" && application.status === "approved";
+    const justApproved =
+      body.status === "approved" && application.status !== "approved";
+
+    if (justRevoked && application.auth_user_id) {
+      try {
+        await revokeMemberAccess(adminSupabase, application.auth_user_id);
+      } catch (revokeError) {
+        console.error("Member revocation error:", revokeError);
+        return NextResponse.json(
+          { error: "Could not revoke member access" },
+          { status: 500 }
+        );
+      }
+    }
+
+    const updatePayload: Record<string, unknown> = {};
+    if (body.status !== undefined) updatePayload.status = body.status;
+    if (body.reviewer_notes !== undefined) {
+      updatePayload.reviewer_notes = body.reviewer_notes;
+    }
+    if (body.passport_verified !== undefined) {
+      updatePayload.passport_verified = body.passport_verified;
+    }
+    if (body.stellar_funded !== undefined) {
+      updatePayload.stellar_funded = body.stellar_funded;
+    }
+
     const { error: updateError } = await adminSupabase
       .from("unblck_applications")
-      .update({
-        status: body.status,
-        reviewer_notes: body.reviewer_notes,
-        passport_verified: body.passport_verified,
-        stellar_funded: body.stellar_funded,
-      })
+      .update(updatePayload)
       .eq("id", id);
 
     if (updateError) {
@@ -63,7 +101,6 @@ export async function PATCH(
       );
     }
 
-    // If approved, upsert member_profiles
     if (body.status === "approved" && application.auth_user_id) {
       const { error: profileError } = await adminSupabase
         .from("member_profiles")
@@ -72,8 +109,9 @@ export async function PATCH(
             auth_user_id: application.auth_user_id,
             application_id: application.id,
             email: application.email,
-            stellar_funded: body.stellar_funded ?? false,
-            passport_verified: body.passport_verified ?? false,
+            stellar_funded: body.stellar_funded ?? application.stellar_funded,
+            passport_verified:
+              body.passport_verified ?? application.passport_verified,
           },
           { onConflict: "auth_user_id" }
         );
@@ -87,20 +125,29 @@ export async function PATCH(
       }
     }
 
-    // Send confirmation email on transition into approved status
-    const justApproved =
-      body.status === "approved" && application.status !== "approved";
+    const siteUrl = getSiteUrl(request);
 
     if (justApproved && application.email) {
       try {
         await sendApprovalEmail({
           to: application.email,
           fullName: application.full_name,
-          loginUrl: `${getSiteUrl(request)}/login`,
+          loginUrl: `${siteUrl}/login`,
         });
       } catch (emailError) {
-        // Don't fail the approval if the email can't be sent
         console.error("Approval email error:", emailError);
+      }
+    }
+
+    if (justRevoked && application.email) {
+      try {
+        await sendRevocationEmail({
+          to: application.email,
+          fullName: application.full_name,
+          reapplyUrl: `${siteUrl}/apply/hub`,
+        });
+      } catch (emailError) {
+        console.error("Revocation email error:", emailError);
       }
     }
 
