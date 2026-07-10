@@ -1,19 +1,12 @@
 import { Metadata } from "next";
-import { RoomBooking } from "@/components/RoomBooking";
+import { RoomsPageContent } from "@/components/RoomsPageContent";
 
 export const metadata: Metadata = {
-  title: "Book a Room - Tellus Hub",
-  description: "Reserve a workspace at Tellus Blockchain Hub STGO",
+  title: "Reservar sala | Tellus Hub",
+  description:
+    "Reserva un espacio de trabajo en Tellus Blockchain Hub STGO",
 };
 
 export default function RoomsPage() {
-  return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold text-black mb-6">Book a Room</h1>
-      <p className="text-black/60 mb-8">
-        Reserve meeting rooms, phone booths, and our podcast studio.
-      </p>
-      <RoomBooking />
-    </div>
-  );
+  return <RoomsPageContent />;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Users, X, Clock, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,9 @@ import {
   isValidSlotStart,
 } from "@/lib/room-slots";
 import { HUB_TIME_ZONE } from "@/lib/dates";
+import { useLocale } from "@/contexts/LocaleContext";
+import { getRoomTypeLabel } from "@/lib/rooms/room-types";
+import { RoomImagePlaceholder } from "@/components/RoomImagePlaceholder";
 
 type Room = {
   id: string;
@@ -37,6 +40,9 @@ type Availability = {
 };
 
 export function RoomBooking() {
+  const { t, locale } = useLocale();
+  const copy = t.memberHub.rooms;
+
   const [availability, setAvailability] = useState<Availability | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [duration, setDuration] = useState<30 | 60>(30);
@@ -44,12 +50,16 @@ export function RoomBooking() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const todayLabel = new Intl.DateTimeFormat("en-US", {
-    timeZone: HUB_TIME_ZONE,
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  }).format(new Date());
+  const todayLabel = useMemo(
+    () =>
+      new Intl.DateTimeFormat(locale === "es" ? "es-CL" : "en-US", {
+        timeZone: HUB_TIME_ZONE,
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+      }).format(new Date()),
+    [locale],
+  );
 
   const loadAvailability = useCallback(async () => {
     try {
@@ -58,9 +68,9 @@ export function RoomBooking() {
       setAvailability(await res.json());
     } catch (err) {
       console.error(err);
-      setError("Could not load rooms");
+      setError(copy.loadFailed);
     }
-  }, []);
+  }, [copy.loadFailed]);
 
   useEffect(() => {
     loadAvailability();
@@ -87,21 +97,21 @@ export function RoomBooking() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Booking failed");
+        throw new Error(data.error || copy.bookingFailed);
       }
 
-      setSuccess(data.message || `Booked ${selectedRoom.name}!`);
+      setSuccess(data.message || `${selectedRoom.name}!`);
       setSelectedRoom(null);
       await loadAvailability();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Booking failed");
+      setError(err instanceof Error ? err.message : copy.bookingFailed);
     } finally {
       setLoading(false);
     }
   };
 
   const handleCancelBooking = async (bookingId: string) => {
-    if (!confirm("Cancel this booking?")) return;
+    if (!confirm(copy.cancelConfirm)) return;
 
     try {
       const res = await fetch(`/api/hub/room-bookings/${bookingId}`, {
@@ -110,25 +120,23 @@ export function RoomBooking() {
 
       if (!res.ok) throw new Error("Failed to cancel");
 
-      setSuccess("Booking cancelled");
+      setSuccess(copy.bookingCancelled);
       await loadAvailability();
     } catch (err) {
       console.error(err);
-      setError("Could not cancel booking");
+      setError(copy.cancelFailed);
     }
   };
 
   if (!availability) {
-    return (
-      <p className="text-black/60 text-sm">Loading rooms...</p>
-    );
+    return <p className="text-sm text-black/60">{copy.loading}</p>;
   }
 
   const myBookingsToday = Object.entries(availability.bookings_by_room).flatMap(
     ([roomId, bookings]) =>
       bookings
         .filter((b) => b.is_mine)
-        .map((b) => ({ ...b, roomId }))
+        .map((b) => ({ ...b, roomId })),
   );
 
   const roomBookings = selectedRoom
@@ -145,45 +153,45 @@ export function RoomBooking() {
     : new Map<string, "booked" | "pending">();
 
   const isEventSpace = selectedRoom?.type === "event_space";
+  const tierLabel = copy.memberTiers[availability.member_tier];
 
   return (
     <div className="space-y-6">
       {error && (
-        <div className="rounded-2xl border border-red-700/30 bg-red-700/10 text-red-800 p-4 text-sm">
+        <div className="rounded-2xl border border-red-700/30 bg-red-700/10 p-4 text-sm text-red-800">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="rounded-2xl border border-green-700/30 bg-green-700/10 text-green-800 p-4 text-sm">
+        <div className="rounded-2xl border border-green-700/30 bg-green-700/10 p-4 text-sm text-green-800">
           {success}
         </div>
       )}
 
       <div className="rounded-2xl border border-black/10 bg-white/50 p-4">
-        <p className="text-xs uppercase tracking-wide text-black/50 mb-1">
-          Booking for today
+        <p className="mb-1 text-xs uppercase tracking-wide text-black/50">
+          {copy.bookingForToday}
         </p>
         <p className="font-semibold text-black">{todayLabel}</p>
-        <p className="text-sm text-black/60 mt-1">
-          Tier: {availability.member_tier}
+        <p className="mt-1 text-sm text-black/60">
+          {copy.tier}: {tierLabel}
           {availability.member_tier === "Builder" &&
-            " · 30 or 60 min, once per day"}
+            ` · ${copy.builderTierHint}`}
           {availability.member_tier === "Founder" &&
-            " · Book anytime, no hot desk required"}
+            ` · ${copy.founderTierHint}`}
         </p>
       </div>
 
       {!availability.can_book_rooms && (
-        <div className="rounded-2xl border border-amber-700/30 bg-amber-700/10 p-4 flex gap-3">
+        <div className="flex gap-3 rounded-2xl border border-amber-700/30 bg-amber-700/10 p-4">
           <AlertCircle className="shrink-0 text-amber-800" size={20} />
           <div>
-            <p className="font-medium text-amber-900 text-sm">
-              No hot desk scheduled for today
+            <p className="text-sm font-medium text-amber-900">
+              {copy.noHotDeskTitle}
             </p>
-            <p className="text-sm text-amber-800/80 mt-1">
-              Builders need a hub access day booked before reserving a room.
-              Book a day on the hub home calendar first.
+            <p className="mt-1 text-sm text-amber-800/80">
+              {copy.noHotDeskBody}
             </p>
           </div>
         </div>
@@ -191,13 +199,13 @@ export function RoomBooking() {
 
       {myBookingsToday.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold text-black mb-3">
-            My bookings today
+          <h3 className="mb-3 text-lg font-semibold text-black">
+            {copy.myBookingsToday}
           </h3>
           <div className="space-y-2">
             {myBookingsToday.map((booking) => {
               const room = availability.rooms.find(
-                (r) => r.id === booking.roomId
+                (r) => r.id === booking.roomId,
               );
               return (
                 <div
@@ -206,16 +214,16 @@ export function RoomBooking() {
                 >
                   <div>
                     <p className="font-medium text-black">
-                      {room?.name || "Room"}
+                      {room?.name || copy.roomFallback}
                     </p>
                     <p className="text-sm text-black/60">
                       {formatSlotLabel(
                         booking.start_time,
-                        booking.duration_minutes
+                        booking.duration_minutes,
                       )}
                       {booking.status === "pending_admin" && (
                         <span className="ml-2 text-amber-700">
-                          · Pending admin
+                          · {copy.pendingAdmin}
                         </span>
                       )}
                     </p>
@@ -226,7 +234,7 @@ export function RoomBooking() {
                     onClick={() => handleCancelBooking(booking.id)}
                     className="rounded-full border-black/20 text-black hover:bg-black/5"
                   >
-                    Cancel
+                    {copy.cancelBooking}
                   </Button>
                 </div>
               );
@@ -236,43 +244,54 @@ export function RoomBooking() {
       )}
 
       <div>
-        <h3 className="text-lg font-semibold text-black mb-4">Rooms</h3>
+        <h3 className="mb-4 text-lg font-semibold text-black">
+          {copy.roomsHeading}
+        </h3>
         <div className="grid gap-4 md:grid-cols-2">
           {availability.rooms.map((room) => {
             const bookings = availability.bookings_by_room[room.id] || [];
             const bookedCount = bookings.length;
             const isEvent = room.type === "event_space";
+            const typeLabel = getRoomTypeLabel(copy.roomTypes, room.type);
 
             return (
               <button
                 key={room.id}
                 type="button"
                 onClick={() => setSelectedRoom(room)}
-                className="text-left rounded-2xl border border-black/10 bg-white/50 p-5 hover:bg-white/70 transition-colors"
+                className="rounded-2xl border border-black/10 bg-white/50 p-5 text-left transition-colors hover:bg-white/70"
               >
+                <RoomImagePlaceholder className="mb-4" />
                 <div className="flex items-start justify-between gap-2">
-                  <h4 className="font-semibold text-black">{room.name}</h4>
+                  <div>
+                    <h4 className="font-semibold text-black">{room.name}</h4>
+                    <p className="mt-0.5 text-xs text-black/50">{typeLabel}</p>
+                  </div>
                   {isEvent && (
-                    <span className="shrink-0 text-[10px] uppercase tracking-wide bg-amber-700/15 text-amber-900 px-2 py-0.5 rounded-full">
-                      Admin approval
+                    <span className="shrink-0 rounded-full bg-amber-700/15 px-2 py-0.5 text-[10px] uppercase tracking-wide text-amber-900">
+                      {copy.adminApprovalBadge}
                     </span>
                   )}
                 </div>
                 <div className="mt-2 space-y-1 text-sm text-black/60">
                   <div className="flex items-center gap-2">
                     <Users size={14} />
-                    <span>Capacity: {room.capacity}</span>
+                    <span>
+                      {copy.capacity.replace("{count}", String(room.capacity))}
+                    </span>
                   </div>
                   <p className="text-xs text-black/50">
-                    {bookedCount} slot{bookedCount !== 1 ? "s" : ""} booked
-                    today
+                    {copy.slotsBookedToday.replace(
+                      "{count}",
+                      String(bookedCount),
+                    )}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-1.5 mt-3">
+                <div className="mt-3 flex flex-wrap gap-1.5">
                   {room.amenities.slice(0, 3).map((amenity, i) => (
                     <span
                       key={i}
-                      className="text-xs bg-black/5 px-2 py-0.5 rounded-full text-black/70"
+                      className="rounded-full bg-black/5 px-2 py-0.5 text-xs text-black/70"
                     >
                       {amenity}
                     </span>
@@ -285,14 +304,18 @@ export function RoomBooking() {
       </div>
 
       {selectedRoom && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4">
-          <div className="bg-[#d4a574] border border-black/10 rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex items-start justify-between mb-4">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center">
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-black/10 bg-[#d4a574] p-6">
+            <RoomImagePlaceholder className="mb-4" />
+            <div className="mb-4 flex items-start justify-between">
               <div>
                 <h3 className="text-xl font-semibold text-black">
                   {selectedRoom.name}
                 </h3>
-                <p className="text-sm text-black/60 mt-1">{todayLabel}</p>
+                <p className="mt-1 text-sm text-black/60">
+                  {getRoomTypeLabel(copy.roomTypes, selectedRoom.type)}
+                </p>
+                <p className="text-sm text-black/60">{todayLabel}</p>
               </div>
               <button
                 type="button"
@@ -304,15 +327,14 @@ export function RoomBooking() {
             </div>
 
             {isEventSpace && (
-              <div className="rounded-xl border border-amber-700/30 bg-amber-700/10 p-3 mb-4 text-sm text-amber-900">
-                Event Space requires admin confirmation and may include an
-                additional charge.
+              <div className="mb-4 rounded-xl border border-amber-700/30 bg-amber-700/10 p-3 text-sm text-amber-900">
+                {copy.eventSpaceNotice}
               </div>
             )}
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-black/70 mb-2">
-                Duration
+              <label className="mb-2 block text-sm font-medium text-black/70">
+                {copy.duration}
               </label>
               <div className="flex gap-3">
                 {([30, 60] as const).map((mins) => (
@@ -320,13 +342,13 @@ export function RoomBooking() {
                     key={mins}
                     type="button"
                     onClick={() => setDuration(mins)}
-                    className={`flex-1 py-2 rounded-full border text-sm font-medium transition-colors ${
+                    className={`flex-1 rounded-full border py-2 text-sm font-medium transition-colors ${
                       duration === mins
-                        ? "bg-black text-[#d4a574] border-black"
-                        : "bg-white/50 text-black border-black/10 hover:bg-white/70"
+                        ? "border-black bg-black text-[#d4a574]"
+                        : "border-black/10 bg-white/50 text-black hover:bg-white/70"
                     }`}
                   >
-                    {mins} min
+                    {copy.durationMinutes.replace("{mins}", String(mins))}
                   </button>
                 ))}
               </div>
@@ -334,10 +356,10 @@ export function RoomBooking() {
 
             <div className="mb-2 flex items-center gap-2 text-sm text-black/60">
               <Clock size={14} />
-              <span>Select a time slot</span>
+              <span>{copy.selectTimeSlot}</span>
             </div>
 
-            <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory">
+            <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2 snap-x snap-mandatory">
               {generateTimeSlots().map((slot) => {
                 const blockStatus = blockedStarts.get(slot);
                 const isBlocked = !!blockStatus;
@@ -357,11 +379,14 @@ export function RoomBooking() {
                     blockStatus === "pending"
                       ? "border-amber-700/40 bg-amber-700/15 text-amber-900 cursor-not-allowed"
                       : "border-black/10 bg-black/5 text-black/40 cursor-not-allowed";
-                  label = blockStatus === "pending" ? "Pending" : "Booked";
+                  label =
+                    blockStatus === "pending"
+                      ? copy.slotPending
+                      : copy.slotBooked;
                 } else if (invalidStart) {
                   cardClass +=
                     "border-black/5 bg-black/5 text-black/25 cursor-not-allowed";
-                  label = "—";
+                  label = copy.slotUnavailable;
                 } else if (canSelect) {
                   cardClass +=
                     "border-black/10 bg-white/60 text-black hover:bg-white hover:border-black/30 cursor-pointer";
@@ -381,15 +406,18 @@ export function RoomBooking() {
                     <span className="block text-xs font-medium opacity-60">
                       {slot}
                     </span>
-                    <span className="block text-sm font-semibold mt-0.5">
+                    <span className="mt-0.5 block text-sm font-semibold">
                       {isBlocked
                         ? label
                         : invalidStart
-                          ? "N/A"
-                          : `${duration} min`}
+                          ? copy.slotUnavailable
+                          : copy.durationMinutes.replace(
+                              "{mins}",
+                              String(duration),
+                            )}
                     </span>
                     {!isBlocked && !invalidStart && canSelect && (
-                      <span className="block text-[10px] text-black/50 mt-1 truncate">
+                      <span className="mt-1 block truncate text-[10px] text-black/50">
                         {formatSlotLabel(slot, duration)}
                       </span>
                     )}
@@ -398,18 +426,18 @@ export function RoomBooking() {
               })}
             </div>
 
-            <div className="flex gap-3 mt-4 text-[10px] text-black/50">
+            <div className="mt-4 flex gap-3 text-[10px] text-black/50">
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-white/60 border border-black/10" />
-                Available
+                <span className="h-2 w-2 rounded-full border border-black/10 bg-white/60" />
+                {copy.legendAvailable}
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-black/10" />
-                Booked
+                <span className="h-2 w-2 rounded-full bg-black/10" />
+                {copy.legendBooked}
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-amber-700/30" />
-                Pending
+                <span className="h-2 w-2 rounded-full bg-amber-700/30" />
+                {copy.legendPending}
               </span>
             </div>
           </div>

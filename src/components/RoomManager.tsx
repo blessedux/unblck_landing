@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2 } from "lucide-react";
+import { useLocale } from "@/contexts/LocaleContext";
+import { getRoomTypeLabel, ROOM_TYPE_VALUES } from "@/lib/rooms/room-types";
 
 type Room = {
   id: string;
@@ -15,17 +17,17 @@ type Room = {
 };
 
 export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
+  const { t } = useLocale();
+  const copy = t.adminRooms;
+
   const [rooms, setRooms] = useState<Room[]>(initialRooms);
   const [editing, setEditing] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Room>>({});
 
-  const roomTypes = [
-    { value: "small_meeting", label: "Small Meeting Room" },
-    { value: "large_meeting", label: "Large Meeting Room" },
-    { value: "phone_booth", label: "Phone Booth" },
-    { value: "podcast_studio", label: "Podcast Studio" },
-    { value: "event_space", label: "Event Space" },
-  ];
+  const roomTypes = ROOM_TYPE_VALUES.map((value) => ({
+    value,
+    label: getRoomTypeLabel(copy.roomTypes, value),
+  }));
 
   const handleCreate = () => {
     setEditing("new");
@@ -46,7 +48,6 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
 
   const handleSave = async () => {
     if (editing === "new") {
-      // Create new room
       const res = await fetch("/api/admin/rooms/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -58,7 +59,6 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
         setEditing(null);
       }
     } else {
-      // Update existing room
       const res = await fetch(`/api/admin/rooms/${editing}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -73,7 +73,7 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this room?")) return;
+    if (!confirm(copy.deleteConfirm)) return;
     const res = await fetch(`/api/admin/rooms/${id}`, {
       method: "DELETE",
     });
@@ -90,35 +90,39 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
           className="rounded-full bg-white text-black hover:bg-gray-200"
         >
           <Plus size={16} className="mr-2" />
-          Add Room
+          {copy.addRoom}
         </Button>
       </div>
 
       {editing && (
-        <div className="border border-white/20 rounded-2xl p-6 bg-black">
-          <h3 className="text-xl font-semibold mb-4">
-            {editing === "new" ? "New Room" : "Edit Room"}
+        <div className="rounded-2xl border border-white/20 bg-black p-6">
+          <h3 className="mb-4 text-xl font-semibold">
+            {editing === "new" ? copy.newRoom : copy.editRoom}
           </h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Name</label>
+              <label className="mb-2 block text-sm text-gray-400">
+                {copy.name}
+              </label>
               <input
                 type="text"
                 value={formData.name || ""}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white"
+                className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-white"
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Type</label>
+              <label className="mb-2 block text-sm text-gray-400">
+                {copy.type}
+              </label>
               <select
                 value={formData.type || ""}
                 onChange={(e) =>
                   setFormData({ ...formData, type: e.target.value })
                 }
-                className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white"
+                className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-white"
               >
                 {roomTypes.map((type) => (
                   <option key={type.value} value={type.value}>
@@ -128,8 +132,8 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
               </select>
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">
-                Capacity
+              <label className="mb-2 block text-sm text-gray-400">
+                {copy.capacity}
               </label>
               <input
                 type="number"
@@ -140,12 +144,12 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
                     capacity: parseInt(e.target.value),
                   })
                 }
-                className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white"
+                className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-white"
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">
-                Amenities (comma-separated)
+              <label className="mb-2 block text-sm text-gray-400">
+                {copy.amenities}
               </label>
               <input
                 type="text"
@@ -159,12 +163,12 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
                       .filter(Boolean),
                   })
                 }
-                className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white"
+                className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-white"
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">
-                Image URL
+              <label className="mb-2 block text-sm text-gray-400">
+                {copy.imageUrl}
               </label>
               <input
                 type="text"
@@ -175,8 +179,8 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
                     image_url: e.target.value || null,
                   })
                 }
-                placeholder="https://example.com/room.jpg"
-                className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white"
+                placeholder={copy.imageUrlPlaceholder}
+                className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-white"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -189,7 +193,7 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
                 id="booking-enabled"
               />
               <label htmlFor="booking-enabled" className="text-sm text-gray-400">
-                Booking Enabled
+                {copy.bookingEnabled}
               </label>
             </div>
             <div className="flex gap-2">
@@ -197,14 +201,14 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
                 onClick={handleSave}
                 className="rounded-full bg-white text-black hover:bg-gray-200"
               >
-                Save
+                {copy.save}
               </Button>
               <Button
                 onClick={() => setEditing(null)}
                 variant="outline"
                 className="rounded-full border-white/20 text-white hover:bg-white/10"
               >
-                Cancel
+                {copy.cancel}
               </Button>
             </div>
           </div>
@@ -215,34 +219,39 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
         {rooms.map((room) => (
           <div
             key={room.id}
-            className="border border-white/10 rounded-2xl p-6 bg-white/5"
+            className="rounded-2xl border border-white/10 bg-white/5 p-6"
           >
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="font-semibold text-white mb-2">{room.name}</h3>
-                <p className="text-sm text-gray-400 mb-2">
-                  Type: {room.type} • Capacity: {room.capacity}
+                <h3 className="mb-2 font-semibold text-white">{room.name}</h3>
+                <p className="mb-2 text-sm text-gray-400">
+                  {copy.typeCapacity
+                    .replace(
+                      "{type}",
+                      getRoomTypeLabel(copy.roomTypes, room.type),
+                    )
+                    .replace("{capacity}", String(room.capacity))}
                 </p>
                 {room.image_url && (
-                  <p className="text-sm text-gray-500 mb-2 truncate max-w-md">
-                    Image: {room.image_url}
+                  <p className="mb-2 max-w-md truncate text-sm text-gray-500">
+                    {copy.imageLabel.replace("{url}", room.image_url)}
                   </p>
                 )}
                 <div className="flex flex-wrap gap-2">
                   {room.amenities.map((amenity, i) => (
                     <span
                       key={i}
-                      className="text-xs bg-white/10 px-2 py-1 rounded-full"
+                      className="rounded-full bg-white/10 px-2 py-1 text-xs"
                     >
                       {amenity}
                     </span>
                   ))}
                 </div>
-                <p className="text-sm mt-2">
+                <p className="mt-2 text-sm">
                   {room.booking_enabled ? (
-                    <span className="text-green-500">✓ Enabled</span>
+                    <span className="text-green-500">✓ {copy.enabled}</span>
                   ) : (
-                    <span className="text-red-500">✗ Disabled</span>
+                    <span className="text-red-500">✗ {copy.disabled}</span>
                   )}
                 </p>
               </div>
