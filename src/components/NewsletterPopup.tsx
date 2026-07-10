@@ -48,7 +48,7 @@ export function NewsletterPopup() {
 
     let cancelled = false;
     let removeScroll: (() => void) | undefined;
-    let timer: ReturnType<typeof setTimeout> | undefined;
+    let timer: number | undefined;
 
     void (async () => {
       const supabase = createClient();

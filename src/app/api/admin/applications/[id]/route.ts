@@ -2,9 +2,12 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { isAdminEmail } from "@/lib/auth/admin";
-import { sendApprovalEmail } from "@/lib/email/send-approval-email";
+import { ensureAuthUserForEmail } from "@/lib/auth/magic-link";
+import { generateMagicLinkUrl } from "@/lib/auth/generate-magic-link-url";
+import { sendAcceleratorApprovalEmail } from "@/lib/email/send-accelerator-approval-email";
+import { sendHubWelcomeEmail } from "@/lib/email/send-hub-welcome-email";
 import { sendRevocationEmail } from "@/lib/email/send-revocation-email";
-import { getSiteUrl } from "@/lib/site-url";
+import { getSiteUrl, memberAuthCallbackUrl } from "@/lib/site-url";
 import {
   isValidStatusTransition,
   revokeMemberAccess,
@@ -101,27 +104,48 @@ export async function PATCH(
       );
     }
 
-    if (body.status === "approved" && application.auth_user_id) {
-      const { error: profileError } = await adminSupabase
-        .from("member_profiles")
-        .upsert(
-          {
-            auth_user_id: application.auth_user_id,
-            application_id: application.id,
-            email: application.email,
-            stellar_funded: body.stellar_funded ?? application.stellar_funded,
-            passport_verified:
-              body.passport_verified ?? application.passport_verified,
-          },
-          { onConflict: "auth_user_id" }
-        );
+    if (body.status === "approved" && application.application_type === "hub_access") {
+      let authUserId = application.auth_user_id;
 
-      if (profileError) {
-        console.error("Member profile upsert error:", profileError);
-        return NextResponse.json(
-          { error: "Could not create member profile" },
-          { status: 500 }
-        );
+      if (!authUserId && application.email) {
+        try {
+          const authUser = await ensureAuthUserForEmail(application.email);
+          authUserId = authUser.id;
+          await adminSupabase
+            .from("unblck_applications")
+            .update({ auth_user_id: authUserId })
+            .eq("id", id);
+        } catch (authError) {
+          console.error("Auth user creation on approval error:", authError);
+          return NextResponse.json(
+            { error: "Could not create member account" },
+            { status: 500 },
+          );
+        }
+      }
+
+      if (authUserId) {
+        const { error: profileError } = await adminSupabase
+          .from("member_profiles")
+          .upsert(
+            {
+              auth_user_id: authUserId,
+              application_id: application.id,
+              email: application.email,
+              stellar_funded: body.stellar_funded ?? application.stellar_funded,
+              passport_verified:
+                body.passport_verified ?? application.passport_verified,
+            },
+            { onConflict: "auth_user_id" },
+          );
+
+        if (profileError) {
+          console.error("Member profile upsert error:", profileError);
+          return NextResponse.json(
+            { error: "Could not create member profile" },
+            { status: 500 },
+          );
+        }
       }
     }
 
@@ -129,11 +153,22 @@ export async function PATCH(
 
     if (justApproved && application.email) {
       try {
-        await sendApprovalEmail({
-          to: application.email,
-          fullName: application.full_name,
-          loginUrl: `${siteUrl}/login`,
-        });
+        if (application.application_type === "hub_access") {
+          const magicLink = await generateMagicLinkUrl(
+            application.email,
+            memberAuthCallbackUrl(request),
+          );
+          await sendHubWelcomeEmail({
+            to: application.email,
+            fullName: application.full_name,
+            magicLink,
+          });
+        } else if (application.application_type === "accelerator") {
+          await sendAcceleratorApprovalEmail({
+            to: application.email,
+            fullName: application.full_name,
+          });
+        }
       } catch (emailError) {
         console.error("Approval email error:", emailError);
       }

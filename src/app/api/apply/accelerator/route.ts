@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import type { AcceleratorPayload } from "@/lib/forms/accelerator-form";
 import { configurationErrorResponse } from "@/lib/api-error";
-import { generateAndSendMagicLink } from "@/lib/auth/magic-link";
-import { memberAuthCallbackUrl } from "@/lib/site-url";
+import { ensureAuthUserForEmail } from "@/lib/auth/magic-link";
+import { sendAcceleratorApplicationConfirmation } from "@/lib/email/send-accelerator-application-confirmation";
+import { getSiteUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { subscribeEmail } from "@/lib/newsletter/buttondown";
 
@@ -72,10 +73,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const authUser = await generateAndSendMagicLink(
-      email,
-      memberAuthCallbackUrl(request),
-    );
+    const authUser = await ensureAuthUserForEmail(email);
 
     // Insert accelerator application with extended fields
     const { error: insertError } = await supabase
@@ -116,6 +114,21 @@ export async function POST(request: Request) {
       console.error(
         "Accelerator newsletter subscribe failed:",
         subscribeResult.error,
+      );
+    }
+
+    const siteUrl = getSiteUrl(request);
+    try {
+      await sendAcceleratorApplicationConfirmation({
+        to: email,
+        fullName: body.full_name.trim(),
+        projectName: body.project_name.trim(),
+        siteUrl,
+      });
+    } catch (emailError) {
+      console.error(
+        "Accelerator application confirmation email error:",
+        emailError,
       );
     }
 
