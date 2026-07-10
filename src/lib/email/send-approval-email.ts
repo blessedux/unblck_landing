@@ -4,6 +4,7 @@ import {
   shouldSkipResendInDev,
 } from "@/lib/email/resend-config";
 
+/** @deprecated Use sendHubWelcomeEmail or sendAcceleratorApprovalEmail */
 export async function sendApprovalEmail({
   to,
   fullName,

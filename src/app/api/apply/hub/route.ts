@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import type { HubAccessPayload } from "@/lib/forms/hub-form";
 import { STELLAR_AMBASSADOR_VALUES } from "@/lib/forms/hub-form";
 import { configurationErrorResponse } from "@/lib/api-error";
-import { generateAndSendMagicLink } from "@/lib/auth/magic-link";
-import { memberAuthCallbackUrl } from "@/lib/site-url";
+import { ensureAuthUserForEmail } from "@/lib/auth/magic-link";
+import { sendHubApplicationConfirmation } from "@/lib/email/send-hub-application-confirmation";
+import { getSiteUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { subscribeEmail } from "@/lib/newsletter/buttondown";
 
@@ -70,10 +71,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const authUser = await generateAndSendMagicLink(
-      email,
-      memberAuthCallbackUrl(request),
-    );
+    const authUser = await ensureAuthUserForEmail(email);
 
     // Insert hub access application
     const { error: insertError } = await supabase
@@ -111,6 +109,18 @@ export async function POST(request: Request) {
     });
     if (!subscribeResult.ok) {
       console.error("Hub newsletter subscribe failed:", subscribeResult.error);
+    }
+
+    const siteUrl = getSiteUrl(request);
+    try {
+      await sendHubApplicationConfirmation({
+        to: email,
+        fullName: body.full_name.trim(),
+        projectName: body.project_name.trim(),
+        siteUrl,
+      });
+    } catch (emailError) {
+      console.error("Hub application confirmation email error:", emailError);
     }
 
     return NextResponse.json({ ok: true });
