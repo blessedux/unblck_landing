@@ -11,7 +11,8 @@
     "seed:admin": "tsx scripts/seed-admin.ts",
     "seed:test-users": "tsx scripts/seed-test-users.ts",
     "cleanup:test-users": "tsx scripts/cleanup-test-users.ts",
-    "verify:test-users": "tsx scripts/verify-test-users.ts"
+    "verify:test-users": "tsx scripts/verify-test-users.ts",
+    "test:email-flow": "tsx scripts/test-email-flow.ts"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.3.0",
