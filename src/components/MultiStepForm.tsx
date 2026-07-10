@@ -151,6 +151,9 @@ export function MultiStepForm<T extends Record<string, string>>({
       }
 
       setSubmitted(true);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("unblck_application_submitted", "true");
+      }
     } catch (submitError) {
       setError(
         submitError instanceof Error

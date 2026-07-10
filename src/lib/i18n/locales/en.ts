@@ -352,6 +352,16 @@ export interface Translations {
     hubApply: string;
     acceleratorApply: string;
   };
+  newsletterPopup: {
+    message: string;
+    emailPlaceholder: string;
+    subscribe: string;
+    subscribing: string;
+    dismiss: string;
+    success: string;
+    error: string;
+    invalidEmail: string;
+  };
   adminRooms: {
     pageTitle: string;
     pageDescription: string;
@@ -861,6 +871,16 @@ export const en: Translations = {
     backHome: "Back to home",
     hubApply: "Request Hub access",
     acceleratorApply: "Apply to the Accelerator",
+  },
+  newsletterPopup: {
+    message: "Subscribe to our newsletter and stay up to date",
+    emailPlaceholder: "you@company.com",
+    subscribe: "Subscribe",
+    subscribing: "Subscribing...",
+    dismiss: "Dismiss",
+    success: "You're subscribed!",
+    error: "Could not subscribe. Try again.",
+    invalidEmail: "Enter a valid email",
   },
   adminRooms: {
     pageTitle: "Room Management | Admin",

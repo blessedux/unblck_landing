@@ -4,6 +4,7 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { AuthHashRedirect } from "@/components/AuthHashRedirect";
 import { SiteNavbar } from "@/components/SiteNavbar";
 import { LocaleProvider } from "@/contexts/LocaleContext";
+import { NewsletterPopup } from "@/components/NewsletterPopup";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -55,6 +56,7 @@ export default function RootLayout({
           <LanguageToggle />
           <SiteNavbar />
           {children}
+          <NewsletterPopup />
         </LocaleProvider>
       </body>
     </html>
