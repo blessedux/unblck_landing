@@ -481,6 +481,16 @@ export const es: Translations = {
     hubApply: "Solicitar acceso al Hub",
     acceleratorApply: "Postular al Acelerador",
   },
+  newsletterPopup: {
+    message: "Suscríbete a nuestro newsletter y mantente al día",
+    emailPlaceholder: "tu@empresa.com",
+    subscribe: "Suscribirme",
+    subscribing: "Suscribiendo...",
+    dismiss: "Cerrar",
+    success: "¡Suscripción confirmada!",
+    error: "No se pudo suscribir. Intenta de nuevo.",
+    invalidEmail: "Ingresa un email válido",
+  },
   adminRooms: {
     pageTitle: "Gestión de salas | Admin",
     pageDescription: "Administrar salas del hub",
