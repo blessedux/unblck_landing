@@ -59,6 +59,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  if (user && request.nextUrl.pathname.startsWith("/member/hub")) {
+    const { data: profile } = await supabase
+      .from("member_profiles")
+      .select("auth_user_id")
+      .eq("auth_user_id", user.id)
+      .maybeSingle();
+
+    if (!profile) {
+      return new NextResponse("Forbidden", { status: 403 });
+    }
+  }
+
   return supabaseResponse;
 }
 
