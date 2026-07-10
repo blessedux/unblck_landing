@@ -124,6 +124,53 @@ export interface Translations {
       confirming: string;
       confirmPass: string;
     };
+    rooms: {
+      pageTitle: string;
+      pageDescription: string;
+      pageHeading: string;
+      pageIntro: string;
+      loading: string;
+      loadFailed: string;
+      bookingForToday: string;
+      tier: string;
+      builderTierHint: string;
+      founderTierHint: string;
+      noHotDeskTitle: string;
+      noHotDeskBody: string;
+      myBookingsToday: string;
+      roomsHeading: string;
+      capacity: string;
+      slotsBookedToday: string;
+      adminApprovalBadge: string;
+      cancelBooking: string;
+      cancelConfirm: string;
+      bookingCancelled: string;
+      cancelFailed: string;
+      bookingFailed: string;
+      roomFallback: string;
+      pendingAdmin: string;
+      duration: string;
+      durationMinutes: string;
+      selectTimeSlot: string;
+      eventSpaceNotice: string;
+      slotPending: string;
+      slotBooked: string;
+      slotUnavailable: string;
+      legendAvailable: string;
+      legendBooked: string;
+      legendPending: string;
+      roomTypes: {
+        small_meeting: string;
+        large_meeting: string;
+        phone_booth: string;
+        podcast_studio: string;
+        event_space: string;
+      };
+      memberTiers: {
+        Builder: string;
+        Founder: string;
+      };
+    };
     memberStatus: {
       noApplication: {
         title: string;
@@ -290,6 +337,37 @@ export interface Translations {
     backHome: string;
     hubApply: string;
     acceleratorApply: string;
+  };
+  adminRooms: {
+    pageTitle: string;
+    pageDescription: string;
+    pageHeading: string;
+    pageIntro: string;
+    backToAdmin: string;
+    addRoom: string;
+    newRoom: string;
+    editRoom: string;
+    name: string;
+    type: string;
+    capacity: string;
+    amenities: string;
+    imageUrl: string;
+    imageUrlPlaceholder: string;
+    bookingEnabled: string;
+    save: string;
+    cancel: string;
+    deleteConfirm: string;
+    enabled: string;
+    disabled: string;
+    typeCapacity: string;
+    imageLabel: string;
+    roomTypes: {
+      small_meeting: string;
+      large_meeting: string;
+      phone_booth: string;
+      podcast_studio: string;
+      event_space: string;
+    };
   };
 }
 
@@ -460,6 +538,56 @@ export const en: Translations = {
       requestPassFor: "Request pass for",
       confirming: "Confirming...",
       confirmPass: "Confirm and request pass",
+    },
+    rooms: {
+      pageTitle: "Book a Room | Tellus Hub",
+      pageDescription: "Reserve a workspace at Tellus Blockchain Hub STGO",
+      pageHeading: "Book a Room",
+      pageIntro:
+        "Reserve meeting rooms, phone booths, and our podcast studio.",
+      loading: "Loading rooms...",
+      loadFailed: "Could not load rooms",
+      bookingForToday: "Booking for today",
+      tier: "Tier",
+      builderTierHint: "30 or 60 min, once per day",
+      founderTierHint: "Book anytime, no hot desk required",
+      noHotDeskTitle: "No hot desk scheduled for today",
+      noHotDeskBody:
+        "Builders need a hub access day booked before reserving a room. Book a day on the hub home calendar first.",
+      myBookingsToday: "My bookings today",
+      roomsHeading: "Rooms",
+      capacity: "Capacity: {count}",
+      slotsBookedToday: "{count} slots booked today",
+      adminApprovalBadge: "Admin approval",
+      cancelBooking: "Cancel",
+      cancelConfirm: "Cancel this booking?",
+      bookingCancelled: "Booking cancelled",
+      cancelFailed: "Could not cancel booking",
+      bookingFailed: "Booking failed",
+      roomFallback: "Room",
+      pendingAdmin: "Pending admin",
+      duration: "Duration",
+      durationMinutes: "{mins} min",
+      selectTimeSlot: "Select a time slot",
+      eventSpaceNotice:
+        "Event Space requires admin confirmation and may include an additional charge.",
+      slotPending: "Pending",
+      slotBooked: "Booked",
+      slotUnavailable: "N/A",
+      legendAvailable: "Available",
+      legendBooked: "Booked",
+      legendPending: "Pending",
+      roomTypes: {
+        small_meeting: "Small Meeting Room",
+        large_meeting: "Large Meeting Room",
+        phone_booth: "Phone Booth",
+        podcast_studio: "Podcast Studio",
+        event_space: "Event Space",
+      },
+      memberTiers: {
+        Builder: "Builder",
+        Founder: "Founder",
+      },
     },
     memberStatus: {
       noApplication: {
@@ -704,5 +832,36 @@ export const en: Translations = {
     backHome: "Back to home",
     hubApply: "Request Hub access",
     acceleratorApply: "Apply to the Accelerator",
+  },
+  adminRooms: {
+    pageTitle: "Room Management | Admin",
+    pageDescription: "Manage hub rooms",
+    pageHeading: "Room Management",
+    pageIntro: "Manage hub rooms and their availability",
+    backToAdmin: "Back to Admin",
+    addRoom: "Add Room",
+    newRoom: "New Room",
+    editRoom: "Edit Room",
+    name: "Name",
+    type: "Type",
+    capacity: "Capacity",
+    amenities: "Amenities (comma-separated)",
+    imageUrl: "Image URL",
+    imageUrlPlaceholder: "https://example.com/room.jpg",
+    bookingEnabled: "Booking Enabled",
+    save: "Save",
+    cancel: "Cancel",
+    deleteConfirm: "Delete this room?",
+    enabled: "Enabled",
+    disabled: "Disabled",
+    typeCapacity: "Type: {type} · Capacity: {capacity}",
+    imageLabel: "Image: {url}",
+    roomTypes: {
+      small_meeting: "Small Meeting Room",
+      large_meeting: "Large Meeting Room",
+      phone_booth: "Phone Booth",
+      podcast_studio: "Podcast Studio",
+      event_space: "Event Space",
+    },
   },
 };
