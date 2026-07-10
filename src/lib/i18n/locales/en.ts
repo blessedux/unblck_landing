@@ -170,6 +170,20 @@ export interface Translations {
         Builder: string;
         Founder: string;
       };
+      eventSpace: {
+        openAccessNote: string;
+        daytimeNote: string;
+        afterHoursTitle: string;
+        eventDescription: string;
+        eventDescriptionPlaceholder: string;
+        projectName: string;
+        projectNamePlaceholder: string;
+        requestedDate: string;
+        requestedTime: string;
+        submitRequest: string;
+        submitting: string;
+        requestFailed: string;
+      };
     };
     memberStatus: {
       noApplication: {
@@ -587,6 +601,21 @@ export const en: Translations = {
       memberTiers: {
         Builder: "Builder",
         Founder: "Founder",
+      },
+      eventSpace: {
+        openAccessNote: "Open access during hub hours",
+        daytimeNote:
+          "During hub hours, checked-in members can use this space freely — no booking required.",
+        afterHoursTitle: "Request after-hours event",
+        eventDescription: "Event description",
+        eventDescriptionPlaceholder: "What is the event about?",
+        projectName: "Project or organization",
+        projectNamePlaceholder: "Your project name",
+        requestedDate: "Requested date",
+        requestedTime: "Requested time",
+        submitRequest: "Request event scheduling",
+        submitting: "Submitting...",
+        requestFailed: "Could not submit scheduling request",
       },
     },
     memberStatus: {

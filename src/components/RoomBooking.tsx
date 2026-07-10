@@ -49,6 +49,12 @@ export function RoomBooking() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [eventDescription, setEventDescription] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [requestedDate, setRequestedDate] = useState("");
+  const [requestedTime, setRequestedTime] = useState("");
+
+  const eventCopy = copy.eventSpace;
 
   const todayLabel = useMemo(
     () =>
@@ -75,6 +81,48 @@ export function RoomBooking() {
   useEffect(() => {
     loadAvailability();
   }, [loadAvailability]);
+
+  useEffect(() => {
+    setEventDescription("");
+    setProjectName("");
+    setRequestedDate("");
+    setRequestedTime("");
+  }, [selectedRoom?.id]);
+
+  const handleEventScheduleRequest = async () => {
+    if (!selectedRoom) return;
+
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const res = await fetch("/api/hub/event-scheduling/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          room_id: selectedRoom.id,
+          event_description: eventDescription,
+          project_name: projectName,
+          requested_date: requestedDate,
+          requested_time: requestedTime,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || eventCopy.requestFailed);
+      }
+
+      setSuccess(data.message);
+      setSelectedRoom(null);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : eventCopy.requestFailed);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleBookSlot = async (startTime: string) => {
     if (!selectedRoom || !availability?.can_book_rooms) return;
@@ -281,10 +329,12 @@ export function RoomBooking() {
                     </span>
                   </div>
                   <p className="text-xs text-black/50">
-                    {copy.slotsBookedToday.replace(
-                      "{count}",
-                      String(bookedCount),
-                    )}
+                    {isEvent
+                      ? eventCopy.openAccessNote
+                      : copy.slotsBookedToday.replace(
+                          "{count}",
+                          String(bookedCount),
+                        )}
                   </p>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-1.5">
@@ -326,12 +376,83 @@ export function RoomBooking() {
               </button>
             </div>
 
-            {isEventSpace && (
-              <div className="mb-4 rounded-xl border border-amber-700/30 bg-amber-700/10 p-3 text-sm text-amber-900">
-                {copy.eventSpaceNotice}
-              </div>
-            )}
+            {isEventSpace ? (
+              <>
+                <div className="mb-4 rounded-xl border border-green-800/30 bg-green-800/10 p-3 text-sm text-green-900">
+                  {eventCopy.daytimeNote}
+                </div>
 
+                <h4 className="mb-3 text-sm font-semibold text-black">
+                  {eventCopy.afterHoursTitle}
+                </h4>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-black/70">
+                      {eventCopy.eventDescription}
+                    </label>
+                    <textarea
+                      value={eventDescription}
+                      onChange={(e) => setEventDescription(e.target.value)}
+                      rows={3}
+                      placeholder={eventCopy.eventDescriptionPlaceholder}
+                      className="w-full resize-none rounded-lg border border-black/10 bg-white/60 px-3 py-2 text-sm text-black outline-none focus:border-black/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-black/70">
+                      {eventCopy.projectName}
+                    </label>
+                    <input
+                      type="text"
+                      value={projectName}
+                      onChange={(e) => setProjectName(e.target.value)}
+                      placeholder={eventCopy.projectNamePlaceholder}
+                      className="w-full rounded-lg border border-black/10 bg-white/60 px-3 py-2 text-sm text-black outline-none focus:border-black/30"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-black/70">
+                        {eventCopy.requestedDate}
+                      </label>
+                      <input
+                        type="date"
+                        value={requestedDate}
+                        onChange={(e) => setRequestedDate(e.target.value)}
+                        className="w-full rounded-lg border border-black/10 bg-white/60 px-3 py-2 text-sm text-black outline-none focus:border-black/30"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-black/70">
+                        {eventCopy.requestedTime}
+                      </label>
+                      <input
+                        type="time"
+                        value={requestedTime}
+                        onChange={(e) => setRequestedTime(e.target.value)}
+                        className="w-full rounded-lg border border-black/10 bg-white/60 px-3 py-2 text-sm text-black outline-none focus:border-black/30"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleEventScheduleRequest}
+                  disabled={
+                    loading ||
+                    !eventDescription.trim() ||
+                    !projectName.trim() ||
+                    !requestedDate ||
+                    !requestedTime
+                  }
+                  className="mt-6 w-full rounded-full bg-black text-[#d4a574] hover:bg-black/90"
+                >
+                  {loading ? eventCopy.submitting : eventCopy.submitRequest}
+                </Button>
+              </>
+            ) : (
+              <>
             <div className="mb-4">
               <label className="mb-2 block text-sm font-medium text-black/70">
                 {copy.duration}
@@ -440,6 +561,8 @@ export function RoomBooking() {
                 {copy.legendPending}
               </span>
             </div>
+              </>
+            )}
           </div>
         </div>
       )}

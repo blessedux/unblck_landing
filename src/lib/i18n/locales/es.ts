@@ -220,6 +220,21 @@ export const es: Translations = {
         Builder: "Builder",
         Founder: "Founder",
       },
+      eventSpace: {
+        openAccessNote: "Acceso libre durante horario del hub",
+        daytimeNote:
+          "Durante el horario del hub, los miembros con check-in pueden usar este espacio libremente — sin reserva.",
+        afterHoursTitle: "Solicitar evento fuera de horario",
+        eventDescription: "Descripción del evento",
+        eventDescriptionPlaceholder: "¿De qué trata el evento?",
+        projectName: "Proyecto u organización",
+        projectNamePlaceholder: "Nombre de tu proyecto",
+        requestedDate: "Fecha solicitada",
+        requestedTime: "Hora solicitada",
+        submitRequest: "Solicitar programación de evento",
+        submitting: "Enviando...",
+        requestFailed: "No se pudo enviar la solicitud de programación",
+      },
     },
     memberStatus: {
       noApplication: {

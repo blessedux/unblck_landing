@@ -97,6 +97,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (room.type === "event_space") {
+      return NextResponse.json(
+        {
+          error:
+            "La Terraza no usa reservas por turnos. Solicita programación de evento desde la página de salas.",
+        },
+        { status: 400 }
+      );
+    }
+
     const { data: existingSlots } = await adminSupabase
       .from("room_bookings")
       .select("start_time, duration_minutes")
@@ -124,8 +134,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const isEventSpace = room.type === "event_space";
-    const status = isEventSpace ? "pending_admin" : "confirmed";
+    const status = "confirmed";
 
     const { data: newBooking, error: insertError } = await adminSupabase
       .from("room_bookings")
@@ -157,9 +166,7 @@ export async function POST(request: NextRequest) {
       {
         booking: newBooking,
         status,
-        message: isEventSpace
-          ? "Request submitted. Event Space bookings require admin confirmation and may incur an additional charge."
-          : "Room booked successfully.",
+        message: "Room booked successfully.",
       },
       { status: 201 }
     );
