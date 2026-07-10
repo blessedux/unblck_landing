@@ -19,13 +19,21 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { name, type, capacity, amenities, booking_enabled } = body;
+    const { name, type, capacity, amenities, booking_enabled, image_url } = body;
 
     const adminSupabase = createSupabaseAdmin();
 
     const { data: room, error } = await adminSupabase
       .from("hub_rooms")
-      .update({ name, type, capacity, amenities, booking_enabled, updated_at: new Date().toISOString() })
+      .update({
+        name,
+        type,
+        capacity,
+        amenities,
+        booking_enabled,
+        image_url,
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", id)
       .select()
       .single();

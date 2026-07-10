@@ -11,6 +11,7 @@ type Room = {
   capacity: number;
   amenities: string[];
   booking_enabled: boolean;
+  image_url: string | null;
 };
 
 export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
@@ -34,6 +35,7 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
       capacity: 4,
       amenities: [],
       booking_enabled: true,
+      image_url: null,
     });
   };
 
@@ -160,6 +162,23 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
                 className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white"
               />
             </div>
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">
+                Image URL
+              </label>
+              <input
+                type="text"
+                value={formData.image_url || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    image_url: e.target.value || null,
+                  })
+                }
+                placeholder="https://example.com/room.jpg"
+                className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-2 text-white"
+              />
+            </div>
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -204,6 +223,11 @@ export function RoomManager({ initialRooms }: { initialRooms: Room[] }) {
                 <p className="text-sm text-gray-400 mb-2">
                   Type: {room.type} • Capacity: {room.capacity}
                 </p>
+                {room.image_url && (
+                  <p className="text-sm text-gray-500 mb-2 truncate max-w-md">
+                    Image: {room.image_url}
+                  </p>
+                )}
                 <div className="flex flex-wrap gap-2">
                   {room.amenities.map((amenity, i) => (
                     <span
