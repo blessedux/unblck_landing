@@ -5,6 +5,7 @@ import { configurationErrorResponse } from "@/lib/api-error";
 import { generateAndSendMagicLink } from "@/lib/auth/magic-link";
 import { memberAuthCallbackUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
+import { subscribeEmail } from "@/lib/newsletter/buttondown";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -102,6 +103,14 @@ export async function POST(request: Request) {
         { error: "Could not save application. Try again." },
         { status: 500 },
       );
+    }
+
+    const subscribeResult = await subscribeEmail(email, {
+      source: "hub_access",
+      name: body.full_name.trim(),
+    });
+    if (!subscribeResult.ok) {
+      console.error("Hub newsletter subscribe failed:", subscribeResult.error);
     }
 
     return NextResponse.json({ ok: true });

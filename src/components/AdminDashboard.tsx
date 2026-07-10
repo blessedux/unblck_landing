@@ -5,6 +5,7 @@ import Link from "next/link";
 import { HubAccessApplicationsList } from "@/components/HubAccessApplicationsList";
 import { AcceleratorApplicationsList } from "@/components/AcceleratorApplicationsList";
 import { HubScheduleView } from "@/components/HubScheduleView";
+import { NewsletterStatsCard } from "@/components/NewsletterStatsCard";
 
 type Tab = "hub_access" | "accelerator" | "schedule";
 
@@ -48,6 +49,10 @@ export function AdminDashboard() {
               Back to home
             </Link>
           </div>
+        </div>
+
+        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <NewsletterStatsCard />
         </div>
 
         {/* Tabs */}
