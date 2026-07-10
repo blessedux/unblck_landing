@@ -366,29 +366,61 @@ export function MultiStepForm<T extends Record<string, string>>({
                       )}
                     </>
                   ) : currentStep.type === "checkbox" ? (
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={values[fieldKey] === "true"}
-                        onChange={(event) =>
-                          updateValue(fieldKey, event.target.checked ? "true" : "false")
-                        }
-                        className="mt-1 h-5 w-5 cursor-pointer"
-                      />
-                      <span className="text-base text-muted">
-                        {currentStep.hint}{" "}
-                        {currentStep.linkText && currentStep.linkUrl && (
+                    <div className="space-y-6">
+                      {currentStep.highlights && currentStep.highlights.length > 0 && (
+                        <ul className="space-y-3">
+                          {currentStep.highlights.map((item, index) => (
+                            <li
+                              key={index}
+                              className="flex items-start gap-3 rounded-xl border border-border bg-surface/50 px-4 py-3 text-sm text-muted"
+                            >
+                              <span className="text-lg leading-none" aria-hidden>
+                                {item.icon}
+                              </span>
+                              <span>{item.text}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {currentStep.fullTermsLink && currentStep.linkUrl && (
+                        <p className="text-sm">
                           <a
                             href={currentStep.linkUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-white hover:underline"
                           >
-                            {currentStep.linkText}
+                            {currentStep.fullTermsLink}
                           </a>
-                        )}
-                      </span>
-                    </label>
+                        </p>
+                      )}
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={values[fieldKey] === "true"}
+                          onChange={(event) =>
+                            updateValue(
+                              fieldKey,
+                              event.target.checked ? "true" : "false",
+                            )
+                          }
+                          className="mt-1 h-5 w-5 cursor-pointer"
+                        />
+                        <span className="text-base text-muted">
+                          {currentStep.hint}{" "}
+                          {currentStep.linkText && currentStep.linkUrl && (
+                            <a
+                              href={currentStep.linkUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-white hover:underline"
+                            >
+                              {currentStep.linkText}
+                            </a>
+                          )}
+                        </span>
+                      </label>
+                    </div>
                   ) : currentStep.type === "textarea" ? (
                     <textarea
                       autoFocus={allowAutoFocus}

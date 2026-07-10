@@ -280,8 +280,31 @@ export const es: Translations = {
       },
       terms: {
         question: "Términos y Condiciones",
-        hint: "Acepto los",
+        hint: "Acepto los términos y condiciones",
         linkText: "Términos y Condiciones",
+        fullTermsLink: "Lee los términos completos",
+        highlights: [
+          {
+            icon: "📸",
+            text: "Aceptas el uso de tu imagen mientras trabajas en el hub",
+          },
+          {
+            icon: "🤐",
+            text: "Aceptas la confidencialidad de información compartida por el equipo del hub o acelerador",
+          },
+          {
+            icon: "🔒",
+            text: "Aceptas seguir los procedimientos de seguridad establecidos",
+          },
+          {
+            icon: "🎒",
+            text: "Aceptas responsabilidad por tus pertenencias personales",
+          },
+          {
+            icon: "🔐",
+            text: "Aceptas el uso de tu información para propósitos de KYC (siempre privada)",
+          },
+        ],
       },
     },
     success: {

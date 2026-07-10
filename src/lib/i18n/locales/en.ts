@@ -208,7 +208,13 @@ export interface Translations {
         placeholder: string;
         linkText: string;
       };
-      terms: { question: string; hint: string; linkText: string };
+      terms: {
+        question: string;
+        hint: string;
+        linkText: string;
+        fullTermsLink: string;
+        highlights: { icon: string; text: string }[];
+      };
     };
     success: {
       label: string;
@@ -564,8 +570,31 @@ export const en: Translations = {
       },
       terms: {
         question: "Terms & Conditions",
-        hint: "I agree to the",
+        hint: "I accept the terms and conditions",
         linkText: "Terms & Conditions",
+        fullTermsLink: "Read the full terms",
+        highlights: [
+          {
+            icon: "📸",
+            text: "You accept the use of your image while working at the hub",
+          },
+          {
+            icon: "🤐",
+            text: "You accept confidentiality of information shared by the hub or accelerator team",
+          },
+          {
+            icon: "🔒",
+            text: "You agree to follow established security procedures",
+          },
+          {
+            icon: "🎒",
+            text: "You accept responsibility for your personal belongings",
+          },
+          {
+            icon: "🔐",
+            text: "You accept the use of your information for KYC purposes (always kept private)",
+          },
+        ],
       },
     },
     success: {
