@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { sendNewsletterWelcomeEmail } from "@/lib/email/send-newsletter-welcome-email";
 import { subscribeEmail } from "@/lib/newsletter/buttondown";
+import { getClientIp } from "@/lib/request-client-ip";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -15,7 +16,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Valid email is required" }, { status: 400 });
     }
 
-    const result = await subscribeEmail(email, { source: "popup" });
+    const result = await subscribeEmail(email, {
+      metadata: { source: "popup" },
+      ipAddress: getClientIp(request),
+    });
 
     if (!result.ok) {
       return NextResponse.json(

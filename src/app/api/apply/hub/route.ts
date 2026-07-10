@@ -7,6 +7,7 @@ import { sendHubApplicationConfirmation } from "@/lib/email/send-hub-application
 import { getSiteUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { subscribeEmail } from "@/lib/newsletter/buttondown";
+import { getClientIp } from "@/lib/request-client-ip";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -104,8 +105,11 @@ export async function POST(request: Request) {
     }
 
     const subscribeResult = await subscribeEmail(email, {
-      source: "hub_access",
-      name: body.full_name.trim(),
+      metadata: {
+        source: "hub_access",
+        name: body.full_name.trim(),
+      },
+      ipAddress: getClientIp(request),
     });
     if (!subscribeResult.ok) {
       console.error("Hub newsletter subscribe failed:", subscribeResult.error);
