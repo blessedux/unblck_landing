@@ -278,6 +278,13 @@ export interface Translations {
       extra: string;
     };
   };
+  notFound: {
+    title: string;
+    description: string;
+    backHome: string;
+    hubApply: string;
+    acceleratorApply: string;
+  };
 }
 
 export const en: Translations = {
@@ -661,5 +668,12 @@ export const en: Translations = {
       extra:
         "Come to StellarBarrio at Tellus Blockchain Hub STGO — our monthly builder event and the gateway to Insta Awards.",
     },
+  },
+  notFound: {
+    title: "Page not found",
+    description: "The page you're looking for doesn't exist or was moved.",
+    backHome: "Back to home",
+    hubApply: "Request Hub access",
+    acceleratorApply: "Apply to the Accelerator",
   },
 };

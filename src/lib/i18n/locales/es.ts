@@ -385,4 +385,11 @@ export const es: Translations = {
         "Ven a StellarBarrio en Tellus Blockchain Hub STGO — nuestro evento mensual de builders y la puerta de entrada a Insta Awards.",
     },
   },
+  notFound: {
+    title: "Página no encontrada",
+    description: "La página que buscas no existe o fue movida.",
+    backHome: "Volver al inicio",
+    hubApply: "Solicitar acceso al Hub",
+    acceleratorApply: "Postular al Acelerador",
+  },
 };
