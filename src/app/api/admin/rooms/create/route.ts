@@ -15,13 +15,13 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, type, capacity, amenities, booking_enabled } = body;
+    const { name, type, capacity, amenities, booking_enabled, image_url } = body;
 
     const adminSupabase = createSupabaseAdmin();
 
     const { data: room, error } = await adminSupabase
       .from("hub_rooms")
-      .insert({ name, type, capacity, amenities, booking_enabled })
+      .insert({ name, type, capacity, amenities, booking_enabled, image_url })
       .select()
       .single();
 
