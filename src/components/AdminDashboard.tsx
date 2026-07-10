@@ -30,6 +30,12 @@ export function AdminDashboard() {
               Tour Locations
             </Link>
             <Link
+              href="/admin/event-requests"
+              className="text-sm text-gray-400 hover:text-white transition"
+            >
+              Event Requests
+            </Link>
+            <Link
               href="/admin/schedule"
               className="text-sm text-gray-400 hover:text-white transition"
             >
