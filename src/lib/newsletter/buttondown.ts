@@ -8,9 +8,15 @@ type ButtondownResult = { ok: boolean; error?: string };
 
 type SubscriberCountResult = { count: number; error?: string };
 
+type SubscribeOptions = {
+  metadata?: Record<string, string>;
+  /** End-user IP — required so Buttondown doesn't treat Vercel as a bot farm. */
+  ipAddress?: string;
+};
+
 export async function subscribeEmail(
   email: string,
-  metadata?: Record<string, string>,
+  options?: SubscribeOptions,
 ): Promise<ButtondownResult> {
   const apiKey = getApiKey();
   if (!apiKey) {
@@ -19,15 +25,20 @@ export async function subscribeEmail(
     return { ok: false, error: message };
   }
 
+  const { metadata, ipAddress } = options ?? {};
+
   try {
     const response = await fetch(`${BUTTONDOWN_API_BASE}/subscribers`, {
       method: "POST",
       headers: {
         Authorization: `Token ${apiKey}`,
         "Content-Type": "application/json",
+        "X-Buttondown-Collision-Behavior": "overwrite",
       },
       body: JSON.stringify({
         email_address: email,
+        type: "regular",
+        ...(ipAddress ? { ip_address: ipAddress } : {}),
         ...(metadata ? { metadata } : {}),
       }),
     });
