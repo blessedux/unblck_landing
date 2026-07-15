@@ -98,17 +98,17 @@ const PrismaHero = () => {
           <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/10 via-transparent to-black/25" />
 
           <div className="pointer-events-auto absolute bottom-0 left-0 right-0 z-10 px-4 pb-2 sm:px-6 md:px-10">
-            <div className="grid grid-cols-12 items-end gap-4">
-              <div className="col-span-12 lg:col-span-8">
+            <div className="flex flex-col items-start gap-5 lg:flex-row lg:items-end lg:justify-between lg:gap-12 xl:gap-16">
+              <div className="@container min-w-0 w-full lg:flex-1">
                 <h1
-                  className="font-medium leading-[0.85] tracking-[-0.07em] text-[26vw] sm:text-[24vw] md:text-[22vw] lg:text-[20vw] xl:text-[19vw] 2xl:text-[20vw]"
+                  className="font-medium leading-[0.85] tracking-[-0.07em] text-[26vw] sm:text-[24vw] md:text-[22vw] lg:text-[min(20vw,24cqw)]"
                   style={{ color: "#E1E0CC" }}
                 >
                   <WordsPullUp text="UNBLCK" />
                 </h1>
               </div>
 
-              <div className="col-span-12 flex flex-col gap-5 pb-6 sm:ml-8 md:ml-10 lg:col-span-4 lg:ml-12 lg:pb-10 xl:ml-16">
+              <div className="flex w-full shrink-0 flex-col gap-5 pb-6 sm:ml-8 sm:w-auto md:ml-10 lg:ml-0 lg:pb-10">
                 <motion.p
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
