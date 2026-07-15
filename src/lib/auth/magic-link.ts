@@ -3,7 +3,15 @@ import { sendMagicLinkEmail } from "@/lib/email/send-magic-link";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { ensureMagicLinkRedirect } from "@/lib/site-url";
 
-export async function ensureAuthUserForEmail(email: string): Promise<User> {
+export type EnsuredAuthUser = {
+  user: User;
+  /** True when this call created the auth user (safe to delete on rollback). */
+  created: boolean;
+};
+
+export async function ensureAuthUserForEmail(
+  email: string,
+): Promise<EnsuredAuthUser> {
   const supabase = createSupabaseAdmin();
 
   const { data: created, error: createError } =
@@ -13,7 +21,7 @@ export async function ensureAuthUserForEmail(email: string): Promise<User> {
     });
 
   if (!createError && created.user) {
-    return created.user;
+    return { user: created.user, created: true };
   }
 
   const { data, error } = await supabase.auth.admin.generateLink({
@@ -26,7 +34,7 @@ export async function ensureAuthUserForEmail(email: string): Promise<User> {
     throw createError ?? error ?? new Error("Could not ensure auth user");
   }
 
-  return data.user;
+  return { user: data.user, created: false };
 }
 
 export async function generateAndSendMagicLink(

@@ -14,11 +14,14 @@ export async function POST(request: Request) {
 
     const supabase = createSupabaseAdmin();
 
-    const { data: application } = await supabase
+    const { data: applications } = await supabase
       .from("unblck_applications")
       .select("id, auth_user_id")
       .eq("email", email)
-      .maybeSingle();
+      .not("auth_user_id", "is", null)
+      .limit(1);
+
+    const application = applications?.[0];
 
     if (!application?.auth_user_id) {
       return NextResponse.json(

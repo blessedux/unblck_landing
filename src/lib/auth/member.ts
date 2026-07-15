@@ -5,13 +5,24 @@ export type MemberStatus = "pending" | "approved" | "rejected" | null;
 export async function getMemberApplication(userId: string) {
   const supabase = await createClient();
 
-  const { data: application } = await supabase
+  // Member area is hub-centric — prefer hub_access when both exist.
+  const { data: hubApp } = await supabase
     .from("unblck_applications")
-    .select("id, status, created_at")
+    .select("id, status, created_at, application_type")
     .eq("auth_user_id", userId)
-    .single();
+    .eq("application_type", "hub_access")
+    .maybeSingle();
 
-  return application;
+  if (hubApp) return hubApp;
+
+  const { data: apps } = await supabase
+    .from("unblck_applications")
+    .select("id, status, created_at, application_type")
+    .eq("auth_user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  return apps?.[0] ?? null;
 }
 
 export async function getMemberProfile(userId: string) {
@@ -21,7 +32,7 @@ export async function getMemberProfile(userId: string) {
     .from("member_profiles")
     .select("*")
     .eq("auth_user_id", userId)
-    .single();
+    .maybeSingle();
 
   return profile;
 }

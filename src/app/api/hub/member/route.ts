@@ -27,7 +27,8 @@ export async function GET() {
       .from("unblck_applications")
       .select("full_name, passport_address, passport_verified")
       .eq("auth_user_id", user.id)
-      .single();
+      .eq("application_type", "hub_access")
+      .maybeSingle();
 
     const fullName =
       application?.full_name ||

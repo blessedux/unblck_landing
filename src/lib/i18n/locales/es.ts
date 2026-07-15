@@ -269,6 +269,7 @@ export const es: Translations = {
     enterHint: "Enter ↵",
     stepProgress: "{current} de {total}",
     validationRequired: "Completa esta pregunta para continuar.",
+    invalidEmail: "Ingresa un email válido",
     submissionFailed: "Algo salió mal",
     backToHome: "Volver al inicio",
     resendEmail: "Reenviar email",

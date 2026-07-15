@@ -14,13 +14,16 @@ export async function POST(request: Request) {
 
     const supabase = createSupabaseAdmin();
 
-    const { data: application } = await supabase
+    const { data: applications } = await supabase
       .from("unblck_applications")
       .select("id, auth_user_id")
       .eq("email", email)
-      .single();
+      .not("auth_user_id", "is", null)
+      .limit(1);
 
-    if (!application || !application.auth_user_id) {
+    const application = applications?.[0];
+
+    if (!application?.auth_user_id) {
       return NextResponse.json(
         { error: "No application found for this email" },
         { status: 404 },

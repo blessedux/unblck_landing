@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { ChoiceOption, FormStep, SuccessScreen } from "@/lib/forms/types";
+import { isValidEmail } from "@/lib/forms/validate-email";
 
 type MultiStepFormProps<T extends Record<string, string>> = {
   formSteps: FormStep<T>[];
@@ -118,8 +119,23 @@ export function MultiStepForm<T extends Record<string, string>>({
       return;
     }
 
+    let nextValues = values;
+
+    if (currentStep.id !== "intro" && currentStep.type === "email") {
+      const raw = String(values[currentStep.id as keyof T] ?? "");
+      const trimmed = raw.trim();
+      nextValues = { ...values, [currentStep.id]: trimmed } as T;
+      if (trimmed !== raw) {
+        setValues(nextValues);
+      }
+      if (!isValidEmail(trimmed)) {
+        setError(t.form.invalidEmail);
+        return;
+      }
+    }
+
     if (onValidateStep) {
-      const validationError = await onValidateStep(currentStep, values);
+      const validationError = await onValidateStep(currentStep, nextValues);
       if (validationError) {
         setError(validationError);
         return;
@@ -137,11 +153,16 @@ export function MultiStepForm<T extends Record<string, string>>({
     setSubmitting(true);
     setError(null);
 
+    const payload = { ...nextValues } as Record<string, string>;
+    if (typeof payload.email === "string") {
+      payload.email = payload.email.trim();
+    }
+
     try {
       const response = await fetch(apiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify(payload),
       });
 
       const data = (await response.json()) as { error?: string };

@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
 import type { UnblckPayload } from "@/lib/forms/unblck-form";
+import { isValidEmail, normalizeEmail } from "@/lib/forms/validate-email";
+import { hasExistingApplication } from "@/lib/applications/existing-application";
 import { generateAndSendMagicLink } from "@/lib/auth/magic-link";
 import { memberAuthCallbackUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
-
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
 
 function isValidUsername(username: string) {
   // Accept usernames with optional @ prefix, alphanumeric, hyphens, underscores
@@ -55,19 +53,15 @@ export async function POST(request: Request) {
     }
 
     const supabase = createSupabaseAdmin();
-    const email = body.email.trim().toLowerCase();
+    const email = normalizeEmail(body.email);
     const termsVersion = process.env.TERMS_VERSION || "2026-07-01";
 
-    // Check for existing application
-    const { data: existingApp } = await supabase
-      .from("unblck_applications")
-      .select("id")
-      .eq("email", email)
-      .single();
-
-    if (existingApp) {
+    if (await hasExistingApplication(supabase, email, "accelerator")) {
       return NextResponse.json(
-        { error: "You have already submitted an application with this email." },
+        {
+          error:
+            "You have already submitted an accelerator application with this email.",
+        },
         { status: 409 },
       );
     }
@@ -94,12 +88,12 @@ export async function POST(request: Request) {
         terms_accepted_at: new Date().toISOString(),
         auth_user_id: authUser.id,
         status: "pending",
+        application_type: "accelerator",
       });
 
     if (insertError) {
       console.error("UNBLCK application insert error:", insertError);
-      // Clean up auth user if application insert fails
-      await supabase.auth.admin.deleteUser(authUser.id);
+      // Do not delete auth user — they may already have a hub application.
       return NextResponse.json(
         { error: "Could not save application. Try again." },
         { status: 500 },

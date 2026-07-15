@@ -214,6 +214,7 @@ export interface Translations {
     enterHint: string;
     stepProgress: string;
     validationRequired: string;
+    invalidEmail: string;
     submissionFailed: string;
     backToHome: string;
     resendEmail: string;
@@ -661,6 +662,7 @@ export const en: Translations = {
     enterHint: "Enter ↵",
     stepProgress: "{current} of {total}",
     validationRequired: "Please complete this question to continue.",
+    invalidEmail: "Enter a valid email",
     submissionFailed: "Something went wrong",
     backToHome: "Back to home",
     resendEmail: "Resend email",

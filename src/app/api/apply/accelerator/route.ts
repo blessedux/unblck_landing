@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import type { AcceleratorPayload } from "@/lib/forms/accelerator-form";
+import { isValidEmail, normalizeEmail } from "@/lib/forms/validate-email";
+import { hasExistingApplication } from "@/lib/applications/existing-application";
 import { configurationErrorResponse } from "@/lib/api-error";
 import { ensureAuthUserForEmail } from "@/lib/auth/magic-link";
 import { sendAcceleratorApplicationConfirmation } from "@/lib/email/send-accelerator-application-confirmation";
@@ -7,10 +9,6 @@ import { getSiteUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 import { subscribeEmail } from "@/lib/newsletter/buttondown";
 import { getClientIp } from "@/lib/request-client-ip";
-
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
 
 function isValidUsername(username: string) {
   const usernameRegex = /^@?[a-zA-Z0-9]([a-zA-Z0-9_-]{0,37}[a-zA-Z0-9])?$/;
@@ -57,26 +55,22 @@ export async function POST(request: Request) {
     }
 
     const supabase = createSupabaseAdmin();
-    const email = body.email.trim().toLowerCase();
+    const email = normalizeEmail(body.email);
     const termsVersion = process.env.TERMS_VERSION || "2026-07-01";
 
-    // Check for existing application
-    const { data: existingApp } = await supabase
-      .from("unblck_applications")
-      .select("id")
-      .eq("email", email)
-      .single();
-
-    if (existingApp) {
+    if (await hasExistingApplication(supabase, email, "accelerator")) {
       return NextResponse.json(
-        { error: "You have already submitted an application with this email." },
+        {
+          error:
+            "You have already submitted an accelerator application with this email.",
+        },
         { status: 409 },
       );
     }
 
-    const authUser = await ensureAuthUserForEmail(email);
+    const { user: authUser, created: authUserCreated } =
+      await ensureAuthUserForEmail(email);
 
-    // Insert accelerator application with extended fields
     const { error: insertError } = await supabase
       .from("unblck_applications")
       .insert({
@@ -100,7 +94,9 @@ export async function POST(request: Request) {
 
     if (insertError) {
       console.error("Accelerator application insert error:", insertError);
-      await supabase.auth.admin.deleteUser(authUser.id);
+      if (authUserCreated) {
+        await supabase.auth.admin.deleteUser(authUser.id);
+      }
       return NextResponse.json(
         { error: "Could not save application. Try again." },
         { status: 500 },

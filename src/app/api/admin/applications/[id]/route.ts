@@ -109,7 +109,9 @@ export async function PATCH(
 
       if (!authUserId && application.email) {
         try {
-          const authUser = await ensureAuthUserForEmail(application.email);
+          const { user: authUser } = await ensureAuthUserForEmail(
+            application.email,
+          );
           authUserId = authUser.id;
           await adminSupabase
             .from("unblck_applications")
