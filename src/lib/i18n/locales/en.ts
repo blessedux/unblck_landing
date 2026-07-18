@@ -81,6 +81,23 @@ export interface Translations {
       rooms: string;
       events: string;
       tour: string;
+      connect: string;
+    };
+    connect: {
+      pageTitle: string;
+      pageDescription: string;
+      heading: string;
+      description: string;
+      yourLinkCode: string;
+      sendCodeHint: string;
+      expiresIn: string;
+      generateCode: string;
+      generating: string;
+      generateFailed: string;
+      connectedChannels: string;
+      linkedOn: string;
+      disconnect: string;
+      disconnectConfirm: string;
     };
     tourComingSoon: {
       title: string;
@@ -519,6 +536,26 @@ export const en: Translations = {
       rooms: "Rooms",
       events: "Events",
       tour: "Tour",
+      connect: "Connect",
+    },
+    connect: {
+      pageTitle: "Connect Messaging",
+      pageDescription:
+        "Link your Telegram or WhatsApp account to book hub check-ins through chat with the UNBLCK bot.",
+      heading: "Connect Messaging",
+      description:
+        "Link your Telegram or WhatsApp to book hub check-ins through chat.",
+      yourLinkCode: "Your Link Code",
+      sendCodeHint:
+        "Send this code to the UNBLCK bot in Telegram or WhatsApp.",
+      expiresIn: "Expires in:",
+      generateCode: "Generate Link Code",
+      generating: "Generating...",
+      generateFailed: "Could not generate link code. Please try again.",
+      connectedChannels: "Connected Channels",
+      linkedOn: "Linked {date}",
+      disconnect: "Disconnect",
+      disconnectConfirm: "Are you sure you want to disconnect this channel?",
     },
     tourComingSoon: {
       title: "Coming soon",
