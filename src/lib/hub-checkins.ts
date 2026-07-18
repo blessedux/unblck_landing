@@ -135,15 +135,16 @@ export async function createHubCheckIn(
   });
 
   if (!result.allowed) {
-    const errorCode = result.reason.includes("credit")
+    const reason = result.reason ?? "Booking not allowed";
+    const errorCode = reason.includes("credit")
       ? "credits_exhausted"
-      : result.reason.includes("closed")
+      : reason.includes("closed")
         ? "hub_closed"
-        : result.reason.includes("same day")
+        : reason.includes("same day")
           ? "same_day_blocked"
           : undefined;
 
-    return { ok: false, error: result.reason, code: errorCode };
+    return { ok: false, error: reason, code: errorCode };
   }
 
   const { error, data: inserted } = await adminSupabase
