@@ -125,6 +125,26 @@ export const es: Translations = {
       rooms: "Salas",
       events: "Eventos",
       tour: "Tour",
+      connect: "Conectar",
+    },
+    connect: {
+      pageTitle: "Conectar mensajería",
+      pageDescription:
+        "Vincula tu cuenta de Telegram o WhatsApp para reservar check-ins del hub por chat con el bot de UNBLCK.",
+      heading: "Conectar mensajería",
+      description:
+        "Vincula Telegram o WhatsApp para reservar check-ins del hub por chat.",
+      yourLinkCode: "Tu código de enlace",
+      sendCodeHint:
+        "Envía este código al bot de UNBLCK en Telegram o WhatsApp.",
+      expiresIn: "Expira en:",
+      generateCode: "Generar código",
+      generating: "Generando...",
+      generateFailed: "No se pudo generar el código. Inténtalo de nuevo.",
+      connectedChannels: "Canales conectados",
+      linkedOn: "Vinculado el {date}",
+      disconnect: "Desconectar",
+      disconnectConfirm: "¿Seguro que quieres desconectar este canal?",
     },
     tourComingSoon: {
       title: "Próximamente",

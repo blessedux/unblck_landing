@@ -51,7 +51,7 @@ export function NewsletterStatsCard() {
         </p>
       )}
       <a
-        href="https://buttondown.com/settings/subscribers"
+        href="https://buttondown.com/subscribers"
         target="_blank"
         rel="noopener noreferrer"
         className="mt-2 inline-block text-xs text-gray-500 hover:text-white"

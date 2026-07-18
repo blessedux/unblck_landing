@@ -20,8 +20,8 @@ export function HubMenuLinks({ variant = "center" }: HubMenuLinksProps) {
   const links: HubMenuItem[] = [
     { kind: "link", href: "/member/hub/rooms", label: t.memberHub.nav.rooms },
     { kind: "link", href: "/member/hub/events", label: t.memberHub.nav.events },
-    { kind: "link", href: "/member/hub/connect", label: "Connect" },
     { kind: "tour", label: t.memberHub.nav.tour },
+    { kind: "link", href: "/member/hub/connect", label: t.memberHub.nav.connect },
   ];
 
   const renderItem = (item: HubMenuItem, size: "center" | "sidebar" | "stack") => {
