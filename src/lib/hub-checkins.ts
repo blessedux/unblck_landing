@@ -1,5 +1,5 @@
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
-import { getMemberProfile } from "@/lib/auth/member";
+import { getMemberProfileAdmin } from "@/lib/auth/member";
 import { canBook, getWeeklyCredits, getMemberOpenDays } from "@/lib/booking-credits";
 import {
   formatLocalDate,
@@ -32,7 +32,7 @@ export type CancelCheckInResult =
 export async function getHubCheckInState(
   memberId: string
 ): Promise<HubCheckInState | null> {
-  const profile = await getMemberProfile(memberId);
+  const profile = await getMemberProfileAdmin(memberId);
 
   if (!profile) {
     return null;
@@ -89,7 +89,7 @@ export async function createHubCheckIn(
   memberId: string,
   bookingDate: string
 ): Promise<HubCheckInResult> {
-  const profile = await getMemberProfile(memberId);
+  const profile = await getMemberProfileAdmin(memberId);
 
   if (!profile) {
     return { ok: false, error: "Member profile not found" };
