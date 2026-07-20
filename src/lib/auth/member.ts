@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createSupabaseAdmin } from "@/lib/supabase/admin";
 
 export type MemberStatus = "pending" | "approved" | "rejected" | null;
 
@@ -27,6 +28,23 @@ export async function getMemberApplication(userId: string) {
 
 export async function getMemberProfile(userId: string) {
   const supabase = await createClient();
+
+  const { data: profile } = await supabase
+    .from("member_profiles")
+    .select("*")
+    .eq("auth_user_id", userId)
+    .maybeSingle();
+
+  return profile;
+}
+
+/**
+ * Service-role variant for server-to-server contexts with no Supabase session
+ * (e.g. Agent Hub Check-in API via AGENT_API_KEY). Cookie-scoped
+ * getMemberProfile() sees auth.uid() as null under RLS and returns no row.
+ */
+export async function getMemberProfileAdmin(userId: string) {
+  const supabase = createSupabaseAdmin();
 
   const { data: profile } = await supabase
     .from("member_profiles")
