@@ -5,6 +5,7 @@ import { isValidEmail, normalizeEmail } from "@/lib/forms/validate-email";
 import { hasExistingApplication } from "@/lib/applications/existing-application";
 import { configurationErrorResponse } from "@/lib/api-error";
 import { ensureAuthUserForEmail } from "@/lib/auth/magic-link";
+import { sendAdminApplicationAlert } from "@/lib/email/send-admin-application-alert";
 import { sendHubApplicationConfirmation } from "@/lib/email/send-hub-application-confirmation";
 import { getSiteUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
@@ -66,7 +67,7 @@ export async function POST(request: Request) {
     const { user: authUser, created: authUserCreated } =
       await ensureAuthUserForEmail(email);
 
-    const { error: insertError } = await supabase
+    const { data: application, error: insertError } = await supabase
       .from("unblck_applications")
       .insert({
         full_name: body.full_name.trim(),
@@ -84,9 +85,11 @@ export async function POST(request: Request) {
         auth_user_id: authUser.id,
         status: "pending",
         application_type: "hub_access",
-      });
+      })
+      .select("id")
+      .single();
 
-    if (insertError) {
+    if (insertError || !application?.id) {
       console.error("Hub access application insert error:", insertError);
       if (authUserCreated) {
         await supabase.auth.admin.deleteUser(authUser.id);
@@ -109,15 +112,30 @@ export async function POST(request: Request) {
     }
 
     const siteUrl = getSiteUrl(request);
+    const fullName = body.full_name.trim();
+    const projectName = body.project_name.trim();
     try {
       await sendHubApplicationConfirmation({
         to: email,
-        fullName: body.full_name.trim(),
-        projectName: body.project_name.trim(),
+        fullName,
+        projectName,
         siteUrl,
       });
     } catch (emailError) {
       console.error("Hub application confirmation email error:", emailError);
+    }
+
+    try {
+      await sendAdminApplicationAlert({
+        applicationId: application.id,
+        applicationType: "hub_access",
+        fullName,
+        email,
+        projectName,
+        siteUrl,
+      });
+    } catch (alertError) {
+      console.error("Hub application admin alert error:", alertError);
     }
 
     return NextResponse.json({ ok: true });

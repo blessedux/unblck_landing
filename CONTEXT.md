@@ -235,6 +235,17 @@ Reward earned through tour completion or hub participation. Redeemable via Sozu 
 
 **Distribution:** Managed through Sozu faucet system
 
+### Admin Notification
+An email to Ops (everyone on the **`ADMIN_EMAILS`** allowlist) about platform activity that needs awareness — not member-facing mail. **Admin Notification** copy is **English only** (member-facing emails may stay Spanish).
+
+**Kinds (v1):**
+- **Application alert** — sent immediately when a new **Hub Access Application** or **Accelerator Application** is submitted. Insta Awards (and other funnels) are out of scope for v1 alerts. Lean body: application type, applicant name, email, project name; CTA to `/admin/applications/[id]`.
+- **Hub Check-in digest** — a daily email listing members with a **Hub Check-in** for a given hub calendar day (America/Santiago), only when at least one exists. Triggered by a **fixed daily cron at 04:01 UTC** (≈ 00:01 Chile standard / 01:01 Chile DST), covering the hub calendar day at fire time. Same-day Hub Check-ins are not allowed (24h advance), so the list is complete at send time. Not a prior-day recap and not “bookings created yesterday.” Lean body: hub date, count, member name + email per row; CTA to `/admin`. **Idempotent per hub date** — a sent marker prevents duplicate digests if the cron retries. Cron route is protected by **Bearer `CRON_SECRET`** only (not admin session).
+
+_Avoid_: treating Room Bookings as the digest unit; _Avoid_: one email per Hub Check-in create (digest is the booking signal); _Avoid_: a separate notify allowlist until login and inbox needs diverge; _Avoid_: failing an applicant’s submit because an Admin Notification failed to send (alerts are best-effort); _Avoid_: stuffing full application answers into the alert email; _Avoid_: one Resend API call per admin — send once with all `ADMIN_EMAILS` in `to`
+
+**Out of scope (v1 Admin Notifications):** Room Booking emails; Insta Awards application alerts; per–Hub Check-in immediate emails; new member-facing booking confirmation emails; manual “Send digest now” admin UI; separate notify allowlist; timezone-aware hourly cron; push / Telegram / WhatsApp admin alerts.
+
 ---
 
 ## Anti-Patterns
@@ -251,6 +262,9 @@ We collect Stellar Passport usernames, not wallet addresses.
 ### ❌ "Ambassador" / "Stellar-funded"
 Use "Builder" and "Founder" respectively for membership tiers. Use **Event Ambassador** only for the trusted event-role that hands out Insta Awards invite/codes — never as a tier name.
 
+### ❌ "Email admins for every room slot"
+Ops attendance awareness is via the **Hub Check-in digest**, not per **Room Booking**.
+
 ---
 
-*Last updated: 2026-07-16*
+*Last updated: 2026-07-28*
