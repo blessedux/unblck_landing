@@ -4,6 +4,7 @@ import { isValidEmail, normalizeEmail } from "@/lib/forms/validate-email";
 import { hasExistingApplication } from "@/lib/applications/existing-application";
 import { configurationErrorResponse } from "@/lib/api-error";
 import { ensureAuthUserForEmail } from "@/lib/auth/magic-link";
+import { sendAdminApplicationAlert } from "@/lib/email/send-admin-application-alert";
 import { sendAcceleratorApplicationConfirmation } from "@/lib/email/send-accelerator-application-confirmation";
 import { getSiteUrl } from "@/lib/site-url";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
@@ -71,7 +72,7 @@ export async function POST(request: Request) {
     const { user: authUser, created: authUserCreated } =
       await ensureAuthUserForEmail(email);
 
-    const { error: insertError } = await supabase
+    const { data: application, error: insertError } = await supabase
       .from("unblck_applications")
       .insert({
         full_name: body.full_name.trim(),
@@ -90,9 +91,11 @@ export async function POST(request: Request) {
         auth_user_id: authUser.id,
         status: "pending",
         application_type: "accelerator",
-      });
+      })
+      .select("id")
+      .single();
 
-    if (insertError) {
+    if (insertError || !application?.id) {
       console.error("Accelerator application insert error:", insertError);
       if (authUserCreated) {
         await supabase.auth.admin.deleteUser(authUser.id);
@@ -118,11 +121,13 @@ export async function POST(request: Request) {
     }
 
     const siteUrl = getSiteUrl(request);
+    const fullName = body.full_name.trim();
+    const projectName = body.project_name.trim();
     try {
       await sendAcceleratorApplicationConfirmation({
         to: email,
-        fullName: body.full_name.trim(),
-        projectName: body.project_name.trim(),
+        fullName,
+        projectName,
         siteUrl,
       });
     } catch (emailError) {
@@ -130,6 +135,19 @@ export async function POST(request: Request) {
         "Accelerator application confirmation email error:",
         emailError,
       );
+    }
+
+    try {
+      await sendAdminApplicationAlert({
+        applicationId: application.id,
+        applicationType: "accelerator",
+        fullName,
+        email,
+        projectName,
+        siteUrl,
+      });
+    } catch (alertError) {
+      console.error("Accelerator application admin alert error:", alertError);
     }
 
     return NextResponse.json({ ok: true });
