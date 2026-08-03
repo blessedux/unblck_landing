@@ -8,6 +8,8 @@ import {
   isCurrentWeek,
   getWeekStart,
 } from "@/lib/dates";
+import { sendHubCheckinConfirmation } from "@/lib/email/send-hub-checkin-confirmation";
+import { getSiteUrl } from "@/lib/site-url";
 
 export type HubCheckInState = {
   bookings: string[];
@@ -147,11 +149,12 @@ export async function createHubCheckIn(
     return { ok: false, error: reason, code: errorCode };
   }
 
+  const normalizedBookingDate = formatLocalDate(targetDate);
   const { error, data: inserted } = await adminSupabase
     .from("bookings")
     .insert({
       member_id: memberId,
-      booking_date: formatLocalDate(targetDate),
+      booking_date: normalizedBookingDate,
       week_start: formatLocalDate(weekStart),
     })
     .select("id")
@@ -160,6 +163,27 @@ export async function createHubCheckIn(
   if (error) {
     console.error("Booking insert error:", error);
     return { ok: false, error: "Could not create booking" };
+  }
+
+  try {
+    let fullName: string | null = null;
+    if (profile.application_id) {
+      const { data: application } = await adminSupabase
+        .from("unblck_applications")
+        .select("full_name")
+        .eq("id", profile.application_id)
+        .maybeSingle();
+      fullName = application?.full_name ?? null;
+    }
+
+    await sendHubCheckinConfirmation({
+      to: profile.email,
+      fullName,
+      bookingDate: normalizedBookingDate,
+      siteUrl: getSiteUrl(),
+    });
+  } catch (emailError) {
+    console.error("Hub Check-in confirmation email error:", emailError);
   }
 
   return { ok: true, booking_id: inserted!.id };

@@ -95,6 +95,8 @@ Previously called "Stellar-funded". Members with unlimited hub access.
 ### Hub Check-in
 The act of using one credit to access the physical hub for a full day. Once checked in, members can use coworking space and book specific rooms during their day.
 
+**Confirmation email:** After a successful Hub Check-in create (web or agent API), the member receives a Spanish confirmation with the reserved date and a CTA to `/member`. Send is **best-effort** — the booking still succeeds if email fails. This is member-facing mail, separate from the ops **Hub Check-in digest**.
+
 **Not to be confused with:** Room booking (which happens *after* checking in)
 
 ### Coworking Space
@@ -242,9 +244,9 @@ An email to Ops (everyone on the **`ADMIN_EMAILS`** allowlist) about platform ac
 - **Application alert** — sent immediately when a new **Hub Access Application** or **Accelerator Application** is submitted. Insta Awards (and other funnels) are out of scope for v1 alerts. Lean body: application type, applicant name, email, project name; CTA to `/admin/applications/[id]`.
 - **Hub Check-in digest** — a daily email listing members with a **Hub Check-in** for a given hub calendar day (America/Santiago), only when at least one exists. Triggered by a **fixed daily cron at 04:01 UTC** (≈ 00:01 Chile standard / 01:01 Chile DST), covering the hub calendar day at fire time. Same-day Hub Check-ins are not allowed (24h advance), so the list is complete at send time. Not a prior-day recap and not “bookings created yesterday.” Lean body: hub date, count, member name + email per row; CTA to `/admin`. **Idempotent per hub date** — a sent marker prevents duplicate digests if the cron retries. Cron route is protected by **Bearer `CRON_SECRET`** only (not admin session).
 
-_Avoid_: treating Room Bookings as the digest unit; _Avoid_: one email per Hub Check-in create (digest is the booking signal); _Avoid_: a separate notify allowlist until login and inbox needs diverge; _Avoid_: failing an applicant’s submit because an Admin Notification failed to send (alerts are best-effort); _Avoid_: stuffing full application answers into the alert email; _Avoid_: one Resend API call per admin — send once with all `ADMIN_EMAILS` in `to`
+_Avoid_: treating Room Bookings as the digest unit; _Avoid_: emailing admins on every Hub Check-in create (digest remains the ops booking signal; members get their own confirmation); _Avoid_: a separate notify allowlist until login and inbox needs diverge; _Avoid_: failing an applicant’s submit because an Admin Notification failed to send (alerts are best-effort); _Avoid_: stuffing full application answers into the alert email; _Avoid_: one Resend API call per admin — send once with all `ADMIN_EMAILS` in `to`
 
-**Out of scope (v1 Admin Notifications):** Room Booking emails; Insta Awards application alerts; per–Hub Check-in immediate emails; new member-facing booking confirmation emails; manual “Send digest now” admin UI; separate notify allowlist; timezone-aware hourly cron; push / Telegram / WhatsApp admin alerts.
+**Out of scope (v1 Admin Notifications):** Room Booking emails; Insta Awards application alerts; per–Hub Check-in immediate admin emails; manual “Send digest now” admin UI; separate notify allowlist; timezone-aware hourly cron; push / Telegram / WhatsApp admin alerts.
 
 ---
 
