@@ -8,6 +8,7 @@ import {
   isCurrentWeek,
   getWeekStart,
 } from "@/lib/dates";
+import { sendHubCheckinAdminAlert } from "@/lib/email/send-hub-checkin-admin-alert";
 import { sendHubCheckinConfirmation } from "@/lib/email/send-hub-checkin-confirmation";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -165,25 +166,38 @@ export async function createHubCheckIn(
     return { ok: false, error: "Could not create booking" };
   }
 
-  try {
-    let fullName: string | null = null;
-    if (profile.application_id) {
-      const { data: application } = await adminSupabase
-        .from("unblck_applications")
-        .select("full_name")
-        .eq("id", profile.application_id)
-        .maybeSingle();
-      fullName = application?.full_name ?? null;
-    }
+  let fullName: string | null = null;
+  if (profile.application_id) {
+    const { data: application } = await adminSupabase
+      .from("unblck_applications")
+      .select("full_name")
+      .eq("id", profile.application_id)
+      .maybeSingle();
+    fullName = application?.full_name ?? null;
+  }
 
+  const siteUrl = getSiteUrl();
+
+  try {
     await sendHubCheckinConfirmation({
       to: profile.email,
       fullName,
       bookingDate: normalizedBookingDate,
-      siteUrl: getSiteUrl(),
+      siteUrl,
     });
   } catch (emailError) {
     console.error("Hub Check-in confirmation email error:", emailError);
+  }
+
+  try {
+    await sendHubCheckinAdminAlert({
+      fullName,
+      email: profile.email,
+      bookingDate: normalizedBookingDate,
+      siteUrl,
+    });
+  } catch (alertError) {
+    console.error("Hub Check-in admin alert email error:", alertError);
   }
 
   return { ok: true, booking_id: inserted!.id };
