@@ -26,7 +26,7 @@ The current Exponential CLI authentication requires a **10-step desktop-only pro
 10. **Paste token** and save
 11. Restart cloud agent session
 
-**Result:** 5-10 minutes of manual work, desktop-only, no mobile support
+**Result:** 3-5 minutes of manual work, desktop-only, no mobile support
 
 ### The Mobile Use Case is Broken
 
@@ -72,7 +72,7 @@ Implement [RFC 8628 OAuth 2.0 Device Authorization Grant](https://datatracker.ie
 # Step 7: Paste token, save
 # Step 8: Restart cloud agent
 
-Total time: ~5-10 minutes
+Total time: ~3-5 minutes
 Mobile support: ❌ No
 ```
 
@@ -93,7 +93,7 @@ Agent: 🔐 Opening Exponential authentication...
 Agent: ✅ Authenticated as user@example.com
        Exponential CLI ready!
 
-Total time: ~10 seconds
+Total time: ~30 seconds
 Mobile support: ✅ Yes
 ```
 
@@ -113,7 +113,7 @@ Mobile support: ✅ Yes
 - Open Cursor mobile app
 - Say: "Let's plug into Exponential"
 - Browser opens → social login → approve
-- ✅ Authenticated in 10 seconds
+- ✅ Authenticated in under a minute
 
 **Impact:** Enables entire mobile-first workflow for Exponential management
 
@@ -126,8 +126,8 @@ Mobile support: ✅ Yes
 **Proposed:** Authenticate once, works across all devices automatically
 
 ### 4. First-Time Setup
-**Current:** 10-step process taking 5-10 minutes  
-**Proposed:** One prompt, 10 seconds, works from any device
+**Current:** 10-step process taking 3-5 minutes  
+**Proposed:** One prompt, under a minute, works from any device
 
 ---
 

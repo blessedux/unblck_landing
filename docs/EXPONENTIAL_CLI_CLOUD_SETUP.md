@@ -117,7 +117,7 @@ The current JWT token flow requires:
 11. Paste the token (hope you copied it correctly)
 12. Restart cloud agent session to inject secret
 
-**Result:** ~5-10 minutes of context switching and manual work
+**Result:** ~3-5 minutes of context switching and manual work
 
 ### ❌ **Can't Work from Mobile**
 - Exponential token generation page is desktop-optimized
