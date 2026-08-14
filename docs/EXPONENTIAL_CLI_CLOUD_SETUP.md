@@ -119,7 +119,7 @@ Then the agent can run it at the start of each session:
 
 ## Proposed Better Flow (Feature Request)
 
-See GitHub issue: [#TBD - OAuth Device Flow for Cloud Agents](https://github.com/positonic/exponential-cli/issues/TBD)
+See GitHub issue: [#16 - OAuth Device Flow for Browser-Based Authentication](https://github.com/positonic/exponential-cli/issues/16)
 
 ### Ideal User Experience
 

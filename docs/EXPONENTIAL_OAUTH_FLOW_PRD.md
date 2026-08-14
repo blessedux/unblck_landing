@@ -2,6 +2,7 @@
 
 **Status:** Proposed  
 **Target Repo:** [positonic/exponential-cli](https://github.com/positonic/exponential-cli)  
+**GitHub Issue:** [#16](https://github.com/positonic/exponential-cli/issues/16)  
 **Author:** Cloud Agent User  
 **Date:** 2026-08-14
 
