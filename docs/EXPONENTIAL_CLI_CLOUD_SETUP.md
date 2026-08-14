@@ -102,18 +102,35 @@ Then the agent can run it at the start of each session:
 
 ## Limitations of Current Flow
 
-### ❌ **Not Device/Browser-Friendly**
-- Requires manually copying JWT tokens from web UI
-- No OAuth or browser-based login flow
-- Tokens must be manually rotated if they expire
+### ❌ **Desktop-Only, Multi-Step Process**
+The current JWT token flow requires:
+1. **Must use desktop/laptop** - Token generation page doesn't work well on mobile
+2. Go to https://app.exponential.so
+3. Log in (if not already)
+4. Navigate to Settings → API Keys
+5. Click "Create new API key"
+6. Set name and expiration (e.g., 30 days)
+7. Copy the token (awkward selection, easy to miss characters)
+8. Switch to Cursor Dashboard
+9. Navigate to Cloud Agents → Secrets
+10. Create new secret `EXPONENTIAL_JWT_TOKEN`
+11. Paste the token (hope you copied it correctly)
+12. Restart cloud agent session to inject secret
+
+**Result:** ~5-10 minutes of context switching and manual work
+
+### ❌ **Can't Work from Mobile**
+- Exponential token generation page is desktop-optimized
+- Can't authenticate Cursor mobile app with Exponential
+- No way to say "plug into Exponential" from your phone and have it work
 
 ### ❌ **Poor Cross-Device UX**
 - Each device (MacBook, phone, cloud agent) needs separate token setup
 - No automatic sync of authentication state
-- Can't easily "login with browser" and sync across all devices
+- Token expires after 30 days → repeat entire process
 
 ### ❌ **Security Concerns**
-- Long-lived JWT tokens are stored as plaintext secrets
+- Long-lived JWT tokens (30 days+) stored as plaintext secrets
 - No automatic token refresh mechanism
 - Token compromise affects all devices using that token
 
@@ -121,34 +138,43 @@ Then the agent can run it at the start of each session:
 
 See GitHub issue: [#16 - OAuth Device Flow for Browser-Based Authentication](https://github.com/positonic/exponential-cli/issues/16)
 
-### Ideal User Experience
+### Ideal Mobile-First User Experience
 
-**User prompts in Cursor:**
-> "Connect my Exponential account"
+**Scenario: User opens Cursor mobile app**
 
-**Agent responds:**
-```
-🔐 Authenticate with Exponential:
-   → https://app.exponential.so/auth/device?code=ABC-123
+1. **User prompts:** "Let's plug into Exponential" or "Log in to Exponential"
 
-Open this link on any device (phone, laptop, etc.) and approve the connection.
-Waiting for authentication... ⏳
-```
+2. **Agent responds:**
+   ```
+   🔐 Opening Exponential authentication...
+   ```
 
-**User clicks link, logs in via browser (using existing session), approves**
+3. **Browser automatically opens** with familiar social login
+   - Already logged into Exponential → instant approval
+   - Or login with Google/Email/SSO (same as app)
 
-**Agent:**
-```
-✅ Authenticated as [user@email.com]
-   Synced across all your devices and Cursor sessions.
-```
+4. **Auto-creates 30-day JWT token** with default settings
 
-### Benefits of OAuth Device Flow
-- ✅ **One-click authentication** via browser
-- ✅ **Automatic sync** across MacBook, phone, cloud agents
-- ✅ **Reuses existing login session** (Google, email, SSO, etc.)
-- ✅ **Secure token management** (short-lived access tokens, refresh tokens)
-- ✅ **Same UX as GitHub CLI, AWS CLI, etc.**
+5. **Agent confirms:**
+   ```
+   ✅ Authenticated as [user@email.com]
+   
+   Exponential CLI ready! I can now:
+   • Create and manage actions
+   • Add contacts to CRM
+   • Update projects and goals
+   • Check your daily tasks
+   
+   Try: "Add a contact to my CRM" or "What's on my plate today?"
+   ```
+
+### Key Benefits
+- ✅ **Works on mobile** - Open Cursor app on phone, authenticate instantly
+- ✅ **One prompt** - No manual token copying or Cursor Dashboard navigation
+- ✅ **Social login** - Uses existing Exponential social auth (Google, etc.)
+- ✅ **Auto-configured** - Token auto-created with 30-day expiration
+- ✅ **Cross-device sync** - Authenticate once, works everywhere
+- ✅ **No context switching** - Everything happens in-conversation
 
 ## Resources
 

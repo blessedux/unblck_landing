@@ -10,66 +10,124 @@
 
 ## Problem Statement
 
-The current Exponential CLI authentication requires users to:
-1. Manually generate a JWT token from the web UI
-2. Copy and paste the token into `exponential auth login --token <jwt>`
-3. Repeat this process for every device and environment (MacBook, phone, cloud agents)
+### Current Flow is Desktop-Only and Painful
 
-This creates friction for:
-- **Multi-device workflows** (desktop, mobile, cloud IDEs)
-- **AI agents** in ephemeral environments (Cursor Cloud Agents, GitHub Codespaces)
-- **Teams** onboarding multiple developers
+The current Exponential CLI authentication requires a **10-step desktop-only process**:
 
-Users expect the same seamless "login with browser" experience offered by modern CLI tools like:
+1. ❌ **Must use desktop** (mobile doesn't work well)
+2. Go to https://app.exponential.so
+3. Log in (if not already)
+4. Navigate to Settings → API Keys → Create new API key
+5. Set name and expiration (e.g., 30 days)
+6. **Copy token** (awkward selection, easy to miss characters)
+7. Switch to Cursor Dashboard
+8. Navigate to Cloud Agents → Secrets
+9. Create `EXPONENTIAL_JWT_TOKEN` secret
+10. **Paste token** and save
+11. Restart cloud agent session
+
+**Result:** 5-10 minutes of manual work, desktop-only, no mobile support
+
+### The Mobile Use Case is Broken
+
+**What users want to do:**
+- Open Cursor mobile app
+- Say: *"Let's plug into Exponential"* or *"Add contact to my CRM"*
+- Authenticate quickly via social login
+- Start working immediately
+
+**What happens instead:**
+- ❌ Can't authenticate from mobile
+- ❌ Must switch to desktop
+- ❌ Must manually navigate token generation UI
+- ❌ Must copy/paste tokens between apps
+- ❌ Must restart cloud agent
+
+### Users Expect Modern CLI Auth
+
+Users expect the same seamless "login with browser" experience offered by:
 - GitHub CLI (`gh auth login`)
 - AWS CLI (`aws sso login`)
 - Vercel CLI (`vercel login`)
+- Netlify CLI (`netlify login`)
+
+These tools work **instantly from mobile** with **one command**.
 
 ---
 
-## Proposed Solution: OAuth 2.0 Device Authorization Flow
+## Proposed Solution: OAuth Device Flow with Auto-Token Creation
 
-Implement [RFC 8628 OAuth 2.0 Device Authorization Grant](https://datatracker.ietf.org/doc/html/rfc8628), the industry standard for authenticating CLI tools and devices without keyboards/browsers.
+Implement [RFC 8628 OAuth 2.0 Device Authorization Grant](https://datatracker.ietf.org/doc/html/rfc8628) + automatic JWT token creation with sensible defaults.
 
 ### User Experience
 
-#### Current Flow (Manual JWT)
+#### Current Flow (Manual JWT - Desktop Only)
 ```bash
-$ exponential auth login --token <paste-long-jwt-here> --api-url https://app.exponential.so
-✅ Logged in
-```
-**Problems:**
-- Requires switching to browser, finding the tokens page, generating token, copying it back
-- Token is long-lived and must be stored/managed manually
-- No cross-device sync
+# Step 1: Go to desktop, open browser
+# Step 2: Navigate to app.exponential.so → Settings → API Keys
+# Step 3: Create token, set name, set 30-day expiration
+# Step 4: Copy token (awkward)
+# Step 5: Open Cursor Dashboard → Cloud Agents → Secrets
+# Step 6: Create EXPONENTIAL_JWT_TOKEN secret
+# Step 7: Paste token, save
+# Step 8: Restart cloud agent
 
-#### Proposed Flow (OAuth Device)
-```bash
-$ exponential auth login
-
-🔐 Authenticate with Exponential:
-
-   Visit: https://app.exponential.so/auth/device
-   Enter code: ABCD-1234
-
-   Or open directly: https://app.exponential.so/auth/device?code=ABCD-1234
-
-⏳ Waiting for authentication...
-
-✅ Authenticated as user@example.com
-   Token saved to ~/.config/exponential-cli-nodejs/config.json
+Total time: ~5-10 minutes
+Mobile support: ❌ No
 ```
 
-**User's browser:**
-1. Opens link on any device (phone, laptop, tablet)
-2. Already logged into Exponential → sees approval screen immediately
-3. Clicks "Approve" → done
+#### Proposed Flow (OAuth Device - Works on Mobile!)
+```bash
+# User opens Cursor mobile app and says:
+User: "Let's plug into Exponential"
 
-**Benefits:**
-- ✅ One-click authentication using existing session
-- ✅ Works on any device with a browser
-- ✅ Secure: short-lived tokens, automatic refresh
-- ✅ Same flow for desktop, mobile, cloud IDEs, CI/CD
+# Agent automatically handles auth:
+Agent: 🔐 Opening Exponential authentication...
+
+# Browser opens automatically with social login
+# (Already logged into Exponential → instant approval)
+# Or login with Google/Email/SSO
+
+# Agent automatically creates 30-day JWT token
+
+Agent: ✅ Authenticated as user@example.com
+       Exponential CLI ready!
+
+Total time: ~10 seconds
+Mobile support: ✅ Yes
+```
+
+**Key Innovation: Auto-Token Creation**
+- User approves device access via browser
+- Backend automatically creates 30-day JWT token
+- Token is returned to CLI via OAuth flow
+- No manual token generation or copying needed
+
+---
+
+## Use Cases
+
+### 1. 🔥 Mobile-First: Cursor App on Phone
+**Current:** ❌ Impossible - must use desktop to generate token  
+**Proposed:** 
+- Open Cursor mobile app
+- Say: "Let's plug into Exponential"
+- Browser opens → social login → approve
+- ✅ Authenticated in 10 seconds
+
+**Impact:** Enables entire mobile-first workflow for Exponential management
+
+### 2. Cloud Agents (Cursor, Codespaces, Replit)
+**Current:** Must manually copy JWT tokens into cloud environment secrets, restart session  
+**Proposed:** One prompt triggers OAuth flow, auto-authenticates
+
+### 3. Multi-Device Development
+**Current:** Generate separate JWT token for MacBook, iPad, cannot use on phone  
+**Proposed:** Authenticate once, works across all devices automatically
+
+### 4. First-Time Setup
+**Current:** 10-step process taking 5-10 minutes  
+**Proposed:** One prompt, 10 seconds, works from any device
 
 ---
 
