@@ -1,5 +1,6 @@
 "use client";
 
+import { ApplyAuthGate } from "@/components/ApplyAuthGate";
 import { MultiStepForm } from "@/components/MultiStepForm";
 import {
   emptyInstaAwardsApplication,
@@ -36,12 +37,17 @@ async function validateReferralStep(
 
 export function InstaAwardsApplicationForm() {
   return (
-    <MultiStepForm
-      formSteps={instaAwardsFormSteps}
-      emptyValues={emptyInstaAwardsApplication}
-      apiEndpoint="/api/insta-awards/apply"
-      successScreen={instaAwardsSuccessScreen}
-      onValidateStep={validateReferralStep}
-    />
+    <ApplyAuthGate nextPath="/insta-awards/apply">
+      {({ email }) => (
+        <MultiStepForm
+          formSteps={instaAwardsFormSteps}
+          emptyValues={emptyInstaAwardsApplication}
+          apiEndpoint="/api/insta-awards/apply"
+          successScreen={instaAwardsSuccessScreen}
+          authenticatedEmail={email}
+          onValidateStep={validateReferralStep}
+        />
+      )}
+    </ApplyAuthGate>
   );
 }

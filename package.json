@@ -21,7 +21,7 @@
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^1.23.0",
+    "lucide-react": "^1.31.0",
     "motion": "^12.42.2",
     "next": "^15.2.4",
     "qrcode": "^1.5.4",

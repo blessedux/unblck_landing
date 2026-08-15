@@ -28,13 +28,6 @@ export const unblckFormSteps: FormStep<UnblckPayload>[] = [
     required: true,
   },
   {
-    id: "email",
-    type: "email",
-    question: "What's your email?",
-    placeholder: "you@company.com",
-    required: true,
-  },
-  {
     id: "project_name",
     type: "text",
     question: "What's your project or company called?",
@@ -118,9 +111,9 @@ export const emptyUnblckApplication = (): UnblckPayload => ({
 
 export const unblckSuccessScreen: SuccessScreen = {
   label: "Application received",
-  title: "Check your email for a magic link",
+  title: "You're all set",
   description:
-    "We've sent you a secure login link. Click it to activate your account and check your application status.",
+    "We've received your application. We'll review it and email you when there's an update. You can check status anytime from your member home.",
   extra:
     "Come to StellarBarrio at Tellus Blockchain Hub STGO — our monthly builder event and the gateway to Insta Awards.",
 };

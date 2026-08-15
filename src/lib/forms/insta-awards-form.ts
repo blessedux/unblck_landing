@@ -36,13 +36,6 @@ export const instaAwardsFormSteps: FormStep<InstaAwardsPayload>[] = [
     required: true,
   },
   {
-    id: "email",
-    type: "email",
-    question: "What's your email?",
-    placeholder: "you@company.com",
-    required: true,
-  },
-  {
     id: "project_name",
     type: "text",
     question: "What's your project or company called?",

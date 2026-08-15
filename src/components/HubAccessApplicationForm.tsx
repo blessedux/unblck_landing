@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
+import { ApplyAuthGate } from "@/components/ApplyAuthGate";
 import { MultiStepForm } from "@/components/MultiStepForm";
 import { useLocale } from "@/contexts/LocaleContext";
 import {
@@ -29,11 +30,16 @@ export function HubAccessApplicationForm() {
   }, [t.hubApply.pageTitle]);
 
   return (
-    <MultiStepForm
-      formSteps={formSteps}
-      emptyValues={emptyHubAccessApplication}
-      apiEndpoint="/api/apply/hub"
-      successScreen={successScreen}
-    />
+    <ApplyAuthGate nextPath="/apply">
+      {({ email }) => (
+        <MultiStepForm
+          formSteps={formSteps}
+          emptyValues={emptyHubAccessApplication}
+          apiEndpoint="/api/apply/hub"
+          successScreen={successScreen}
+          authenticatedEmail={email}
+        />
+      )}
+    </ApplyAuthGate>
   );
 }

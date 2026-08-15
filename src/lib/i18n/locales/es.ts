@@ -292,6 +292,7 @@ export const es: Translations = {
     invalidEmail: "Ingresa un email válido",
     submissionFailed: "Algo salió mal",
     backToHome: "Volver al inicio",
+    goToMember: "Ir al inicio de miembro",
     resendEmail: "Reenviar email",
     resending: "Enviando...",
     emailSent: "¡Email enviado! Revisa tu bandeja de entrada.",
@@ -300,15 +301,20 @@ export const es: Translations = {
     pageTitle: "Iniciar sesión | UNBLCK",
     pageDescription: "Accede a tu cuenta del UNBLCK Hub",
     welcome: "Bienvenido de nuevo",
+    applyWelcome: "Inicia sesión para postular",
     subtitle:
       "Los miembros usan magic link. Los admins inician sesión con contraseña.",
+    applySubtitle:
+      "Ingresa tu email y te enviaremos un magic link para continuar tu postulación.",
     emailLabel: "Email",
     emailPlaceholder: "tu@empresa.com",
     passwordLabel: "Contraseña",
     passwordRequired: "Ingresa tu contraseña para continuar.",
     sendMagicLink: "Enviar magic link",
+    continueWithEmail: "Continuar con email",
     loginWithPassword: "Iniciar sesión con contraseña",
     loginWithPasswordInstead: "Iniciar sesión con contraseña",
+    rememberMe: "Recordarme",
     processing: "Procesando...",
     checkEmailTitle: "Revisa tu email",
     checkEmailBody:
@@ -396,9 +402,9 @@ export const es: Translations = {
     },
     success: {
       label: "Postulación recibida",
-      title: "Revisa tu email para el magic link",
+      title: "Listo",
       description:
-        "Te enviamos un enlace seguro de inicio de sesión. Haz clic para activar tu cuenta y acceder al hub.",
+        "Recibimos tu postulación. La revisaremos y te escribiremos cuando haya novedades. Puedes ver el estado en tu inicio de miembro.",
       extra:
         "Ven a StellarBarrio en Tellus Blockchain Hub STGO — nuestro evento mensual de builders.",
     },
@@ -488,9 +494,9 @@ export const es: Translations = {
     },
     success: {
       label: "Postulación recibida",
-      title: "Revisa tu email para el magic link",
+      title: "Listo",
       description:
-        "Te enviamos un enlace seguro de inicio de sesión. Haz clic para activar tu cuenta y revisar el estado de tu postulación.",
+        "Recibimos tu postulación. La revisaremos y te escribiremos cuando haya novedades. Puedes ver el estado en tu inicio de miembro.",
       extra:
         "Ven a StellarBarrio en Tellus Blockchain Hub STGO — nuestro evento mensual de builders y la puerta de entrada a Insta Awards.",
     },

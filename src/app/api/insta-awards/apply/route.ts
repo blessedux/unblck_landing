@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
 import type { InstaAwardsPayload } from "@/lib/forms/insta-awards-form";
+import { requireSessionApplicant } from "@/lib/auth/require-session-applicant";
 import { validateReferralCode } from "@/lib/referral-codes";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
-
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
 
 function isValidUrl(url: string) {
   try {
@@ -16,14 +13,11 @@ function isValidUrl(url: string) {
   }
 }
 
-function validate(payload: InstaAwardsPayload) {
+function validate(payload: Omit<InstaAwardsPayload, "email">) {
   const errors: string[] = [];
 
   if (!payload.referral_code?.trim()) errors.push("Referral code is required");
   if (!payload.full_name?.trim()) errors.push("Name is required");
-  if (!payload.email?.trim() || !isValidEmail(payload.email)) {
-    errors.push("Valid email is required");
-  }
   if (!payload.project_name?.trim()) errors.push("Project name is required");
   if (!payload.project_link?.trim() || !isValidUrl(payload.project_link)) {
     errors.push("Valid project link is required");
@@ -47,6 +41,11 @@ function validate(payload: InstaAwardsPayload) {
 
 export async function POST(request: Request) {
   try {
+    const applicant = await requireSessionApplicant();
+    if ("error" in applicant) {
+      return applicant.error;
+    }
+
     const body = (await request.json()) as InstaAwardsPayload;
     const errors = validate(body);
 
@@ -63,7 +62,7 @@ export async function POST(request: Request) {
     const { error } = await supabase.from("insta_awards_applications").insert({
       referral_code: referral.code,
       full_name: body.full_name.trim(),
-      email: body.email.trim().toLowerCase(),
+      email: applicant.email,
       project_name: body.project_name.trim(),
       project_link: body.project_link.trim(),
       stellar_build: body.stellar_build.trim(),

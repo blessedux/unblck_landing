@@ -12,6 +12,8 @@ type MultiStepFormProps<T extends Record<string, string>> = {
   emptyValues: () => T;
   apiEndpoint: string;
   successScreen: SuccessScreen;
+  /** When set, email steps are skipped and this address is submitted. */
+  authenticatedEmail?: string;
   onValidateStep?: (
     step: FormStep<T>,
     values: T,
@@ -60,16 +62,27 @@ export function MultiStepForm<T extends Record<string, string>>({
   emptyValues,
   apiEndpoint,
   successScreen,
+  authenticatedEmail,
   onValidateStep,
 }: MultiStepFormProps<T>) {
   const router = useRouter();
   const { t } = useLocale();
+  const visibleSteps = useMemo(() => {
+    if (!authenticatedEmail) return formSteps;
+    return formSteps.filter((step) => step.type !== "email");
+  }, [formSteps, authenticatedEmail]);
   const answerableSteps = useMemo(
-    () => getAnswerableSteps(formSteps),
-    [formSteps],
+    () => getAnswerableSteps(visibleSteps),
+    [visibleSteps],
   );
   const [stepIndex, setStepIndex] = useState(0);
-  const [values, setValues] = useState<T>(emptyValues);
+  const [values, setValues] = useState<T>(() => {
+    const initial = emptyValues();
+    if (authenticatedEmail && "email" in initial) {
+      return { ...initial, email: authenticatedEmail } as T;
+    }
+    return initial;
+  });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -96,11 +109,11 @@ export function MultiStepForm<T extends Record<string, string>>({
     return () => window.removeEventListener("keydown", onEscape);
   }, [router]);
 
-  const currentStep = formSteps[stepIndex];
+  const currentStep = visibleSteps[stepIndex];
   const progress =
     stepIndex === 0
       ? 0
-      : Math.round((stepIndex / (formSteps.length - 1)) * 100);
+      : Math.round((stepIndex / (visibleSteps.length - 1)) * 100);
 
   const fieldKey = currentStep.id as keyof T;
   const gateBlocked = isGateBlocked(currentStep, values);
@@ -142,7 +155,7 @@ export function MultiStepForm<T extends Record<string, string>>({
       }
     }
 
-    if (stepIndex < formSteps.length - 1) {
+    if (stepIndex < visibleSteps.length - 1) {
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
       }
@@ -154,7 +167,9 @@ export function MultiStepForm<T extends Record<string, string>>({
     setError(null);
 
     const payload = { ...nextValues } as Record<string, string>;
-    if (typeof payload.email === "string") {
+    if (authenticatedEmail) {
+      payload.email = authenticatedEmail.trim();
+    } else if (typeof payload.email === "string") {
       payload.email = payload.email.trim();
     }
 
@@ -194,9 +209,11 @@ export function MultiStepForm<T extends Record<string, string>>({
   };
 
   const resendEmail = async () => {
+    if (authenticatedEmail) return;
+
     setResending(true);
     setResendSuccess(false);
-    
+
     try {
       const emailValue = values["email" as keyof T] || "";
       const response = await fetch("/api/resend-magic-link", {
@@ -262,19 +279,21 @@ export function MultiStepForm<T extends Record<string, string>>({
             
             <div className="mt-8 flex items-center gap-3">
               <Link
-                href="/"
+                href={authenticatedEmail ? "/member" : "/"}
                 className="inline-block rounded-full border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground"
               >
-                {t.form.backToHome}
+                {authenticatedEmail ? t.form.goToMember : t.form.backToHome}
               </Link>
 
-              <button
-                onClick={resendEmail}
-                disabled={resending}
-                className="inline-block rounded-full border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground disabled:opacity-50"
-              >
-                {resending ? t.form.resending : t.form.resendEmail}
-              </button>
+              {!authenticatedEmail && (
+                <button
+                  onClick={resendEmail}
+                  disabled={resending}
+                  className="inline-block rounded-full border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground disabled:opacity-50"
+                >
+                  {resending ? t.form.resending : t.form.resendEmail}
+                </button>
+              )}
             </div>
 
             {resendSuccess && (
@@ -299,13 +318,16 @@ export function MultiStepForm<T extends Record<string, string>>({
         />
       </div>
 
-      <header className="px-6 py-5">
+      <header className="flex items-center justify-between gap-4 px-6 py-5">
         <Link
           href="/"
           className="text-sm font-medium tracking-[0.15em] text-muted transition hover:text-foreground"
         >
           UNBLCK
         </Link>
+        {authenticatedEmail && (
+          <p className="truncate text-xs text-muted">{authenticatedEmail}</p>
+        )}
       </header>
 
       <div className="flex flex-1 items-start px-6 pb-24 pt-8 sm:items-center sm:pt-0">
@@ -491,7 +513,7 @@ export function MultiStepForm<T extends Record<string, string>>({
                   disabled={submitting}
                   className="min-h-12 min-w-[8rem] touch-manipulation rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition hover:bg-accent-soft disabled:opacity-50"
                 >
-                  {stepIndex === formSteps.length - 1
+                  {stepIndex === visibleSteps.length - 1
                     ? submitting
                       ? t.form.submitting
                       : t.form.submit

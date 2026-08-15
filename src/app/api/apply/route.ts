@@ -1,25 +1,18 @@
 import { NextResponse } from "next/server";
 import type { UnblckPayload } from "@/lib/forms/unblck-form";
-import { isValidEmail, normalizeEmail } from "@/lib/forms/validate-email";
 import { hasExistingApplication } from "@/lib/applications/existing-application";
-import { generateAndSendMagicLink } from "@/lib/auth/magic-link";
-import { memberAuthCallbackUrl } from "@/lib/site-url";
+import { requireSessionApplicant } from "@/lib/auth/require-session-applicant";
 import { createSupabaseAdmin } from "@/lib/supabase/admin";
 
 function isValidUsername(username: string) {
-  // Accept usernames with optional @ prefix, alphanumeric, hyphens, underscores
-  // Length 2-39 characters (GitHub username limits)
   const usernameRegex = /^@?[a-zA-Z0-9]([a-zA-Z0-9_-]{0,37}[a-zA-Z0-9])?$/;
   return usernameRegex.test(username);
 }
 
-function validate(payload: UnblckPayload) {
+function validate(payload: Omit<UnblckPayload, "email">) {
   const errors: string[] = [];
 
   if (!payload.full_name?.trim()) errors.push("Name is required");
-  if (!payload.email?.trim() || !isValidEmail(payload.email)) {
-    errors.push("Valid email is required");
-  }
   if (!payload.project_name?.trim()) errors.push("Project name is required");
   if (!payload.build_description?.trim()) {
     errors.push("Build description is required");
@@ -28,14 +21,12 @@ function validate(payload: UnblckPayload) {
   if (!payload.stage?.trim()) errors.push("Stage is required");
   if (!payload.motivation?.trim()) errors.push("Motivation is required");
 
-  // Validate username
   if (!payload.passport_username?.trim()) {
     errors.push("Stellar Passport username is required");
   } else if (!isValidUsername(payload.passport_username.trim())) {
     errors.push("Please enter a valid username (letters, numbers, hyphens, underscores only)");
   }
 
-  // Validate T&C acceptance
   if (payload.terms_accepted !== "true") {
     errors.push("You must accept the Terms & Conditions");
   }
@@ -45,6 +36,11 @@ function validate(payload: UnblckPayload) {
 
 export async function POST(request: Request) {
   try {
+    const applicant = await requireSessionApplicant();
+    if ("error" in applicant) {
+      return applicant.error;
+    }
+
     const body = (await request.json()) as UnblckPayload;
     const errors = validate(body);
 
@@ -53,7 +49,7 @@ export async function POST(request: Request) {
     }
 
     const supabase = createSupabaseAdmin();
-    const email = normalizeEmail(body.email);
+    const email = applicant.email;
     const termsVersion = process.env.TERMS_VERSION || "2026-07-01";
 
     if (await hasExistingApplication(supabase, email, "accelerator")) {
@@ -66,12 +62,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const authUser = await generateAndSendMagicLink(
-      email,
-      memberAuthCallbackUrl(request),
-    );
-
-    // Insert application with pending status
     const { error: insertError } = await supabase
       .from("unblck_applications")
       .insert({
@@ -86,14 +76,13 @@ export async function POST(request: Request) {
         passport_address: body.passport_username.trim(),
         terms_version: termsVersion,
         terms_accepted_at: new Date().toISOString(),
-        auth_user_id: authUser.id,
+        auth_user_id: applicant.id,
         status: "pending",
         application_type: "accelerator",
       });
 
     if (insertError) {
       console.error("UNBLCK application insert error:", insertError);
-      // Do not delete auth user — they may already have a hub application.
       return NextResponse.json(
         { error: "Could not save application. Try again." },
         { status: 500 },

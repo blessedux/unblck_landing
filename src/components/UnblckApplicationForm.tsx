@@ -1,5 +1,6 @@
 "use client";
 
+import { ApplyAuthGate } from "@/components/ApplyAuthGate";
 import { MultiStepForm } from "@/components/MultiStepForm";
 import {
   emptyUnblckApplication,
@@ -9,11 +10,16 @@ import {
 
 export function UnblckApplicationForm() {
   return (
-    <MultiStepForm
-      formSteps={unblckFormSteps}
-      emptyValues={emptyUnblckApplication}
-      apiEndpoint="/api/apply"
-      successScreen={unblckSuccessScreen}
-    />
+    <ApplyAuthGate nextPath="/apply">
+      {({ email }) => (
+        <MultiStepForm
+          formSteps={unblckFormSteps}
+          emptyValues={emptyUnblckApplication}
+          apiEndpoint="/api/apply"
+          successScreen={unblckSuccessScreen}
+          authenticatedEmail={email}
+        />
+      )}
+    </ApplyAuthGate>
   );
 }

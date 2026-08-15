@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import type { HubAccessPayload } from "@/lib/forms/hub-form";
 import { STELLAR_AMBASSADOR_VALUES } from "@/lib/forms/hub-form";
-import { isValidEmail, normalizeEmail } from "@/lib/forms/validate-email";
 import { hasExistingApplication } from "@/lib/applications/existing-application";
 import { configurationErrorResponse } from "@/lib/api-error";
-import { ensureAuthUserForEmail } from "@/lib/auth/magic-link";
+import { requireSessionApplicant } from "@/lib/auth/require-session-applicant";
 import { sendAdminApplicationAlert } from "@/lib/email/send-admin-application-alert";
 import { sendHubApplicationConfirmation } from "@/lib/email/send-hub-application-confirmation";
 import { getSiteUrl } from "@/lib/site-url";
@@ -17,13 +16,10 @@ function isValidUsername(username: string) {
   return usernameRegex.test(username);
 }
 
-function validate(payload: HubAccessPayload) {
+function validate(payload: Omit<HubAccessPayload, "email">) {
   const errors: string[] = [];
 
   if (!payload.full_name?.trim()) errors.push("Name is required");
-  if (!payload.email?.trim() || !isValidEmail(payload.email)) {
-    errors.push("Valid email is required");
-  }
   if (!payload.project_name?.trim()) errors.push("Project description is required");
   if (!payload.location?.trim()) errors.push("Location is required");
 
@@ -46,6 +42,11 @@ function validate(payload: HubAccessPayload) {
 
 export async function POST(request: Request) {
   try {
+    const applicant = await requireSessionApplicant();
+    if ("error" in applicant) {
+      return applicant.error;
+    }
+
     const body = (await request.json()) as HubAccessPayload;
     const errors = validate(body);
 
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
     }
 
     const supabase = createSupabaseAdmin();
-    const email = normalizeEmail(body.email);
+    const email = applicant.email;
     const termsVersion = process.env.TERMS_VERSION || "2026-07-01";
 
     if (await hasExistingApplication(supabase, email, "hub_access")) {
@@ -63,9 +64,6 @@ export async function POST(request: Request) {
         { status: 409 },
       );
     }
-
-    const { user: authUser, created: authUserCreated } =
-      await ensureAuthUserForEmail(email);
 
     const { data: application, error: insertError } = await supabase
       .from("unblck_applications")
@@ -82,7 +80,7 @@ export async function POST(request: Request) {
         passport_address: body.passport_username.trim(),
         terms_version: termsVersion,
         terms_accepted_at: new Date().toISOString(),
-        auth_user_id: authUser.id,
+        auth_user_id: applicant.id,
         status: "pending",
         application_type: "hub_access",
       })
@@ -91,9 +89,6 @@ export async function POST(request: Request) {
 
     if (insertError || !application?.id) {
       console.error("Hub access application insert error:", insertError);
-      if (authUserCreated) {
-        await supabase.auth.admin.deleteUser(authUser.id);
-      }
       return NextResponse.json(
         { error: "Could not save application. Try again." },
         { status: 500 },

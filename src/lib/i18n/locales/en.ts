@@ -234,6 +234,7 @@ export interface Translations {
     invalidEmail: string;
     submissionFailed: string;
     backToHome: string;
+    goToMember: string;
     resendEmail: string;
     resending: string;
     emailSent: string;
@@ -242,14 +243,18 @@ export interface Translations {
     pageTitle: string;
     pageDescription: string;
     welcome: string;
+    applyWelcome: string;
     subtitle: string;
+    applySubtitle: string;
     emailLabel: string;
     emailPlaceholder: string;
     passwordLabel: string;
     passwordRequired: string;
     sendMagicLink: string;
+    continueWithEmail: string;
     loginWithPassword: string;
     loginWithPasswordInstead: string;
+    rememberMe: string;
     processing: string;
     checkEmailTitle: string;
     checkEmailBody: string;
@@ -702,6 +707,7 @@ export const en: Translations = {
     invalidEmail: "Enter a valid email",
     submissionFailed: "Something went wrong",
     backToHome: "Back to home",
+    goToMember: "Go to member home",
     resendEmail: "Resend email",
     resending: "Sending...",
     emailSent: "Email sent! Check your inbox.",
@@ -710,14 +716,19 @@ export const en: Translations = {
     pageTitle: "Login | UNBLCK",
     pageDescription: "Access your UNBLCK Hub account",
     welcome: "Welcome back",
+    applyWelcome: "Sign in to apply",
     subtitle: "Members use a magic link. Admins sign in with password.",
+    applySubtitle:
+      "Enter your email and we'll send a magic link so you can continue your application.",
     emailLabel: "Email",
     emailPlaceholder: "you@company.com",
     passwordLabel: "Password",
     passwordRequired: "Enter your password to continue.",
     sendMagicLink: "Send magic link",
+    continueWithEmail: "Continue with email",
     loginWithPassword: "Login with password",
     loginWithPasswordInstead: "Login with password instead",
+    rememberMe: "Remember me",
     processing: "Processing...",
     checkEmailTitle: "Check your email",
     checkEmailBody:
@@ -805,9 +816,9 @@ export const en: Translations = {
     },
     success: {
       label: "Application received",
-      title: "Check your email for a magic link",
+      title: "You're all set",
       description:
-        "We've sent you a secure login link. Click it to activate your account and access the hub.",
+        "We've received your application. We'll review it and email you when there's an update. You can check status anytime from your member home.",
       extra:
         "Come to StellarBarrio at Tellus Blockchain Hub STGO — our monthly builder event.",
     },
@@ -897,9 +908,9 @@ export const en: Translations = {
     },
     success: {
       label: "Application received",
-      title: "Check your email for a magic link",
+      title: "You're all set",
       description:
-        "We've sent you a secure login link. Click it to activate your account and check your application status.",
+        "We've received your application. We'll review it and email you when there's an update. You can check status anytime from your member home.",
       extra:
         "Come to StellarBarrio at Tellus Blockchain Hub STGO — our monthly builder event and the gateway to Insta Awards.",
     },

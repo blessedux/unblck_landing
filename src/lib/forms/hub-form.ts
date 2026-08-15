@@ -42,13 +42,6 @@ export function getHubAccessFormSteps(
       required: true,
     },
     {
-      id: "email",
-      type: "email",
-      question: copy.fields.email.question,
-      placeholder: copy.fields.email.placeholder,
-      required: true,
-    },
-    {
       id: "project_name",
       type: "text",
       question: copy.fields.projectName.question,
