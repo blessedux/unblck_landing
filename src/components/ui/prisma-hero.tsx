@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { useLocale } from "@/contexts/LocaleContext";
+import { TransitionLink } from "@/components/TransitionLink";
+import { AUTH_SCREEN_VT_NAME } from "@/lib/nav/auth-screen-vt";
 
 interface WordsPullUpProps {
   text: string;
@@ -94,7 +95,10 @@ const PrismaHero = () => {
       <section className="relative z-10 h-screen w-full" aria-hidden />
 
       <div className="pointer-events-none fixed inset-0 z-10 p-2 md:p-3">
-        <div className="relative h-full w-full overflow-hidden rounded-2xl shadow-[0_0_0_9999px_#000] md:rounded-[2rem]">
+        <div
+          className="relative h-full w-full overflow-hidden rounded-2xl shadow-[0_0_0_9999px_#000] md:rounded-[2rem]"
+          style={{ viewTransitionName: AUTH_SCREEN_VT_NAME }}
+        >
           <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/10 via-transparent to-black/25" />
 
           <div className="pointer-events-auto absolute bottom-0 left-0 right-0 z-10 px-4 pb-2 sm:px-6 md:px-10">
@@ -123,7 +127,7 @@ const PrismaHero = () => {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <Link
+                  <TransitionLink
                     href="/accelerator/apply"
                     className="group inline-flex items-center gap-2 self-end rounded-full bg-primary py-1 pl-5 pr-1 text-sm font-medium text-black transition-all hover:gap-3 lg:self-start sm:text-base"
                   >
@@ -131,7 +135,7 @@ const PrismaHero = () => {
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black transition-transform group-hover:scale-110 sm:h-10 sm:w-10">
                       <ArrowRight className="h-4 w-4" style={{ color: "#E1E0CC" }} />
                     </span>
-                  </Link>
+                  </TransitionLink>
                 </motion.div>
               </div>
             </div>

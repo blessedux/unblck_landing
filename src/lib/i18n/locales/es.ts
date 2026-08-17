@@ -293,6 +293,8 @@ export const es: Translations = {
     submissionFailed: "Algo salió mal",
     backToHome: "Volver al inicio",
     goToMember: "Ir al inicio de miembro",
+    goToSubmissions: "Tus postulaciones",
+    goToFounders: "Founder school",
     resendEmail: "Reenviar email",
     resending: "Enviando...",
     emailSent: "¡Email enviado! Revisa tu bandeja de entrada.",
@@ -312,6 +314,8 @@ export const es: Translations = {
     passwordRequired: "Ingresa tu contraseña para continuar.",
     sendMagicLink: "Enviar magic link",
     continueWithEmail: "Continuar con email",
+    continueWithGoogle: "Continuar con Gmail",
+    orContinueWithEmail: "o continúa con email",
     loginWithPassword: "Iniciar sesión con contraseña",
     loginWithPasswordInstead: "Iniciar sesión con contraseña",
     rememberMe: "Recordarme",
@@ -320,10 +324,31 @@ export const es: Translations = {
     checkEmailBody:
       "Te enviamos un magic link a {email}. Haz clic para iniciar sesión.",
     tryDifferentEmail: "Probar con otro email",
+    checkingSession: "Comprobando sesión…",
     noAccount: "¿No tienes cuenta?",
     applyHere: "Postula aquí",
     errorGeneric: "Algo salió mal",
     magicLinkFailed: "No se pudo enviar el magic link",
+  },
+  profile: {
+    title: "Tu perfil",
+    subtitle: "Los datos por defecto vienen de Gmail. Puedes editar tu nombre cuando quieras.",
+    loading: "Cargando perfil…",
+    displayNameLabel: "Nombre",
+    emailLabel: "Email",
+    emailHint: "El email viene de tu inicio de sesión y no se puede cambiar aquí.",
+    save: "Guardar cambios",
+    saving: "Guardando…",
+    saved: "Perfil guardado.",
+    saveFailed: "No se pudo guardar el perfil.",
+    loadFailed: "No se pudo cargar el perfil.",
+    backToApply: "Volver a postular",
+    openProfile: "Abrir perfil",
+    viewProfile: "Ver perfil",
+    cardFallback: "Usuario",
+    logout: "Cerrar sesión",
+    loggingOut: "Cerrando sesión…",
+    useAnotherAccount: "Usar otra cuenta",
   },
   hubApply: {
     pageTitle: "Pedir acceso | Tellus Hub",
@@ -413,26 +438,21 @@ export const es: Translations = {
     pageTitle: "Postular | UNBLCK Accelerator",
     pageDescription:
       "Postula a UNBLCK — la aceleradora de Santiago para founders de AI y blockchain.",
-    intro: {
-      question: "Postula a UNBLCK Accelerator",
-      hint: "Postulación completa para nuestro programa de aceleración. Toma unos 5 minutos.",
-    },
     fields: {
-      fullName: {
-        question: "¿Cómo te llamas?",
-        placeholder: "Jane Doe",
+      profile: {
+        title: "Confirma tu perfil",
+        subtitle: "Datos de Gmail — edita lo que esté mal.",
+        displayNameLabel: "Nombre",
+        emailLabel: "Email",
+        emailHint: "Viene de tu inicio de sesión. Queda fijo en esta postulación.",
+        continue: "Se ve bien",
       },
-      email: {
-        question: "¿Cuál es tu email?",
-        placeholder: "tu@empresa.com",
-      },
-      projectName: {
-        question: "¿Cómo se llama tu proyecto o empresa?",
-        placeholder: "Acme Labs",
-      },
-      projectLink: {
-        question: "Link del proyecto (web, deck o demo)",
-        placeholder: "https://",
+      project: {
+        question: "Nombra tu proyecto o negocio",
+        nameLabel: "Nombre del proyecto",
+        namePlaceholder: "Acme Labs",
+        linkLabel: "Link (web, deck o demo)",
+        linkPlaceholder: "https://",
       },
       buildDescription: {
         question: "¿Qué estás construyendo?",
@@ -443,9 +463,11 @@ export const es: Translations = {
         question: "¿Dónde estás ubicado?",
         choices: {
           santiago: "Santiago",
-          relocating: "Me estoy mudando a Santiago",
-          remote: "Remoto — fuera de Chile",
+          otherRegion: "Otra región",
+          outsideChile: "Fuera de Chile",
         },
+        countryLabel: "País",
+        countryPlaceholder: "Selecciona un país",
       },
       stage: {
         question: "¿En qué etapa está tu proyecto?",
@@ -459,7 +481,7 @@ export const es: Translations = {
       teamSize: {
         question: "¿Qué tan grande es tu equipo?",
         choices: {
-          solo: "Founder solo",
+          solo: "solo founder",
           small: "2-3 personas",
           medium: "4-6 personas",
           large: "7+ personas",
@@ -496,9 +518,12 @@ export const es: Translations = {
       label: "Postulación recibida",
       title: "Listo",
       description:
-        "Recibimos tu postulación. La revisaremos y te escribiremos cuando haya novedades. Puedes ver el estado en tu inicio de miembro.",
-      extra:
-        "Ven a StellarBarrio en Tellus Blockchain Hub STGO — nuestro evento mensual de builders y la puerta de entrada a Insta Awards.",
+        "Recibimos tu postulación al accelerator. La revisaremos y te escribiremos cuando haya novedades.",
+      extraBefore: "Ven a ",
+      extraMiddle: " en ",
+      extraAfter: " — nuestro meetup mensual de builders.",
+      ctaSubmissions: "Ver tus postulaciones",
+      ctaFounders: "Abrir founder school",
     },
   },
   notFound: {

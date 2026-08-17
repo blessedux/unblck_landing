@@ -65,3 +65,21 @@ export async function generateAndSendMagicLink(
 
   return data.user;
 }
+
+/** One-time hash the client can exchange with verifyOtp — no email is sent. */
+export async function generateSessionTokenHashForEmail(
+  email: string,
+): Promise<{ tokenHash: string; userId: string }> {
+  const ensured = await ensureAuthUserForEmail(email);
+  const supabase = createSupabaseAdmin();
+  const { data, error } = await supabase.auth.admin.generateLink({
+    type: "magiclink",
+    email,
+  });
+  const hash = data?.properties?.hashed_token;
+  const userId = data?.user?.id ?? ensured.user.id;
+  if (error || !hash || !userId) {
+    throw error ?? new Error("Could not create session");
+  }
+  return { tokenHash: hash, userId };
+}

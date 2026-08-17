@@ -5,6 +5,8 @@ import { AuthHashRedirect } from "@/components/AuthHashRedirect";
 import { SiteNavbar } from "@/components/SiteNavbar";
 import { LocaleProvider } from "@/contexts/LocaleContext";
 import { NewsletterPopup } from "@/components/NewsletterPopup";
+import { PrivyAppProvider } from "@/components/PrivyAppProvider";
+import { GoogleProfileEnricher } from "@/components/GoogleProfileEnricher";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -52,11 +54,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LocaleProvider>
+          <PrivyAppProvider>
+          <GoogleProfileEnricher />
           <AuthHashRedirect />
           <LanguageToggle />
           <SiteNavbar />
           {children}
           <NewsletterPopup />
+          </PrivyAppProvider>
         </LocaleProvider>
       </body>
     </html>

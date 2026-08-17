@@ -5,6 +5,9 @@ const ALLOWED_PREFIXES = [
   "/apply",
   "/accelerator/apply",
   "/insta-awards/apply",
+  "/profile",
+  "/submissions",
+  "/founders",
 ] as const;
 
 export function isApplyNextPath(path: string): boolean {

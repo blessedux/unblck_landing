@@ -8,10 +8,8 @@ export function NotFoundContent() {
   const { t } = useLocale();
 
   return (
-    <div className="min-h-screen bg-black text-white font-[family-name:var(--font-geist-sans)]">
-      <div className="absolute right-6 top-6">
-        <LanguageToggle />
-      </div>
+      <div className="min-h-screen bg-black text-white font-[family-name:var(--font-geist-sans)]">
+      <LanguageToggle />
       <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-center px-6 py-16 text-center">
         <p className="mb-4 text-sm uppercase tracking-widest text-gray-500">404</p>
         <h1 className="mb-4 text-4xl font-bold">{t.notFound.title}</h1>

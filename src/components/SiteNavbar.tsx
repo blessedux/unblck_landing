@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { TransitionLink } from "@/components/TransitionLink";
 import { usePathname } from "next/navigation";
 import { useLocale } from "@/contexts/LocaleContext";
 
@@ -46,12 +47,12 @@ export function SiteNavbar() {
             {item.label}
           </Link>
         ))}
-        <Link
+        <TransitionLink
           href="/accelerator/apply"
           className="shrink-0 rounded-full bg-primary px-3 py-1 text-[10px] font-medium text-black transition-opacity hover:opacity-90 sm:px-4 sm:py-1.5 sm:text-xs md:text-sm"
         >
           {t.nav.apply}
-        </Link>
+        </TransitionLink>
       </div>
     </nav>
   );

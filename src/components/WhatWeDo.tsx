@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { TransitionLink } from "@/components/TransitionLink";
 import { useLocale } from "@/contexts/LocaleContext";
 import { VideoPillLink } from "@/components/VideoPillLink";
 import type { HubLinkSegment } from "@/lib/i18n/locales/en";
@@ -61,12 +61,12 @@ export function WhatWeDo() {
         </div>
 
         <div className="mt-8 flex items-center justify-end gap-4">
-          <Link
+          <TransitionLink
             href="/login"
             className="text-sm text-muted transition hover:text-foreground"
           >
             {t.whatWeDo.login}
-          </Link>
+          </TransitionLink>
           <VideoPillLink href="/apply">{t.whatWeDo.cta}</VideoPillLink>
         </div>
       </div>

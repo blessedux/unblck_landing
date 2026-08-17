@@ -56,6 +56,19 @@ Open [http://localhost:3000](http://localhost:3000).
 | `RESEND_FROM` | Sender on your **verified Resend domain** (e.g. `UNBLCK <noreply@yourdomain.com>`) |
 | `ADMIN_EMAILS` | Comma-separated admin allowlist (password login at `/login`) |
 | `ADMIN_PASSWORD` | Shared password for all `ADMIN_EMAILS` accounts |
+| `NEXT_PUBLIC_PRIVY_APP_ID` | Privy app ID (client). Required for Gmail apply auth |
+| `PRIVY_APP_SECRET` | Privy app secret (server-only). Loads verification key for identity tokens |
+
+In the Privy dashboard, also enable **Return user data in an identity token** under User management → Authentication → Advanced (required for Gmail → Supabase handoff).
+
+For Gmail profile photos on apply/profile:
+
+1. Add your own Google OAuth client under Privy → Login methods → Google (Client ID + secret).
+2. Toggle **Return OAuth tokens** on that Google method (required for `useOAuthTokens` / userinfo).
+3. Optional: add scopes `openid email profile` if the dashboard lets you set custom scopes.
+4. In Google Cloud → OAuth client:
+   - Redirect URI: `https://auth.privy.io/api/v1/oauth/callback`
+   - JS origins: `http://localhost:3000`, `http://localhost:3001`, `https://unblck.cl`, `https://www.unblck.cl` (any port you actually use)
 
 ## Admin setup (production)
 

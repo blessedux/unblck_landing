@@ -235,6 +235,8 @@ export interface Translations {
     submissionFailed: string;
     backToHome: string;
     goToMember: string;
+    goToSubmissions: string;
+    goToFounders: string;
     resendEmail: string;
     resending: string;
     emailSent: string;
@@ -252,6 +254,8 @@ export interface Translations {
     passwordRequired: string;
     sendMagicLink: string;
     continueWithEmail: string;
+    continueWithGoogle: string;
+    orContinueWithEmail: string;
     loginWithPassword: string;
     loginWithPasswordInstead: string;
     rememberMe: string;
@@ -259,10 +263,31 @@ export interface Translations {
     checkEmailTitle: string;
     checkEmailBody: string;
     tryDifferentEmail: string;
+    checkingSession: string;
     noAccount: string;
     applyHere: string;
     errorGeneric: string;
     magicLinkFailed: string;
+  };
+  profile: {
+    title: string;
+    subtitle: string;
+    loading: string;
+    displayNameLabel: string;
+    emailLabel: string;
+    emailHint: string;
+    save: string;
+    saving: string;
+    saved: string;
+    saveFailed: string;
+    loadFailed: string;
+    backToApply: string;
+    openProfile: string;
+    viewProfile: string;
+    cardFallback: string;
+    logout: string;
+    loggingOut: string;
+    useAnotherAccount: string;
   };
   hubApply: {
     pageTitle: string;
@@ -310,19 +335,32 @@ export interface Translations {
   acceleratorApply: {
     pageTitle: string;
     pageDescription: string;
-    intro: {
-      question: string;
-      hint: string;
-    };
     fields: {
-      fullName: { question: string; placeholder: string };
-      email: { question: string; placeholder: string };
-      projectName: { question: string; placeholder: string };
-      projectLink: { question: string; placeholder: string };
+      profile: {
+        title: string;
+        subtitle: string;
+        displayNameLabel: string;
+        emailLabel: string;
+        emailHint: string;
+        continue: string;
+      };
+      project: {
+        question: string;
+        nameLabel: string;
+        namePlaceholder: string;
+        linkLabel: string;
+        linkPlaceholder: string;
+      };
       buildDescription: { question: string; placeholder: string };
       location: {
         question: string;
-        choices: { santiago: string; relocating: string; remote: string };
+        choices: {
+          santiago: string;
+          otherRegion: string;
+          outsideChile: string;
+        };
+        countryLabel: string;
+        countryPlaceholder: string;
       };
       stage: {
         question: string;
@@ -365,7 +403,11 @@ export interface Translations {
       label: string;
       title: string;
       description: string;
-      extra: string;
+      extraBefore: string;
+      extraMiddle: string;
+      extraAfter: string;
+      ctaSubmissions: string;
+      ctaFounders: string;
     };
   };
   notFound: {
@@ -708,6 +750,8 @@ export const en: Translations = {
     submissionFailed: "Something went wrong",
     backToHome: "Back to home",
     goToMember: "Go to member home",
+    goToSubmissions: "Your submissions",
+    goToFounders: "Founder school",
     resendEmail: "Resend email",
     resending: "Sending...",
     emailSent: "Email sent! Check your inbox.",
@@ -726,6 +770,8 @@ export const en: Translations = {
     passwordRequired: "Enter your password to continue.",
     sendMagicLink: "Send magic link",
     continueWithEmail: "Continue with email",
+    continueWithGoogle: "Continue with Gmail",
+    orContinueWithEmail: "or continue with email",
     loginWithPassword: "Login with password",
     loginWithPasswordInstead: "Login with password instead",
     rememberMe: "Remember me",
@@ -734,10 +780,31 @@ export const en: Translations = {
     checkEmailBody:
       "We've sent a magic link to {email}. Click it to log in.",
     tryDifferentEmail: "Try a different email",
+    checkingSession: "Checking sign-in…",
     noAccount: "Don't have an account?",
     applyHere: "Apply here",
     errorGeneric: "Something went wrong",
     magicLinkFailed: "Could not send magic link",
+  },
+  profile: {
+    title: "Your profile",
+    subtitle: "Defaults come from Gmail. Edit your display name anytime.",
+    loading: "Loading profile…",
+    displayNameLabel: "Display name",
+    emailLabel: "Email",
+    emailHint: "Email comes from your sign-in method and can’t be changed here.",
+    save: "Save changes",
+    saving: "Saving…",
+    saved: "Profile saved.",
+    saveFailed: "Could not save profile.",
+    loadFailed: "Could not load profile.",
+    backToApply: "Back to apply",
+    openProfile: "Open profile",
+    viewProfile: "View profile",
+    cardFallback: "User",
+    logout: "Log out",
+    loggingOut: "Logging out…",
+    useAnotherAccount: "Use another account",
   },
   hubApply: {
     pageTitle: "Request Access | Tellus Hub",
@@ -827,26 +894,21 @@ export const en: Translations = {
     pageTitle: "Apply | UNBLCK Accelerator",
     pageDescription:
       "Apply to join UNBLCK — Santiago's accelerator for AI and blockchain founders.",
-    intro: {
-      question: "Apply to UNBLCK Accelerator",
-      hint: "A comprehensive application for our full accelerator program. Takes about 5 minutes.",
-    },
     fields: {
-      fullName: {
-        question: "What's your name?",
-        placeholder: "Jane Doe",
+      profile: {
+        title: "Confirm your profile",
+        subtitle: "Pulled from Gmail — edit anything that looks off.",
+        displayNameLabel: "Name",
+        emailLabel: "Email",
+        emailHint: "From your sign-in. Locked for this application.",
+        continue: "Looks good",
       },
-      email: {
-        question: "What's your email?",
-        placeholder: "you@company.com",
-      },
-      projectName: {
-        question: "What's your project or company called?",
-        placeholder: "Acme Labs",
-      },
-      projectLink: {
-        question: "Project link (website, deck, or demo)",
-        placeholder: "https://",
+      project: {
+        question: "Name your project or business",
+        nameLabel: "Project name",
+        namePlaceholder: "Acme Labs",
+        linkLabel: "Link (website, deck, or demo)",
+        linkPlaceholder: "https://",
       },
       buildDescription: {
         question: "What are you building?",
@@ -857,9 +919,11 @@ export const en: Translations = {
         question: "Where are you based?",
         choices: {
           santiago: "Santiago",
-          relocating: "Relocating to Santiago",
-          remote: "Remote — not based in Chile",
+          otherRegion: "Otra región",
+          outsideChile: "Fuera de Chile",
         },
+        countryLabel: "Country",
+        countryPlaceholder: "Select a country",
       },
       stage: {
         question: "What stage is your project?",
@@ -873,7 +937,7 @@ export const en: Translations = {
       teamSize: {
         question: "How big is your team?",
         choices: {
-          solo: "Solo founder",
+          solo: "solo founder",
           small: "2-3 people",
           medium: "4-6 people",
           large: "7+ people",
@@ -910,9 +974,12 @@ export const en: Translations = {
       label: "Application received",
       title: "You're all set",
       description:
-        "We've received your application. We'll review it and email you when there's an update. You can check status anytime from your member home.",
-      extra:
-        "Come to StellarBarrio at Tellus Blockchain Hub STGO — our monthly builder event and the gateway to Insta Awards.",
+        "We've received your accelerator application. We'll review it and email you when there's an update.",
+      extraBefore: "Come to ",
+      extraMiddle: " at ",
+      extraAfter: " — our monthly builder meetup.",
+      ctaSubmissions: "View your submissions",
+      ctaFounders: "Open founder school",
     },
   },
   notFound: {

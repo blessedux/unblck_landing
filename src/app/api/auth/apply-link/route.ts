@@ -7,6 +7,7 @@ import {
   isApplyNextPath,
   sanitizeNextPath,
 } from "@/lib/auth/safe-next-path";
+import { upsertUserProfile } from "@/lib/auth/user-profile";
 import { isValidEmail, normalizeEmail } from "@/lib/forms/validate-email";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -34,7 +35,12 @@ export async function POST(request: Request) {
       );
     }
 
-    await ensureAuthUserForEmail(email);
+    const ensured = await ensureAuthUserForEmail(email);
+    await upsertUserProfile({
+      authUserId: ensured.user.id,
+      email,
+      overwriteIdentityDefaults: false,
+    });
 
     const redirectTo = `${getSiteUrl(request)}/auth/callback?next=${encodeURIComponent(next)}`;
     await generateAndSendMagicLink(email, redirectTo);

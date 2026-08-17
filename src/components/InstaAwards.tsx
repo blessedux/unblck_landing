@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocale } from "@/contexts/LocaleContext";
 import { FundCardEventGallery } from "@/components/FundCardEventGallery";
+import { TransitionLink } from "@/components/TransitionLink";
 
 const LUMA_EVENTS_URL = "https://luma.com/telluscoop";
 
@@ -129,7 +130,7 @@ export function InstaAwards() {
             </div>
 
             <div className="flex justify-end">
-              <Link
+              <TransitionLink
                 href="/insta-awards/apply"
                 className="group inline-flex items-center gap-2 bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:gap-3 hover:bg-accent-soft rounded-full"
               >
@@ -147,7 +148,7 @@ export function InstaAwards() {
                     d="M13 7l5 5m0 0l-5 5m5-5H6"
                   />
                 </svg>
-              </Link>
+              </TransitionLink>
             </div>
           </div>
         </div>

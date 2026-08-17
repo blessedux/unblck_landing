@@ -35,5 +35,9 @@ export type SuccessScreen = {
   label: string;
   title: string;
   description: string;
+  /** @deprecated Prefer extraSegments for linked copy */
   extra?: string;
+  extraSegments?: Array<{ text: string; href?: string }>;
+  primaryCta?: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
 };

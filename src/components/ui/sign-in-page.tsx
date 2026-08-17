@@ -3,13 +3,16 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { Eye, EyeOff } from "lucide-react";
+import { AcceleratorProfileCardSkeleton } from "@/components/AcceleratorProfileHandoff";
+import { AuthScreenShell } from "@/components/AuthScreenShell";
+import { PrivyGoogleButton } from "@/components/PrivyGoogleButton";
 import { createClient } from "@/lib/supabase/client";
 import { isApplyNextPath } from "@/lib/auth/safe-next-path";
+import { isPrivyConfigured } from "@/lib/auth/privy-public";
+import { startViewTransition } from "@/lib/nav/start-view-transition";
 import { useLocale } from "@/contexts/LocaleContext";
-
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80";
 
 export type SignInPageProps = {
   passwordLoginEmails?: string[];
@@ -39,6 +42,7 @@ export function LoginPage({
   const { t } = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [oauthBusy, setOauthBusy] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -124,46 +128,24 @@ export function LoginPage({
     }
   };
 
+  const goHome = () => {
+    startViewTransition(() => {
+      router.push("/");
+    });
+  };
+
+  const showApplyHandoff = oauthBusy && isApplyFlow;
+
   return (
-    <div className="flex h-dvh w-screen flex-col bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 lg:flex-row">
-      {/* Left Panel - Image Section */}
-      <div className="relative hidden flex-1 overflow-hidden lg:block">
-        <div className="absolute left-6 top-6 z-10">
-          <button
-            type="button"
-            onClick={() => router.push("/")}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/20 backdrop-blur-sm transition-all hover:bg-black/30"
-            aria-label="Back to home"
-          >
-            <ArrowLeft className="h-5 w-5 text-white" />
-          </button>
-        </div>
-
-        <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={HERO_IMAGE}
-            alt="Collaborative workspace"
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/20" />
-        </div>
-      </div>
-
-      {/* Right Panel - Form Section */}
-      <div className="flex flex-1 items-center justify-center overflow-y-auto bg-white">
-        <div className="w-full max-w-md p-8">
-          <div className="mb-6 lg:hidden">
-            <button
-              type="button"
-              onClick={() => router.push("/")}
-              className="mb-6 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition hover:bg-gray-200"
-              aria-label="Back to home"
-            >
-              <ArrowLeft className="h-5 w-5 text-gray-700" />
-            </button>
-          </div>
-
+    <>
+      {showApplyHandoff && <AcceleratorProfileCardSkeleton />}
+      <div className={showApplyHandoff ? "hidden" : undefined}>
+    <AuthScreenShell onBack={goHome}>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+      >
           <div className="mb-8">
             <p className="mb-2 text-xs font-semibold tracking-[0.2em] text-gray-400">
               UNBLCK
@@ -188,8 +170,15 @@ export function LoginPage({
             </p>
           </div>
 
+          <AnimatePresence mode="wait">
           {sent ? (
-            <div>
+            <motion.div
+              key="sent"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            >
               <h2 className="mb-4 text-2xl font-bold text-gray-900">
                 {t.login.checkEmailTitle}
               </h2>
@@ -212,9 +201,29 @@ export function LoginPage({
               >
                 {t.login.tryDifferentEmail}
               </button>
-            </div>
+            </motion.div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <motion.form
+              key="form"
+              onSubmit={handleSubmit}
+              className="space-y-6"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {isApplyFlow && isPrivyConfigured() && (
+                <>
+                  <PrivyGoogleButton onBusyChange={setOauthBusy} />
+                  <div className="flex items-center gap-3">
+                    <div className="h-px flex-1 bg-gray-200" />
+                    <span className="text-xs font-medium uppercase tracking-wide text-gray-400">
+                      {t.login.orContinueWithEmail}
+                    </span>
+                    <div className="h-px flex-1 bg-gray-200" />
+                  </div>
+                </>
+              )}
               <div>
                 <label
                   htmlFor="sign-in-email"
@@ -312,10 +321,12 @@ export function LoginPage({
                       ? t.login.continueWithEmail
                       : t.login.sendMagicLink}
               </button>
-            </form>
+            </motion.form>
           )}
-        </div>
+          </AnimatePresence>
+      </motion.div>
+    </AuthScreenShell>
       </div>
-    </div>
+    </>
   );
 }

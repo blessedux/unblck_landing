@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
+import { ApplyUserCard } from "@/components/ApplyUserCard";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { ChoiceOption, FormStep, SuccessScreen } from "@/lib/forms/types";
 import { isValidEmail } from "@/lib/forms/validate-email";
@@ -273,17 +274,54 @@ export function MultiStepForm<T extends Record<string, string>>({
               {successScreen.title}
             </h1>
             <p className="mt-3 text-muted">{successScreen.description}</p>
-            {successScreen.extra && (
-              <p className="mt-4 text-sm text-muted">{successScreen.extra}</p>
+            {successScreen.extraSegments ? (
+              <p className="mt-4 text-sm text-muted">
+                {successScreen.extraSegments.map((segment, index) =>
+                  segment.href ? (
+                    <a
+                      key={`${segment.text}-${index}`}
+                      href={segment.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline decoration-white/30 underline-offset-2 transition hover:text-foreground hover:decoration-foreground"
+                    >
+                      {segment.text}
+                    </a>
+                  ) : (
+                    <span key={`${segment.text}-${index}`}>{segment.text}</span>
+                  ),
+                )}
+              </p>
+            ) : (
+              successScreen.extra && (
+                <p className="mt-4 text-sm text-muted">{successScreen.extra}</p>
+              )
             )}
             
-            <div className="mt-8 flex items-center gap-3">
-              <Link
-                href={authenticatedEmail ? "/member" : "/"}
-                className="inline-block rounded-full border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground"
-              >
-                {authenticatedEmail ? t.form.goToMember : t.form.backToHome}
-              </Link>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              {successScreen.primaryCta ? (
+                <Link
+                  href={successScreen.primaryCta.href}
+                  className="inline-block rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:bg-accent-soft"
+                >
+                  {successScreen.primaryCta.label}
+                </Link>
+              ) : (
+                <Link
+                  href={authenticatedEmail ? "/member" : "/"}
+                  className="inline-block rounded-full border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground"
+                >
+                  {authenticatedEmail ? t.form.goToMember : t.form.backToHome}
+                </Link>
+              )}
+              {successScreen.secondaryCta && (
+                <Link
+                  href={successScreen.secondaryCta.href}
+                  className="inline-block rounded-full border border-border px-5 py-2.5 text-sm text-muted transition hover:border-foreground hover:text-foreground"
+                >
+                  {successScreen.secondaryCta.label}
+                </Link>
+              )}
 
               {!authenticatedEmail && (
                 <button
@@ -325,10 +363,9 @@ export function MultiStepForm<T extends Record<string, string>>({
         >
           UNBLCK
         </Link>
-        {authenticatedEmail && (
-          <p className="truncate text-xs text-muted">{authenticatedEmail}</p>
-        )}
       </header>
+
+      {authenticatedEmail && <ApplyUserCard />}
 
       <div className="flex flex-1 items-start px-6 pb-24 pt-8 sm:items-center sm:pt-0">
         <div className="mx-auto w-full max-w-2xl">

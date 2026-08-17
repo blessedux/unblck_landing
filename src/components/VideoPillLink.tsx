@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
+import { TransitionLink } from "@/components/TransitionLink";
 
 interface VideoPillLinkProps {
   href: string;
@@ -50,7 +50,7 @@ export function VideoPillLink({ href, children }: VideoPillLinkProps) {
   }, []);
 
   return (
-    <Link
+    <TransitionLink
       ref={linkRef}
       href={href}
       className="relative isolate inline-block overflow-hidden rounded-full border border-white bg-transparent transition hover:border-white/80"
@@ -70,6 +70,6 @@ export function VideoPillLink({ href, children }: VideoPillLinkProps) {
       <span className="relative z-10 block px-5 py-2.5 text-sm font-medium text-white transition hover:text-white/90">
         {children}
       </span>
-    </Link>
+    </TransitionLink>
   );
 }

@@ -1,27 +1,12 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
+import { AcceleratorApplyForm } from "@/components/AcceleratorApplyForm";
 import { ApplyAuthGate } from "@/components/ApplyAuthGate";
-import { MultiStepForm } from "@/components/MultiStepForm";
 import { useLocale } from "@/contexts/LocaleContext";
-import {
-  emptyAcceleratorApplication,
-  getAcceleratorFormSteps,
-  getAcceleratorSuccessScreen,
-} from "@/lib/forms/accelerator-form";
 
 export function AcceleratorApplicationForm() {
-  const { locale, t } = useLocale();
-
-  const formSteps = useMemo(
-    () => getAcceleratorFormSteps(t.acceleratorApply),
-    [locale, t.acceleratorApply],
-  );
-
-  const successScreen = useMemo(
-    () => getAcceleratorSuccessScreen(t.acceleratorApply.success),
-    [locale, t.acceleratorApply.success],
-  );
+  const { t } = useLocale();
 
   useEffect(() => {
     document.title = t.acceleratorApply.pageTitle;
@@ -29,15 +14,7 @@ export function AcceleratorApplicationForm() {
 
   return (
     <ApplyAuthGate nextPath="/accelerator/apply">
-      {({ email }) => (
-        <MultiStepForm
-          formSteps={formSteps}
-          emptyValues={emptyAcceleratorApplication}
-          apiEndpoint="/api/apply/accelerator"
-          successScreen={successScreen}
-          authenticatedEmail={email}
-        />
-      )}
+      {({ email }) => <AcceleratorApplyForm email={email} />}
     </ApplyAuthGate>
   );
 }

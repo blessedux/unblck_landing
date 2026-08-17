@@ -15,7 +15,10 @@
     "test:email-flow": "tsx scripts/test-email-flow.ts"
   },
   "dependencies": {
+    "@privy-io/react-auth": "^3.37.1",
+    "@privy-io/server-auth": "^1.32.5",
     "@radix-ui/react-slot": "^1.3.0",
+    "@stripe/stripe-js": "^9.13.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.49.1",
     "canvas-confetti": "^1.9.4",
