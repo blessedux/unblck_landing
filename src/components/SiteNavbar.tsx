@@ -10,6 +10,7 @@ export function SiteNavbar() {
   const { t } = useLocale();
 
   if (
+    pathname === "/" ||
     pathname?.startsWith("/member") ||
     pathname?.startsWith("/apply") ||
     pathname?.endsWith("/apply") ||

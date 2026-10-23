@@ -427,6 +427,17 @@ export interface Translations {
     error: string;
     invalidEmail: string;
   };
+  holding: {
+    thesis: string;
+    batch: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    subscribe: string;
+    subscribing: string;
+    success: string;
+    error: string;
+    invalidEmail: string;
+  };
   adminRooms: {
     pageTitle: string;
     pageDescription: string;
@@ -996,6 +1007,18 @@ export const en: Translations = {
     subscribing: "Subscribing...",
     dismiss: "Dismiss",
     success: "You're subscribed!",
+    error: "Could not subscribe. Try again.",
+    invalidEmail: "Enter a valid email",
+  },
+  holding: {
+    thesis:
+      "A private accelerator in Santiago for founders building with AI and blockchain.",
+    batch: "The next batch opens in December 2026.",
+    emailLabel: "Email",
+    emailPlaceholder: "you@company.com",
+    subscribe: "Subscribe",
+    subscribing: "Subscribing…",
+    success: "You're on the list.",
     error: "Could not subscribe. Try again.",
     invalidEmail: "Enter a valid email",
   },

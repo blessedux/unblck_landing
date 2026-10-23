@@ -9,15 +9,19 @@ function isValidEmail(email: string) {
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as { email?: string };
+    const body = (await request.json()) as { email?: string; source?: string };
     const email = body.email?.trim().toLowerCase();
+    const source =
+      typeof body.source === "string" && /^[a-z][a-z0-9_-]{0,31}$/.test(body.source)
+        ? body.source
+        : "popup";
 
     if (!email || !isValidEmail(email)) {
       return NextResponse.json({ error: "Valid email is required" }, { status: 400 });
     }
 
     const result = await subscribeEmail(email, {
-      metadata: { source: "popup" },
+      metadata: { source },
       ipAddress: getClientIp(request),
     });
 
