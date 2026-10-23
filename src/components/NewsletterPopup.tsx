@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useLocale } from "@/contexts/LocaleContext";
 import { createClient } from "@/lib/supabase/client";
 
@@ -27,6 +28,8 @@ function getScrollDepth(): number {
 }
 
 export function NewsletterPopup() {
+  const pathname = usePathname();
+  const onHolding = pathname === "/";
   const { t } = useLocale();
   const copy = t.newsletterPopup;
 
@@ -44,7 +47,7 @@ export function NewsletterPopup() {
   }, []);
 
   useEffect(() => {
-    if (!isEligible()) return;
+    if (onHolding || !isEligible()) return;
 
     let cancelled = false;
     let removeScroll: (() => void) | undefined;
@@ -86,7 +89,7 @@ export function NewsletterPopup() {
       removeScroll?.();
       if (timer) window.clearTimeout(timer);
     };
-  }, []);
+  }, [onHolding]);
 
   const handleSubscribe = async (event: FormEvent) => {
     event.preventDefault();
@@ -116,6 +119,8 @@ export function NewsletterPopup() {
       setLoading(false);
     }
   };
+
+  if (onHolding) return null;
 
   return (
     <AnimatePresence>

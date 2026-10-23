@@ -1,17 +1,17 @@
-import { FixedHeroVideo } from "@/components/FixedHeroVideo";
-import { PrismaHero } from "@/components/ui/prisma-hero";
-import { WhatWeDo } from "@/components/WhatWeDo";
-import { InstaAwards } from "@/components/InstaAwards";
-import { Footer } from "@/components/Footer";
+import type { Metadata } from "next";
+import { HoldingScreen } from "@/components/HoldingScreen";
+
+export const metadata: Metadata = {
+  title: "UNBLCK",
+  description:
+    "A private accelerator in Santiago for founders building with AI and blockchain. The next batch opens in December 2026.",
+  openGraph: {
+    title: "UNBLCK",
+    description:
+      "A private accelerator in Santiago for founders building with AI and blockchain. The next batch opens in December 2026.",
+  },
+};
 
 export default function Home() {
-  return (
-    <div className="relative min-h-screen bg-black">
-      <FixedHeroVideo />
-      <PrismaHero />
-      <WhatWeDo />
-      <InstaAwards />
-      <Footer />
-    </div>
-  );
+  return <HoldingScreen />;
 }

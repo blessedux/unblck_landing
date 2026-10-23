@@ -543,6 +543,18 @@ export const es: Translations = {
     error: "No se pudo suscribir. Intenta de nuevo.",
     invalidEmail: "Ingresa un email válido",
   },
+  holding: {
+    thesis:
+      "Una aceleradora privada en Santiago para founders que construyen con IA y blockchain.",
+    batch: "La próxima cohorte abre en diciembre de 2026.",
+    emailLabel: "Email",
+    emailPlaceholder: "tu@empresa.com",
+    subscribe: "Suscribirme",
+    subscribing: "Suscribiendo…",
+    success: "Quedaste en la lista.",
+    error: "No se pudo suscribir. Intenta de nuevo.",
+    invalidEmail: "Ingresa un email válido",
+  },
   adminRooms: {
     pageTitle: "Gestión de salas | Admin",
     pageDescription: "Administrar salas del hub",
